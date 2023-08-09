@@ -1,0 +1,14 @@
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Cores.exe
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Cores.deps.json
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Cores.runtimeconfig.json
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Cores.runtimeconfig.dev.json
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Cores.dll
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Cores.pdb
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Cores.csproj.AssemblyReference.cache
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Cores.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Cores.AssemblyInfoInputs.cache
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Cores.AssemblyInfo.cs
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Cores.csproj.CoreCompileInputs.cache
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Cores.dll
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Cores.pdb
+D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Cores.genruntimeconfig.cache

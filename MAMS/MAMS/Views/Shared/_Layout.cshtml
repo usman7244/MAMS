@@ -1,0 +1,446 @@
+﻿@*@inject SignInManager<ApplicationUsers> signInManager;*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MAMS</title>
+
+
+    @*New Theme links*@
+    <link href="~/css/RobotoFontFamilyStyle.css" rel="stylesheet" />
+    <link href="~/css/FontAwsomeStyle.css" rel="stylesheet" />
+    <link href="~/css/material-dashboard.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/css/FontAwsomeIconsStylecss.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <style>
+        .bgImg {
+            background-image: url('/images/notebook.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            right: 0;
+            left: 0;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .contentNav {
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7); /* Black background with 0.5 opacity */
+            color: #f1f1f1;
+        }
+
+        #SubMenuNav {
+            display: none;
+        }
+
+        #management:hover > ul {
+            display: block;
+        }
+
+        #btnLogOut {
+            position: absolute;
+            bottom: 20px;
+        }
+    </style>
+</head>
+<body class="">
+    <div class="wrapper ">
+        <div class="sidebar" data-color="green" data-background-color="black" data-image="/images/sidebar-1.jpg">
+            <!--
+                Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+                Tip 2: you can also add an image using data-image tag
+            -->
+            @*<div class="logo" style="padding-bottom: 7px;">
+            <a href="#" class="simple-text logo-normal">
+            Shrink App
+            </a>
+            </div>*@
+            <div class="sidebar-wrapper" style="margin-top: 60px;">
+                <ul class="nav page-sidebar-menu-hover-submenu">
+
+                    <li class="nav-item active" id="homeBtn">
+                        <a class="nav-link" href="~/Home/Index">
+                            <i class="material-icons">dashboard</i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+                    <li class="nav-item" id="btnCustomer">
+                        <a class="nav-link" href="~/Customer/Index">
+                            <i class="fas fa-user-tie"></i>
+                            <p>Customer</p>
+                        </a>
+                    </li>
+                    <li class="nav-item " id="management">
+                        <a class="nav-link" href="javascript:;">
+                            <i class="material-icons">landscape</i>
+                            <p>Stock</p>
+                        </a>
+                        <ul class="nav-item" id="SubMenuNav">
+                            <li class="nav-item" id="Roles">
+                                <a class="nav-link" href="~/Purchase/Index">
+                                    <i class="material-icons">trending_down</i>
+                                    <p>Purchase</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" id="users">
+                                <a class="nav-link" href="~/Sale/Index">
+                                    <i class="material-icons">trending_up</i>
+                                    <p>sale</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    @*<li class="nav-item" id="homeBtn">
+                    <a class="nav-link" href="~/Farmer/AccountDetail">
+                    <i class="material-icons">groups</i>
+                    <p>Farmer</p>
+                    </a>
+                    </li>*@
+                    <li class="nav-item" id="btnCrop">
+                        <a class="nav-link" href="~/Crop/Index">
+                            <i class="fab fa-pagelines"></i>
+                            <p>Crop</p>
+                        </a>
+                    </li>
+                    <li class="nav-item " id="management">
+                        <a class="nav-link" href="javascript:;">
+                            <i class="material-icons">manage_accounts</i>
+                            <p>Management</p>
+                        </a>
+                        <ul class="nav-item" id="SubMenuNav">
+                            <li class="nav-item" id="Roles">
+                                <a class="nav-link" href="~/Admin/RoleList">
+                                    <i class="material-icons">admin_panel_settings</i>
+                                    <p>Roles</p>
+                                </a>
+                            </li>
+                            <li class="nav-item" id="users">
+                                <a href="~/Admin/ListUsers" class="nav-link">
+                                    <i class="material-icons">people_alt</i>
+                                    <p>Users</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item active-pro " id="btnLogOut">
+                        <a class="nav-link" href="javascript:;">
+                            <i class="material-icons">logout</i>
+                            <p>Logout</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top bgImg navbar-fixed-top" style="position:fixed;padding-left: 0px;padding-right: 0px;">
+                <div class="container-fluid contentNav" style="margin-top:-13px;margin-bottom:-8px;">
+                    <div class="navbar-wrapper">
+                        <a class="navbar-brand" href="javascript:;"></a>
+                    </div>
+                    <button class="navbar-toggler @*order-first*@" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="true" aria-label="Toggle navigation">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                @*<a class="nav-link" href="javascript:;">
+                                <i class="material-icons">dashboard</i>
+                                <p class="d-lg-none d-md-block">
+                                Stats
+                                </p>
+                                </a>*@
+                            </li>
+                            <li class="nav-item dropdown">
+
+                                <h6>Welcome To Muhammad Usman</h6>
+                                @*<a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">notifications</i>
+                                <span class="notification">5</span>
+                                <p class="d-lg-none d-md-block">
+                                Some Actions
+                                </p>
+                                </a>*@
+                                @*<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="#">Mike John responded to your email</a>
+                                <a class="dropdown-item" href="#">You have 5 new tasks</a>
+                                <a class="dropdown-item" href="#">You're now friend with Andrew</a>
+                                <a class="dropdown-item" href="#">Another Notification</a>
+                                <a class="dropdown-item" href="#">Another One</a>
+                                </div>*@
+                            </li>
+                            <li class="nav-item dropdown">
+                                @*<a class="nav-link" href="javascript:;" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">person</i>
+                                <p class="d-lg-none d-md-block">
+                                Account
+                                </p>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
+                                <a class="dropdown-item" href="#">Profile</a>
+                                <a class="dropdown-item" href="#">Settings</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Log out</a>
+                                </div>*@
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+            <div class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </div>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <nav class="float-left">
+                        <ul>
+                            <li>
+                                @*<a href="https://www.creative-tim.com">
+                                Creative Tim
+                                </a>*@
+                            </li>
+                            <li>
+                                @*<a href="https://creative-tim.com/presentation">
+                                About Us
+                                </a>*@
+                            </li>
+                            <li>
+                                @*<a href="http://blog.creative-tim.com">
+                                Blog
+                                </a>*@
+                            </li>
+                            <li>
+                                @*<a href="https://www.creative-tim.com/license">
+                                Licenses
+                                </a>*@
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="copyright float-right">
+                        &copy;
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script> <i class="material-icons">favorite</i>
+                        <a href="https://gotsystems.net/" target="_blank">MAMS</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <!--   Core JS Files   -->
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="~/js/bootstrap-material-design.min.js"></script>
+    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="~/js/material-dashboard.js?v=2.1.2" type="text/javascript"></script>
+    <link href="~/css/confirm.css" rel="stylesheet" />
+    <script src="~/js/confirm.js"></script>
+    <script>
+        $(document).ready(function () {
+            $sidebar = $('.sidebar');
+            $sidebar_img_container = $sidebar.find('.sidebar-background');
+
+            $full_page = $('.full-page');
+
+            $sidebar_responsive = $('body > .navbar-collapse');
+
+            window_width = $(window).width();
+
+            fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+            if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
+                if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
+                    $('.fixed-plugin .dropdown').addClass('open');
+                }
+
+            }
+
+            $('.fixed-plugin a').click(function (event) {
+                // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
+                if ($(this).hasClass('switch-trigger')) {
+                    if (event.stopPropagation) {
+                        event.stopPropagation();
+                    } else if (window.event) {
+                        window.event.cancelBubble = true;
+                    }
+                }
+            });
+
+            $('.fixed-plugin .active-color span').click(function () {
+                $full_page_background = $('.full-page-background');
+
+                $(this).siblings().removeClass('active');
+                $(this).addClass('active');
+
+                var new_color = $(this).data('color');
+
+                if ($sidebar.length != 0) {
+                    $sidebar.attr('data-color', new_color);
+                }
+
+                if ($full_page.length != 0) {
+                    $full_page.attr('filter-color', new_color);
+                }
+
+                if ($sidebar_responsive.length != 0) {
+                    $sidebar_responsive.attr('data-color', new_color);
+                }
+            });
+
+            $('.fixed-plugin .background-color .badge').click(function () {
+                $(this).siblings().removeClass('active');
+                $(this).addClass('active');
+
+                var new_color = $(this).data('background-color');
+
+                if ($sidebar.length != 0) {
+                    $sidebar.attr('data-background-color', new_color);
+                }
+                if ($navbar.length != 0) {
+                    $navbar.attr('data-background-color', new_color);
+                }
+            });
+
+            $('.fixed-plugin .img-holder').click(function () {
+                $full_page_background = $('.full-page-background');
+
+                $(this).parent('li').siblings().removeClass('active');
+                $(this).parent('li').addClass('active');
+
+
+                var new_image = $(this).find("img").attr('src');
+
+                if ($sidebar_img_container.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+                    $sidebar_img_container.fadeOut('fast', function () {
+                        $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+                        $sidebar_img_container.fadeIn('fast');
+                    });
+                }
+
+                if ($full_page_background.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+                    var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+                    $full_page_background.fadeOut('fast', function () {
+                        $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+                        $full_page_background.fadeIn('fast');
+                    });
+                }
+
+                if ($('.switch-sidebar-image input:checked').length == 0) {
+                    var new_image = $('.fixed-plugin li.active .img-holder').find("img").attr('src');
+                    var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+                    $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+                    $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+                }
+
+                if ($sidebar_responsive.length != 0) {
+                    $sidebar_responsive.css('background-image', 'url("' + new_image + '")');
+                }
+            });
+
+            $('.switch-sidebar-image input').change(function () {
+                $full_page_background = $('.full-page-background');
+
+                $input = $(this);
+
+                if ($input.is(':checked')) {
+                    if ($sidebar_img_container.length != 0) {
+                        $sidebar_img_container.fadeIn('fast');
+                        $sidebar.attr('data-image', '#');
+                    }
+
+                    if ($full_page_background.length != 0) {
+                        $full_page_background.fadeIn('fast');
+                        $full_page.attr('data-image', '#');
+                    }
+
+                    background_image = true;
+                } else {
+                    if ($sidebar_img_container.length != 0) {
+                        $sidebar.removeAttr('data-image');
+                        $sidebar_img_container.fadeOut('fast');
+                    }
+
+                    if ($full_page_background.length != 0) {
+                        $full_page.removeAttr('data-image', '#');
+                        $full_page_background.fadeOut('fast');
+                    }
+
+                    background_image = false;
+                }
+            });
+
+            $('.switch-sidebar-mini input').change(function () {
+                $body = $('body');
+
+                $input = $(this);
+
+                if (md.misc.sidebar_mini_active == true) {
+                    $('body').removeClass('sidebar-mini');
+                    md.misc.sidebar_mini_active = false;
+
+                    $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar();
+
+                } else {
+
+                    $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar('destroy');
+
+                    setTimeout(function () {
+                        $('body').addClass('sidebar-mini');
+
+                        md.misc.sidebar_mini_active = true;
+                    }, 300);
+                }
+
+                // we simulate the window Resize so the charts will get updated in realtime.
+                var simulateWindowResize = setInterval(function () {
+                    window.dispatchEvent(new Event('resize'));
+                }, 180);
+
+                // we stop the simulation of Window Resize after the animations are completed
+                setTimeout(function () {
+                    clearInterval(simulateWindowResize);
+                }, 1000);
+
+            });
+            $('#btnLogOut').click(function () {
+
+                $.ajax({
+        @*@Url.Action("Logout", "Account") *@
+                    url: '../Account/Logout',
+                    type: 'post',
+                    contentType: 'application/json',
+                    success: function () {
+
+                        window.location.href = '../Account/Login';
+
+                    },
+                        });
+        });
+
+
+                });
+
+
+
+    </script>
+    @RenderSection("scripts", required: false)
+    @RenderSection("styles", required: false)
+</body>
+</html>
