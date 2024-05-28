@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zJ5W3SSrhIs=",
+  "dgSpecHash": "utLmxX9JFP852fKC/EBQgKl+9JES1/vKo9ylOpirmhoDH9vqTg7PrcHrABgS8fIndteGkOcmnNeoOX9fS5Op9A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\zimal\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\zimal\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
-    "C:\\Users\\zimal\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.32\\microsoft.netcore.app.host.win-x64.3.1.32.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

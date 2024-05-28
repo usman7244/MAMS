@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Account\" />
+    <Folder Include="wwwroot\DbBackups\" />
   </ItemGroup>
 
 </Project>
