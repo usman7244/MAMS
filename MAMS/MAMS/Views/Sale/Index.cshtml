@@ -14,7 +14,7 @@
             </h5>
         </div>
         <div class="card-body">
-            <a asp-action="PurchaseCrop" asp-controller="Purchase" class="btn btn-success btn-circle" style="margin-left: 10px;  font-size: 11px"> <i class="material-icons" style="vertical-align: middle;">person_add</i> Sale Crop</a>
+            <a asp-action="SaleCrop" asp-controller="Sale" class="btn btn-success btn-circle" style="margin-left: 10px;  font-size: 11px"> <i class="material-icons" style="vertical-align: middle;">person_add</i> Sale Crop</a>
             <div class="table-responsive">
                 <table class="table" id="tblDetailList">
                     <thead class=" text-primary">
@@ -23,11 +23,11 @@
                                 colspan="1">
                                 # &nbsp;
                             </th>
-                            <th width="12%" tabindex="0" class="bold"
+                            <th width="9%" tabindex="0" class="bold"
                                 arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
                                 Customer Name
                             </th>
-                            <th width="8%" tabindex="0" class="bold"
+                            <th width="12%" tabindex="0" class="bold"
                                 arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
                                 Crop Name
                             </th>
@@ -43,7 +43,7 @@
                                 arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
                                 Expense
                             </th>
-                            <th width="13%" tabindex="0" class="bold"
+                            <th width="16%" tabindex="0" class="bold"
                                 arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
                                 Price With Exp
                             </th>
@@ -80,7 +80,17 @@
                                 <td width="13%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.TotalAmountwithExp</td>
                                 <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.CreatedDate.ToString("dd/M/yyyy")</td>
                                 <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.UserName</td>
-                               
+                                <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.Status</td>
+
+
+
+                                <td width="10%" tabindex="0" class="sorting" aria-controls="datatable_orders" rowspan="1" colspan="1">
+                                   
+                                        <a asp-action="SaleCropEdit" asp-controller="Sale" asp-route-Id="@item.UID" class=" btn btn-circle btn-sm"><i class="fa fa-edit" data-toggle="tooltip" data-placement="bottom" title="Edit Sale Crop"></i></a>
+                                   
+
+                                    <a class="btn btn-circle btn-sm" name="btnDel" id="@item.UID"><i class="fa fa-trash" data-toggle="tooltip" data-placement="bottom" title="Delete Sale Crop"></i></a>
+                                </td>
                             </tr>
                             num++;
                         }
@@ -91,6 +101,17 @@
     </div>
 </div>
 <!-- #endregion -->
+<!-- #region  alert -->
+<div id="alertSuccess" data-notify="container" class="col-11 col-md-4 alert alert-success alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
+    <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 50%; margin-top: -9px; z-index: 1033;">
+        <i class="material-icons">close</i>
+    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Sale</b> <br> Sale Delete successfuly!</span>
+    <a href="" target="_blank" data-notify="url"></a>
+</div>
+
+
+
+
 <!-- #region Scripts -->
 @section Scripts {
 
@@ -100,15 +121,19 @@
 <!-- #endregion -->
 <!-- #region   javascript -->
 <script type="text/javascript">
+
+    $("#alertSuccess").hide();
+    $("#alertDanger").hide();
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
         $("#tblDetailList").on('click', "a[name='btnDel']", function () {
 
             var uId = $.trim($(this).closest('tr').find("td:eq(1)").text());
             $.confirm({
-                theme: 'modern',//material modern
+
+                theme: 'modern',
                 title: 'DELETE!',
-                content: 'Are you sure you want to delete Purchased Crop?',
+                content: 'Are you sure you want to delete?',
                 type: 'green',
                 typeAnimated: true,
                 buttons:
@@ -117,37 +142,32 @@
                     {
                         text: 'No',
                         btnClass: 'btn-green',
-                    }, warning:
+                    },
+                    warning:
                     {
                         text: 'Yes',
                         btnClass: 'btn-blue',
                         action: function () {
 
                             $.ajax({
+
                                 type: "post",
-                                url: "/Purchase/DeletePurchaseCrop",
-                                data: { purchCropId: uId },
+                                url: "/Sale/DeleteSaleCrop",
+                                data: { saleCropId: uId },
                                 success: function (data) {
+                                    console.log(data);
 
-                                    if (data == 1) {
-                                        location.reload();
-                                    }
-                                    else {
-                                        alert("Purchased Crop Delete faild");
-                                    }
-
-
+                                    $('#alertSuccess').show();
+                                    setTimeout(function () {
+                                        window.location.href = '/Sale/Index';
+                                    }, 2000);
                                 }
                             });
                         }
                     }
                 }
             });
-
-
         });
-
-
     });
 </script>
 <!-- #endregion -->

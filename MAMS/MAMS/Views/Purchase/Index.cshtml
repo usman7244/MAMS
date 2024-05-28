@@ -55,10 +55,10 @@
                                 arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
                                 User
                             </th>
-                            <th width="10%" tabindex="0" class="bold"
+@*                             <th width="10%" tabindex="0" class="bold"
                                 arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
                                 Status
-                            </th>
+                            </th> *@
                             <th width="10%" tabindex="0" class="sorting bold" aria-controls="tblDetailList" rowspan="1" colspan="1"> Actions&nbsp;&nbsp;&nbsp;</th>
                         </tr>
                     </thead>
@@ -80,20 +80,22 @@
                                 <td width="13%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.TotalAmountwithExp</td>
                                 <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.CreatedDate.ToString("dd/M/yyyy")</td>
                                 <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.UserName</td>
-                                @if (item.Status.ToLower() == "purchase")
+@*                                 @if (item.Status.ToLower() == "purchase")
                                 {
                                     <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" style="color: red;" rowspan="1" colspan="1"> &nbsp;@item.Status</td>
                                 }
                                 else
                                 {
                                     <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" style="color: forestgreen;" rowspan="1" colspan="1"> &nbsp;@item.Status</td>
-                                }
+                                } *@
 
                                 <td width="10%" tabindex="0" class="sorting" aria-controls="datatable_orders" rowspan="1" colspan="1">
                                     @if (item.Status.ToLower() == "purchase")
                                     {
                                         <a asp-action="PurchaseCropEdit" asp-controller="Purchase" asp-route-Id="@item.UID" class=" btn btn-circle btn-sm"><i class="fa fa-edit" data-toggle="tooltip" data-placement="bottom" title="Edit Purchase Crop"></i></a>
-                                        <a asp-action="SaleCrop" asp-controller="Sale" asp-route-Id="@item.UID" class=" btn btn-circle btn-sm"><i class="fa fa-mail-forward" data-toggle="tooltip" data-placement="bottom" title="Clieck here to Sale ?"></i></a>
+                                        <a asp-action="StockSale" asp-controller="Sale" asp-route-ID="@item.UID" class="btn btn-circle btn-sm" id="btnStockSale">
+                                            <i class="fa fa-mail-forward" data-toggle="tooltip" title="Click here to Sale"></i>
+                                        </a>
                                     }
 
                                     <a class="btn btn-circle btn-sm" name="btnDel" id="@item.UID"><i class="fa fa-trash" data-toggle="tooltip" data-placement="bottom" title="Delete Purchase Crop"></i></a>
@@ -108,6 +110,14 @@
     </div>
 </div>
 <!-- #endregion -->
+<!-- #region  alert -->
+<div id="alertSuccess" data-notify="container" class="col-11 col-md-4 alert alert-success alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
+    <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 50%; margin-top: -9px; z-index: 1033;">
+        <i class="material-icons">close</i>
+    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Purchase</b> <br>Purchase Delete successfuly!</span>
+    <a href="" target="_blank" data-notify="url"></a>
+</div>
+
 <!-- #region Scripts -->
 @section Scripts {
 
@@ -117,15 +127,18 @@
 <!-- #endregion -->
 <!-- #region   javascript -->
 <script type="text/javascript">
+    $("#alertSuccess").hide();
+    $("#alertDanger").hide();
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
         $("#tblDetailList").on('click', "a[name='btnDel']", function () {
 
             var uId = $.trim($(this).closest('tr').find("td:eq(1)").text());
             $.confirm({
-                theme: 'modern',//material modern
+
+                theme: 'modern',
                 title: 'DELETE!',
-                content: 'Are you sure you want to delete Purchased Crop?',
+                content: 'Are you sure you want to delete?',
                 type: 'green',
                 typeAnimated: true,
                 buttons:
@@ -134,38 +147,83 @@
                     {
                         text: 'No',
                         btnClass: 'btn-green',
-                    }, warning:
+                    },
+                    warning:
                     {
                         text: 'Yes',
                         btnClass: 'btn-blue',
                         action: function () {
 
                             $.ajax({
+
                                 type: "post",
                                 url: "/Purchase/DeletePurchaseCrop",
                                 data: { purchCropId: uId },
                                 success: function (data) {
+                                    $("#alertSuccess").show();
+                                    console.log(data);
 
-                                    if (data == 1) {
-                                        location.reload();
-                                    }
-                                    else {
-                                        alert("Purchased Crop Delete faild");
-                                    }
-
-
+                                  
+                                    setTimeout(function () {
+                                        window.location.href = '/Purchase/Index';
+                                    }, 2000);
                                 }
                             });
                         }
                     }
                 }
             });
-
-
         });
-
-
     });
+
+
+    //Sale button
+
+    $(document).ready(function () {
+      
+        $('[data-toggle="tooltip"]').tooltip();
+
+      
+        $("#tblDetailList").on('click', "#btnStockSale", function (e) {
+            e.preventDefault();
+
+            var uId = $.trim($(this).closest('tr').find("td:eq(1)").text());
+
+            $.confirm({
+                theme: 'modern',
+                title: 'SALE!',
+                content: 'Are you sure you want to proceed with the sale?',
+                type: 'green',
+                typeAnimated: true,
+                buttons: {
+                    cancel: {
+                        text: 'No',
+                        btnClass: 'btn-green',
+                    },
+                    confirm: {
+                        text: 'Yes',
+                        btnClass: 'btn-blue',
+                        action: function () {
+                            debugger;
+                            $.ajax({
+                                type: "POST",
+                                url: "",
+                                data: { Id: uId },
+                                success: function (data) {
+                                    console.log(data);
+                                    setTimeout(function () {
+                                        window.location.href = '/Sale/StockSale/' + uId;
+                                    }, 2000);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        });
+    });
+
+
 </script>
 <!-- #endregion -->
 <!-- #region Style -->

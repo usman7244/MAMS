@@ -13,6 +13,7 @@ namespace BOL
         private Sale _sale;
         private List<Sale> _sales;
         private SaleDAL _objSaleDAL;
+
         public SaleBOL()
         {
             _sale = new Sale();
@@ -40,12 +41,41 @@ namespace BOL
             _sale = await _objSaleDAL.GetById(sale, connectionFactory);
             return _sale;
         }
-        public async Task<List<Sale>> GetAll(Sale sale, ISqlConnectionFactory connectionFactory)
+
+        public async Task<List<Sale>> GetAllSaleCrop(Sale sale, ISqlConnectionFactory sqlConnectionFactory)
         {
-            _sales=new List<Sale>();
-            _sales = await _objSaleDAL.GetAll(sale, connectionFactory);
-            return _sales;
+            return await _objSaleDAL.GetAllSaleCrop(sale, sqlConnectionFactory);
         }
-        
+        public async Task<string> SaleCropAdd(Sale sale, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        {
+            var result = await _objSaleDAL.SaleCropAdd(sale, expenses, connectionFactory);
+            return result;
+        }
+        public async Task<int> DeleteSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
+        {
+            var result = await _objSaleDAL.DeleteSaleCrop(sale, connectionFactory);
+            return result;
+        }
+        public async Task<Sale> GetSaleCropById(int Id, ISqlConnectionFactory connectionFactory)
+        {
+            var resul = await _objSaleDAL.GetSaleCropById(Id, connectionFactory);
+            return resul;
+        }
+        public async Task<List<Expense>> GetSaleExpenseById(int Id, ISqlConnectionFactory connectionFactory)
+        {
+            var re = await _objSaleDAL.GetSaleExpenseById(Id, connectionFactory);
+            return re;
+        }
+        public async Task<int> UpdateSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
+        {
+            var res = await _objSaleDAL.UpdateSaleCrop(sale, connectionFactory);
+            return res;
+        }
+        public async Task<string> StockSaleAdd(Sale model, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        {
+            var result = await _objSaleDAL.StockSaleAdd(model, expenses, connectionFactory);
+            return result;
+        }
+
     }
 }

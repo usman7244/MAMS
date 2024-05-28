@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MAMS_Models.Model
 {
-    public class Bag
+   public class CropAndBag
     {
         public int UID { get; set; }
         public string Name { get; set; }
@@ -14,5 +14,8 @@ namespace MAMS_Models.Model
         public Guid ModifiedBy { get; set; }
         public DateTimeOffset ModifiedDate { get; set; }
         public Guid BranchId { get; set; }
+        public string UserName { get; set; }
+        public string Type { get; set; }
+
     }
 }

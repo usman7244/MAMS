@@ -5,146 +5,111 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using DAL.Sql;
+using System.Threading.Tasks;
+using Dapper;
+using System.Linq;
 
 namespace DAL
 {
    public class CropDAL
     {
         private ConnectionLayer _connection;
-        private List<Crop> _croplist;
-        private Crop _crop;
+        private List<CropAndBag> _croplist;
+        private CropAndBag _crop;
 
         public CropDAL()
         {
             _connection = new ConnectionLayer();
-            _croplist = new List<Crop>();
-            _crop = new Crop();
+            _croplist = new List<CropAndBag>();
+            _crop = new CropAndBag();
         }
-        public List<Crop> GetCropInfo(Crop crop )
-        {
-            _croplist = new List<Crop>();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.Parameters.AddWithValue("@BranchId", crop.BranchId);
-                    cmd.Parameters.AddWithValue("@CreatedBy", crop.CreatedBy);
 
-                    cmd.CommandText = "spGetAllCrop";
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _crop = new Crop();
-                            _crop.UID = Convert.ToInt32(reader["UID"]);
-                            _crop.Name = reader["Name"].ToString();
-                            _crop.CreatedDate = Convert.ToDateTime(reader["CreatedDate"].ToString());
-                            _crop.UserName = reader["CreatedBy"].ToString();
-                            _croplist.Add(_crop);
-                        }
-                    }
-                    reader.Close();
-                }
+        public async Task<List<CropAndBag>> GetCropInfo(CropAndBag crop, ISqlConnectionFactory connectionFactory)
+        {
+          
+            var cropList = new List<CropAndBag>();
+
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+
+                string SQLQuery = "EXEC [dbo].[spGetAllCrop] @BranchId, @CreatedBy, @Type";
+
+                var crops = await connection.QueryAsync<CropAndBag>(SQLQuery, new { BranchId = crop.BranchId, CreatedBy = crop.CreatedBy, Type = crop.Type });
+
+                cropList = crops.ToList();
             }
-            _connection.ConnectionClose();
-            return _croplist;
+            catch (Exception ex)
+            {
+                // Log the exception (assuming you have a logging mechanism in place)
+                // For example: _logger.LogError(ex, "An error occurred while getting crop info.");
+                Console.WriteLine($"An error occurred: {ex.Message}");
+
+                // Optionally, you can rethrow the exception or handle it as needed
+                throw;
+            }
+
+            return cropList;
         }
-        public int CropAdd(Crop crop)
+
+
+        public async Task<int> CropAdd(CropAndBag crop, ISqlConnectionFactory connectionFactory)
         {
             int effectedRows = 0;
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spCreateCrop";
-                    cmd.Parameters.AddWithValue("@Name", crop.Name);
-                    cmd.Parameters.AddWithValue("@CreatedBy", crop.CreatedBy);
-                    cmd.Parameters.AddWithValue("@BranchId", crop.BranchId);
-                    effectedRows = cmd.ExecuteNonQuery();
-                }
-            }
-            _connection.ConnectionClose();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spCreateCrop] @Name, @CreatedBy, @BranchId,@Type";
+
+            effectedRows = await connection.ExecuteAsync(SQLQuery, new { Name = crop.Name, CreatedBy = crop.CreatedBy, BranchId = crop.BranchId,Type=crop.Type });
+
             return effectedRows;
         }
-        public Crop GetSpecificCropInfo(int Id)
+
+        public async Task<CropAndBag> GetSpecificCropInfo(int Id, ISqlConnectionFactory connectionFactory)
         {
-            _crop = new Crop();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetCrop";
-                    cmd.Parameters.AddWithValue("@UID", Id);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _crop.UID = Convert.ToInt32(reader["UID"]);
-                            _crop.Name = reader["Name"].ToString();                           
-                            _crop.CreatedBy = reader["CreatedBy"].ToString().ToGuid();                           
-                            _crop.CreatedDate =Convert.ToDateTime( reader["CreatedDate"].ToString());                           
-                        }
-                    }
-                    reader.Close();
-                }
-            }
-            _connection.ConnectionClose();
-            return _crop;
+            CropAndBag crop = null;
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetCrop] @UID";
+
+            crop = await connection.QueryFirstOrDefaultAsync<CropAndBag>(SQLQuery, new { UID = Id });
+
+            return crop;
         }
-        public int EditCrop(Crop crop)
+
+
+        public async Task<int> EditCrop(CropAndBag crop, ISqlConnectionFactory connectionFactory)
         {
             int effectedRows = 0;
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spUpdateCrop";
-                    cmd.Parameters.AddWithValue("@UID", crop.UID);
-                    cmd.Parameters.AddWithValue("@Name", crop.Name);
-                    cmd.Parameters.AddWithValue("@ModifiedBy", crop.ModifiedBy);
-                    effectedRows = cmd.ExecuteNonQuery();
-                }
-            }
-            _connection.ConnectionClose();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spUpdateCrop] @UID, @Name, @ModifiedBy,@Type";
+
+            effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = crop.UID, Name = crop.Name, ModifiedBy = crop.ModifiedBy, Type = crop.Type });
+
             return effectedRows;
         }
-        public int DeleteCrop(Crop crop)
+
+
+      
+        public async Task<int> DeleteCrop(CropAndBag crop, ISqlConnectionFactory connectionFactory)
         {
             int effectedRows = 0;
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spDeleteCrop";
-                    cmd.Parameters.AddWithValue("@UID", crop.UID);
-                    cmd.Parameters.AddWithValue("@ModifiedBy", crop.ModifiedBy);
-                    effectedRows = cmd.ExecuteNonQuery();
-                }
-            }
-            _connection.ConnectionClose();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spDeleteCrop] @UID, @ModifiedBy";
+
+            effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = crop.UID, ModifiedBy = crop.ModifiedBy });
+
             return effectedRows;
         }
+
+
+
     }
 }

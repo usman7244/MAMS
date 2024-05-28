@@ -7,16 +7,16 @@ namespace MAMS_Models.Model
     public class Sale
     {
         public int UID { get; set; }
-        public string CustomerType { get; set; }
+        public string FK_CustomerType { get; set; }
         public string CustomerName { get; set; } 
-        public Guid Fk_CustomerId { get; set; }
+        public Guid Fk_Customer { get; set; }
         public int Fk_Crop { get; set; }
         public string CropName { get; set; }
         public int WeightInMaun { get; set; }
         public Decimal WeightInkg { get; set; }
         public Decimal TotalCropWeight { get; set; }
         public int PriceInMaun { get; set; }
-        public Decimal PriceInKg { get; set; }
+        public int PriceInKg { get; set; }
         public int TotalCropPrice { get; set; }
         public int TotalExp { get; set; }
         public int TotalAmountwithExp { get; set; }
@@ -30,5 +30,6 @@ namespace MAMS_Models.Model
         public string UserName { get; set; }
         public int PurchasePrice { get; set; }
         public int PurchaseExp { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -1,27 +1,47 @@
-﻿using MAMS_Models.Model;
+﻿using BOL;
+using DAL.Sql;
+using MAMS_Models.Extenions;
+using MAMS_Models.Model;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static MAMS_Models.Enums.EnumTypes;
 
 namespace MAMS.Controllers
 {
     public class CropController : Controller
     {
+        private Sale _sale;
+        private List<Sale> _saleList;
+        private SaleBOL _objSALEBOL;
+
+        private readonly ISqlConnectionFactory _connectionFactory;
+    
         private BOL.CropBOL _objCropBOL;
-        private Crop _crop;
-        public CropController()
+        private CropAndBag _crop;
+        public CropController(ISqlConnectionFactory connectionFactory)
         {
             _objCropBOL = new BOL.CropBOL();
-            _crop= new Crop();
+            _crop= new CropAndBag();
+
+            _objSALEBOL = new SaleBOL();
+            _sale = new Sale();
+            _saleList = new List<Sale>();
+            _connectionFactory = connectionFactory;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            _crop = new Crop();
+            _crop = new CropAndBag();
             _crop.BranchId = Guid.Empty;
             _crop.CreatedBy = Guid.Empty;
-            List<Crop> crops = _objCropBOL.GetCropInfo(_crop);
+            _crop.Type = string.Empty;
+            List<CropAndBag> crops =await _objCropBOL.GetCropInfo(_crop, _connectionFactory);
+        
+
+
             return View(crops);
         }
 
@@ -30,49 +50,52 @@ namespace MAMS.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult CropAdd(Crop crop)
+        public async Task<IActionResult> CropAdd(CropAndBag crop)
         {
             int affectedRows = 0;
             if (crop != null)
             {
-                affectedRows = _objCropBOL.CropAdd(crop);
+                affectedRows =await _objCropBOL.CropAdd(crop, _connectionFactory);
                 if (affectedRows > 0)
                 {
                     ModelState.Clear();
                 }
             }
             ViewBag.CropAddStatus = affectedRows;
-            return View();
+            return RedirectToAction("Index");
         }
-        public IActionResult EditCrop(int Id)
+        public async Task<IActionResult> EditCrop(int Id)
         {
-            var crop = _objCropBOL.GetSpecificCropInfo(Id);
+            var crop =await _objCropBOL.GetSpecificCropInfo(Id, _connectionFactory);
 
             return View(crop);
         }
         [HttpPost]
-        public IActionResult EditCrop(Crop crop)
+        public async Task<IActionResult> EditCrop(CropAndBag crop)
         {
+
             int affectedRows = 0;
             if (crop != null)
             {
-                affectedRows = _objCropBOL.EditCrop(crop);
+                affectedRows = await _objCropBOL.EditCrop(crop, _connectionFactory);
                 if (affectedRows > 0)
                 {
+                  
                     return RedirectToAction("Index");
                 }
             }
             ViewBag.CropAddStatus = affectedRows;
             return View();
         }
+
         [HttpPost]
-        public IActionResult DeleteCrop(int cropId)
+        public async Task<IActionResult> DeleteCrop(int cropId)
         {
-            _crop = new Crop();
+            _crop = new CropAndBag();
             _crop.ModifiedBy = Guid.Empty;
             _crop.UID = cropId;
 
-            int affectedRows = _objCropBOL.DeleteCrop(_crop);
+            var  affectedRows =await _objCropBOL.DeleteCrop(_crop, _connectionFactory);
             return Ok(affectedRows);
         }
     }

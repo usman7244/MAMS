@@ -1,7 +1,9 @@
-﻿using MAMS_Models.Model;
+﻿using DAL.Sql;
+using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BOL
 {
@@ -13,12 +15,12 @@ namespace BOL
             _objCustomerDAL = new DAL.Customer_DAL();
 
         }
-        public int InsertCustomerInfo(Customer customer)
+        public async Task<int> InsertCustomerInfo(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
         {
             int affectedRows = 0;
             if (customer != null)
             {
-                affectedRows = _objCustomerDAL.InsertCustomerInfo(customer);
+                affectedRows =await _objCustomerDAL.InsertCustomerInfo(customer, sqlConnectionFactory);
                 return affectedRows;
             }
             else
@@ -26,20 +28,20 @@ namespace BOL
                 return affectedRows;
             }
         }
-        public List<Customer> GetCustomerInfo(Customer customer)
+        public async Task<List<Customer>> GetCustomerInfo(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objCustomerDAL.GetCustomerInfo(customer);
+            return await _objCustomerDAL.GetCustomerInfo(customer, sqlConnectionFactory);
         }
-        public Customer GetSpecificCustomerInfo(Guid Id)
+        public async Task<Customer> GetSpecificCustomerInfo(Guid Id, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objCustomerDAL.GetSpecificCustomerInfo(Id);
+            return await _objCustomerDAL.GetSpecificCustomerInfo(Id, sqlConnectionFactory);
         }
-        public int CustomerEdit(Customer customer)
+        public async Task<int> CustomerEdit(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
         {
             int affectedRows = 0;
             if (customer != null)
             {
-                affectedRows = _objCustomerDAL.CustomerEdit(customer);
+                affectedRows =await _objCustomerDAL.CustomerEdit(customer, sqlConnectionFactory);
                 return affectedRows;
             }
             else
@@ -47,9 +49,9 @@ namespace BOL
                 return affectedRows;
             }
         }
-        public int DeleteCustomer(Customer customer)
+        public async Task<int> DeleteCustomer(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objCustomerDAL.DeleteCustomer(customer);
+            return await _objCustomerDAL.DeleteCustomer(customer, sqlConnectionFactory);
         }
     }
 }

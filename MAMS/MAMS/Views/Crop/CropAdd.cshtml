@@ -1,4 +1,4 @@
-﻿@model MAMS_Models.Model.Crop
+﻿@model MAMS_Models.Model.CropAndBag
 @{ var status = ViewBag.CropAddStatus; }
 @{
     ViewData["Title"] = "Add Crop";
@@ -14,6 +14,7 @@
     </div>
     <div class="card-body">
         <form enctype="multipart/form-data" asp-action="CropAdd" asp-controller="Crop" method="post">
+            <div class="card-body">
             <div class="row">
                 <div class="col-md-4 col-sm-4">
                     <div class="form-group">
@@ -21,6 +22,18 @@
                         <input type="text" asp-for="Name" class="form-control form-control-inline" required>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group" required>
+
+                        <select class="form-select form-control" required id="slctType" asp-for="Type">
+                            <option value="">Select Type</option>
+                            <option value="Crop">Crop</option>
+                            <option value="Bag">Bag</option>
+                        </select>
+                    </div>
+                </div>
+
+
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group">
                         <div class="checkbox margin-top-30 ml-10">
@@ -42,6 +55,7 @@
                     </button>
                     <div class="clearfix"></div>
                 </div>
+            </div>
             </div>
         </form>
     </div>
@@ -121,6 +135,19 @@
 
     i.fa.fa-arrow-left {
         font-size: 15px !important;
+    }
+
+    select {
+        border: 0px !important;
+    }
+
+    label {
+        font-size: 16px;
+    }
+
+    option {
+        color: #fff;
+        background-color: #363945;
     }
 </style>
 <!-- #endregion -->

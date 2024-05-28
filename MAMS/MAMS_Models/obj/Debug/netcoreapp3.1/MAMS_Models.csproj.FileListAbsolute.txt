@@ -26,3 +26,17 @@ D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Mode
 D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.dll
 D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.pdb
 D:\Projects\MAMS_WEB\MAMS_WEB\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.genruntimeconfig.cache
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Models.exe
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Models.deps.json
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Models.runtimeconfig.json
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Models.runtimeconfig.dev.json
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Models.dll
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\netcoreapp3.1\MAMS_Models.pdb
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.AssemblyInfoInputs.cache
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.AssemblyInfo.cs
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.csproj.CoreCompileInputs.cache
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.sourcelink.json
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.dll
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.pdb
+C:\Users\zimal\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\netcoreapp3.1\MAMS_Models.genruntimeconfig.cache

@@ -12,44 +12,51 @@ namespace BOL
     public class PurchaseBOL
     {
         private PurchaseDAL _objPurchaseDAL;
-        private List<Bag> _bags;
+        private List<CropAndBag> _bags;
         public PurchaseBOL()
         {
             _objPurchaseDAL = new PurchaseDAL();
-            _bags = new List<Bag>();
+            _bags = new List<CropAndBag>();
         }
-        public List<CustomerType> GetCustomerType(string cusType, Guid branchId, Guid createdBy)
+        public async Task<List<CustomerType>> GetCustomerType(string cusType, Guid branchId, Guid createdBy, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objPurchaseDAL.GetCustomerType(cusType, branchId, createdBy);
+            return await _objPurchaseDAL.GetCustomerType(cusType, branchId, createdBy, sqlConnectionFactory);
         }
-        public List<Bag> GetBags(Guid branchId, Guid createdBy)
+        public async Task<List<CropAndBag>> GetBags(Guid branchId, Guid createdBy,string Type, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objPurchaseDAL.GetBags(branchId, createdBy);
+            return await _objPurchaseDAL.GetBags(branchId, createdBy,Type, sqlConnectionFactory);
         }
-        public CashHistory GetCashHistory(Guid branchId, Guid createdBy)
+        public async Task<CashHistory> GetCashHistory(Guid branchId, Guid createdBy, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objPurchaseDAL.GetCashHistory(branchId, createdBy);
+            return await _objPurchaseDAL.GetCashHistory(branchId, createdBy, sqlConnectionFactory);
         }
-        public List<Purchase> GetAllPurchasedCrop(Purchase purchase)
+        public async Task<List<Purchase>> GetAllPurchasedCrop(Purchase purchase, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objPurchaseDAL.GetAllPurchasedCrop(purchase);
+            return await _objPurchaseDAL.GetAllPurchasedCrop(purchase, sqlConnectionFactory);
         }
-        public Purchase GetPurchasedCropById(int purchCropId)
+
+
+        public async Task<Purchase> GetPurchasedCropById(int purchCropId, ISqlConnectionFactory connectionFactory)
         {
-            return _objPurchaseDAL.GetPurchasedCropById(purchCropId);
+           var resul =await _objPurchaseDAL.GetPurchasedCropById(purchCropId, connectionFactory);
+            return resul;
         }
-        public List<Expense> GetPurchasedExpenseById(int purchCropId)
+        public async Task<List<Expense>> GetPurchasedExpenseById(int purchCropId, ISqlConnectionFactory connectionFactory)
         {
-            return _objPurchaseDAL.GetPurchasedExpenseById(purchCropId);
+            var re=await _objPurchaseDAL.GetPurchasedExpenseById(purchCropId, connectionFactory);
+            return re;
         }
-        public string AddPurchaseCrop(Purchase purchase, List<Expense> expenses)
+        public async Task<string> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
-            return _objPurchaseDAL.AddPurchaseCrop(purchase, expenses);
+            var result=await _objPurchaseDAL.AddPurchaseCrop(purchase, expenses, connectionFactory);
+            return result;
         }
-        public int DeletePurchaseCrop(Purchase purchase)
+        public async Task<int> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
-            return _objPurchaseDAL.DeletePurchaseCrop(purchase);
+            var result = await _objPurchaseDAL.DeletePurchaseCrop(purchase, connectionFactory);
+            return result;
         }
+
 
         public async Task<int> UpdatePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {

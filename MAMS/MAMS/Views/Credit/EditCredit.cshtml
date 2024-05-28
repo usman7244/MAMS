@@ -1,0 +1,366 @@
+﻿@model MAMS_Models.Model.Credit
+@{
+    var status = ViewBag.CreditEditStatus;
+    List<MAMS_Models.Model.CustomerType> CustomersType = new List<MAMS_Models.Model.CustomerType>();
+
+    ViewData["Title"] = "Credit Edit";
+    List<MAMS_Models.Model.Credit> Credit = new List<MAMS_Models.Model.Credit>();
+
+    CustomersType = ViewBag.CustomersTypeList;
+    IEnumerable<SelectListItem> CustomersTypeList = CustomersType.Select(x => new SelectListItem() { Text = x.Name, Value = x.UID.ToString() });
+
+
+}
+
+
+<script src="~/js/jquery-191-min.js"></script>
+<form id="creditform"  asp-controller="Credit" asp-action="UpdateCredit" method="PUT" >
+    <!-- #region Purchase detail form -->
+    <div class="card">
+        <div class="card-header card-header-primary">
+            <h5 class="card-title"><i class="fab fa-accusoft"></i> Credit Edit</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4" style="display:none">
+                    <div class="form-group">
+                        <label class="bmd-label-floating"> UID</label>
+                        <input type="number" class="form-control" min="0" id="idUID" value="@Model.UID" asp-for="@Model.UID">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @*<label class="bmd-label-floating"> Customer Type</label>*@
+                        <select class="form-select form-control" required id="slctType" onchange="getCustType(this);" asp-for="@Model.CustomerType">
+                            <option value="">Select Customer Type</option>
+                            <option value="Merchant">Merchant</option>
+                            <option value="Farmer">Farmer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @*<label class="bmd-label-floating"> Customer Name</label>*@
+                        <select class="form-select form-control" required id="slctCusName"  asp-items="@CustomersTypeList" asp-for="@Model.FKCustomer">
+                            <option value="">Select Customer Name</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="bmd-label-floating">Total Price</label>
+                        <input type="number" class="form-control" min="0" id="TotalPrc" min="0" max="2147483647" asp-for="@Model.TotalCash">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" style="display:none">
+                        <label class="bmd-label-floating">New Total Price</label>
+                        <input type="number" class="form-control" min="0" id="Diffprice" min="0" max="2147483647" asp-for="@Model.DiffCash">
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Complete Detail</label>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="5" id="Detail" asp-for="@Model.Detail"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" required>
+                        <select class="form-select form-control" required id="slctstatus" asp-for="@Model.Status">
+                            <option value="Pending" selected>Payment Pending</option>
+                            <option value="Recevied">Payment Recevied</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- #endregion -->
+    <!-- #region Expense form -->
+    <!-- #endregion -->
+    <!-- #region Submitt button of purchase -->
+    <div class="row float-right">
+        <div class="form-group">
+            <a type="button" class="btn btn-success btn-round " id="btnBack" asp-controller="Credit" asp-action="Index">
+                @*<i class="fa fa-arrow-left"></i>*@ Back
+            </a>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-round" id="btnSave">Save</button>
+            <div class="clearfix"></div>
+        </div>
+
+    </div>
+    <!-- #endregion -->
+</form>
+
+<!-- #region  alert -->
+<div id="alertSuccess" data-notify="container" class="col-11 col-md-4 alert alert-success alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
+    <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 50%; margin-top: -9px; z-index: 1033;">
+        <i class="material-icons">close</i>
+    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Crop</b> <br>Credit updated successfuly!</span>
+    <a href="#" target="_blank" data-notify="url"></a>
+</div>
+<div id="alertDanger" data-notify="container" class="col-11 col-md-4 alert alert-danger alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
+    <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 50%; margin-top: -9px; z-index: 1033;">
+        <i class="material-icons">close</i>
+    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Crop</b> <br>Credit update not successfuly!</span>
+    <a href="#" target="_blank" data-notify="url"></a>
+</div>
+<!-- #endregion -->
+<!-- #region Loader -->
+<div class="overlay">
+    <div id="loading-img"></div>
+</div>
+<!-- #endregion -->
+<!-- #region Javascript -->
+@section Scripts {
+
+    <script src="~/js/sweetalert2.js"></script>
+    <script src="~/js/bootstrap-notify.js"></script>
+}
+<script type="text/javascript">
+    $("#alertSuccess").hide();
+    $("#alertDanger").hide();
+    var itemDetailList = [];
+    function disableDropdowns() {
+        document.getElementById("slctType").disabled = true;
+        document.getElementById("slctCusName").disabled = true;
+    }
+
+    window.onload = function () {
+        disableDropdowns();
+    };
+
+
+    function getCustType(type) {
+
+        var type = type.value;
+        if (type != "") {
+            $.ajax({
+                type: "POST",
+                url: "/Purchase/GetCustomerType",
+                data: {
+                    'cusType': type
+                },
+                success: function (data) {
+
+                    $('#slctCusName').empty();
+                    $('#slctCusName').append('<option value="">Select Customer Name</option> ');
+                    $.each(data.data.customers, function (i, e) {
+
+                        $('#slctCusName').append(new Option(e.name, e.uid));
+                    });
+
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    alert('Error: ' + textStatus + ' - ' + errorThrown);
+                }
+            });
+        }
+
+    }
+    $(document).ready(function () {
+
+        $(document).ready(function () {
+            $('#btnSave').click(function (e) {
+                e.preventDefault();
+
+                var formData = {
+                    'CustomerType': $('#slctType').val(),
+                     'FKCustomer': $('#slctName').val(),
+                    'TotalCash': $('#TotalPrc').val(),
+                    'Detail': $('#Detail').val(),
+                    'DiffCash': '@Model.DiffCash',
+                   
+                     'UID' :$('#idUID').val(),
+                    'status': $('#slctstatus').val(),
+                    
+                    'CreatedBy': 'YourCreatedByValue' 
+                };
+
+              
+                $.ajax({
+                    type: 'PUT',
+                    url: '/Credit/UpdateCredit',
+                    data: formData,
+                    success: function (data) {
+                       
+                        console.log(data);
+                      
+                        $('#alertSuccess').show(); 
+                        setTimeout(function () {
+                            window.location.href = '/Credit/Index'; 
+                        }, 2000);
+                    },
+                    error: function (xhr, status, error) {
+                        
+                        console.log(xhr.responseText);
+                        $('#alertDanger').show();
+                    }
+                });
+            });
+        });
+    });
+
+
+   
+
+
+    $('input[type=number]').on('mousewheel', function (e) {
+        $(e.target).blur();
+    });
+
+
+
+
+
+
+    function showLoader() {
+        $(".overlay").show();
+    }
+    function hideLoader() {
+        $(".overlay").hide();
+    }
+
+
+
+    debugger;
+    //Calculation
+
+    // var price = parseInt('@ViewBag.TotalPrice');
+
+    // var BeforeAndAfterPrice = parseInt(price) + parseInt(TotalPrc);
+    // $("#TotalPrc").val(parseInt(BeforeAndAfterPrice));
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<!-- #endregion -->
+<!-- #region   Style/CSS -->
+<style>
+    input#idPricePerKG {
+        padding-left: 0px;
+    }
+
+    input {
+        text-align: center;
+    }
+
+    .validation {
+        color: red;
+        margin-bottom: 20px;
+    }
+
+    input#idTotalExpense {
+        min-width: 60px;
+        max-width: 120px;
+        /*margin-left: 110px;*/
+        margin-top: -36px;
+    }
+
+    label#idLblPrcWithExp {
+        margin-top: 35px;
+    }
+
+    input#idPriceWithExpense {
+        /* padding-left: 130px;*/
+        font-weight: 600;
+    }
+
+    #idLblPriceWithExpense {
+        margin-top: -20px;
+    }
+
+    input#totallWeight {
+        /*  padding-left: 155px;*/
+        font-weight: 600;
+    }
+
+    input#totallPrice {
+        /*padding-left: 50px;*/
+        font-weight: 600;
+    }
+
+    i.fa.fa-plus {
+        font-size: 15px !important;
+    }
+
+    #btnSave {
+        background-color: #35663b;
+    }
+
+    #btnBack {
+        background-color: #35663b;
+    }
+
+    #btnAdd {
+        background-color: #2e9ead;
+        border-color: #0cb9cf;
+        color: white;
+    }
+
+    i.material-icons {
+        float: left;
+    }
+
+    input.form-control {
+        border: 0px;
+    }
+
+    label {
+        font-size: 16px;
+    }
+
+    option {
+        color: #fff;
+        background-color: #363945;
+    }
+
+    select {
+        border: 0px !important;
+    }
+
+    div#inputsRow {
+        margin-top: 1%;
+    }
+
+    input#totallWeight {
+        border-bottom: 1px dotted #d2d2d2;
+    }
+
+    #loading-img {
+        z-index: 100;
+        background: url("../images/ajax-loading.gif") center center no-repeat;
+        height: 100%;
+    }
+
+    .overlay {
+        background: #e9e9e9;
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0.5;
+    }
+</style>
+<!-- #endregion -->

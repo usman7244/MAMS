@@ -20,7 +20,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="bmd-label-floating">Phone</label>
-                                <input type="text" asp-for="Phone" class="form-control" required>
+                                <input type="text" asp-for="Phone" min="0" max="2147483647" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -32,7 +32,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="bmd-label-floating">CNIC</label>
-                                <input type="text" asp-for="CNIC" class="form-control">
+                                <input type="text" asp-for="CNIC" min="0" max="2147483647" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -100,9 +100,12 @@
     function getval(sel) {
         
         var CheckCust = $('#cusSlct').val();
-        if (CheckCust != null && CheckCust == "Merchant") {
+        if (CheckCust != null && CheckCust == "Merchant") 
+        {
             $("#idShopName").removeAttr("disabled");
-        } else {
+        }
+        else
+        {
             $("#idShopName").val("");
             $("#idShopName").prop("disabled", true);
         }

@@ -1,4 +1,4 @@
-﻿@model MAMS_Models.Model.Crop
+﻿@model MAMS_Models.Model.CropAndBag
 @{ var status = ViewBag.CropAddStatus; }
 @{
     ViewData["Title"] = "Edit Crop";
@@ -12,6 +12,7 @@
         <h5 class="card-title"><i class="fab fa-canadian-maple-leaf"></i> Update Crop</h5>
     </div>
     <div class="card-body">
+        
         <form enctype="multipart/form-data" asp-action="EditCrop" asp-controller="Crop" method="post">
             <input type="text" asp-for="UID" class="form-control" style="display:none">
             <div class="row">
@@ -19,6 +20,16 @@
                     <div class="form-group">
                         <label class="control-label bold">Name</label>
                         <input type="text" asp-for="Name" class="form-control form-control-inline" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" required>
+
+                        <select class="form-select form-control" required id="slctType" asp-for="@Model.Type">
+                            <option value="">Select Type</option>
+                            <option value="Crop">Crop</option>
+                            <option value="Bag">Bag</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -37,6 +48,8 @@
     </div>
 </div>
 <!-- #endregion -->
+
+
 
 <!-- #region Style -->
 <style>

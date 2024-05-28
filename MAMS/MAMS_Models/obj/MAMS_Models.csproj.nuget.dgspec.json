@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj": {}
+    "C:\\Users\\zimal\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj": {
+    "C:\\Users\\zimal\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj",
+        "projectUniqueName": "C:\\Users\\zimal\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj",
         "projectName": "MAMS_Models",
-        "projectPath": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\obj\\",
+        "projectPath": "C:\\Users\\zimal\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\MAMS_Models.csproj",
+        "packagesPath": "C:\\Users\\zimal\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\zimal\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS_Models\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\zimal\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -55,12 +50,22 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.1.32, 3.1.32]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
         }
       }
     }
