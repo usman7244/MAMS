@@ -1,0 +1,79 @@
+﻿@model MAMS_Models.Model.Crop
+@{ var status = ViewBag.CropAddStatus; }
+@{
+    ViewData["Title"] = "Edit Crop";
+}
+<script src="~/js/jquery-191-min.js"></script>
+
+<!-- #region Form Edit Crop -->
+
+<div class="card">
+    <div class="card-header card-header-primary">
+        <h5 class="card-title"><i class="fab fa-canadian-maple-leaf"></i> Update Crop</h5>
+    </div>
+    <div class="card-body">
+        <form enctype="multipart/form-data" asp-action="EditCrop" asp-controller="Crop" method="post">
+            <input type="text" asp-for="UID" class="form-control" style="display:none">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label bold">Name</label>
+                        <input type="text" asp-for="Name" class="form-control form-control-inline" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a type="button" id="btnBack" class="btn btn-success btn-round float-right" asp-controller="Crop" asp-action="Index">
+                        <i class="fa fa-arrow-left"></i> Back
+                    </a>
+                </div>
+                <div class="form-group">
+                    <button type="submit" id="idAdd" class="btn btn-success btn-round btn-success">
+                        <i class="fa fa-plus-circle"></i> Update
+                    </button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- #endregion -->
+
+<!-- #region Style -->
+<style>
+    input#Name {
+        border: 0px;
+    }
+
+    .form-group .bmd-label-static {
+        top: 0px;
+    }
+
+    .checkbox.margin-top-30.ml-10 {
+        margin-top: 20px;
+    }
+
+    input#Status {
+        width: 20px;
+        display: inline;
+    }
+
+    a#btnBack {
+        height: 30px;
+        line-height: 1;
+    }
+
+    button#idAdd {
+        height: 30px !important;
+        line-height: 1px !important;
+        padding-bottom: 11px;
+    }
+
+    i.fa.fa-plus-circle {
+        font-size: 16px !important;
+    }
+
+    i.fa.fa-arrow-left {
+        font-size: 15px !important;
+    }
+</style>
+<!-- #endregion -->

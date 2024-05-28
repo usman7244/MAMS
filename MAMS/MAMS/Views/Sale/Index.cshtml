@@ -1,0 +1,168 @@
+﻿@model List<MAMS_Models.Model.Sale>
+@{
+    ViewData["Title"] = "Sale";
+}
+
+<script src="~/js/ToolTip.js"></script>
+
+<!-- #region  Customer List  -->
+<div id="divDetails" class="col-md-12 col-sm-12">
+    <div class="card ">
+        <div class="card-header card-header-primary">
+            <h5 class="card-title">
+                <i class="fas fa-tasks"></i> Sale Crops
+            </h5>
+        </div>
+        <div class="card-body">
+            <a asp-action="PurchaseCrop" asp-controller="Purchase" class="btn btn-success btn-circle" style="margin-left: 10px;  font-size: 11px"> <i class="material-icons" style="vertical-align: middle;">person_add</i> Sale Crop</a>
+            <div class="table-responsive">
+                <table class="table" id="tblDetailList">
+                    <thead class=" text-primary">
+                        <tr>
+                            <th width="3%" tabindex="0" class="bold" aria-controls="tblDetailList" rowspan="1"
+                                colspan="1">
+                                # &nbsp;
+                            </th>
+                            <th width="12%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                Customer Name
+                            </th>
+                            <th width="8%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                Crop Name
+                            </th>
+                            <th width="7%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                Weight
+                            </th>
+                            <th width="7%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                Price
+                            </th>
+                            <th width="8%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                Expense
+                            </th>
+                            <th width="13%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                Price With Exp
+                            </th>
+                            <th width="10%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                Date
+                            </th>
+                            <th width="10%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                User
+                            </th>
+                            <th width="10%" tabindex="0" class="bold"
+                                arial-sort="descending" aria-controls="tblDetailList" rowspan="1" colspan="1">
+                                Status
+                            </th>
+                            <th width="10%" tabindex="0" class="sorting bold" aria-controls="tblDetailList" rowspan="1" colspan="1"> Actions&nbsp;&nbsp;&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int num = 1;
+                        }
+                        @foreach (var item in Model)
+                        {
+                            var v = item;
+                            <tr>
+                                <td width="3%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@num</td>
+                                <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1" style="display:none;"> &nbsp;@item.UID</td>
+                                <td width="22%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.CustomerName</td>
+                                <td width="8%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.CropName</td>
+                                <td width="7%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.TotalCropWeight</td>
+                                <td width="7%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.TotalCropPrice</td>
+                                <td width="8%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.TotalExp</td>
+                                <td width="13%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.TotalAmountwithExp</td>
+                                <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.CreatedDate.ToString("dd/M/yyyy")</td>
+                                <td width="10%" tabindex="0" class="sorting" aria-controls="tblDetailList" rowspan="1" colspan="1"> &nbsp;@item.UserName</td>
+                               
+                            </tr>
+                            num++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+<!-- #region Scripts -->
+@section Scripts {
+
+
+
+}
+<!-- #endregion -->
+<!-- #region   javascript -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $("#tblDetailList").on('click', "a[name='btnDel']", function () {
+
+            var uId = $.trim($(this).closest('tr').find("td:eq(1)").text());
+            $.confirm({
+                theme: 'modern',//material modern
+                title: 'DELETE!',
+                content: 'Are you sure you want to delete Purchased Crop?',
+                type: 'green',
+                typeAnimated: true,
+                buttons:
+                {
+                    tryAgain:
+                    {
+                        text: 'No',
+                        btnClass: 'btn-green',
+                    }, warning:
+                    {
+                        text: 'Yes',
+                        btnClass: 'btn-blue',
+                        action: function () {
+
+                            $.ajax({
+                                type: "post",
+                                url: "/Purchase/DeletePurchaseCrop",
+                                data: { purchCropId: uId },
+                                success: function (data) {
+
+                                    if (data == 1) {
+                                        location.reload();
+                                    }
+                                    else {
+                                        alert("Purchased Crop Delete faild");
+                                    }
+
+
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+
+
+        });
+
+
+    });
+</script>
+<!-- #endregion -->
+<!-- #region Style -->
+<style>
+    a.btn.btn-circle.btn-sm {
+        border: 0px;
+        background-color: rgb(204 204 204 / 15%);
+        font-size: 10px;
+        color: darkgreen;
+        padding: 5px
+    }
+
+    .table-responsive {
+        height: 600px;
+    }
+</style>
+<!-- #endregion -->

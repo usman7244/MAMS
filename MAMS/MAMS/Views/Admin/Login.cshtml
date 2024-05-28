@@ -1,0 +1,96 @@
+﻿
+@{
+    Layout = null;
+}
+
+<title>MAMS-User login</title>
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- Custom Theme files -->
+<link href="~/css/style.css" rel="stylesheet" type="text/css" media="all" />
+<link href="~/css/bootstrap-switch.min.css" rel="stylesheet" />
+<!-- //Custom Theme files -->
+<!-- js -->
+<script src="~/js/jquery-2.2.3.min.js"></script>
+<script src="~/js/bootstrap-switch.js"></script>
+<!-- //js -->
+<!-- web font -->
+<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'><!--web font-->
+<!-- //web font -->
+<!-- main -->
+<div class="main-agileits">
+    <h1>MAMS User login</h1> 
+    <div class="mainw3-agileinfo form">
+        <div id="login">
+            <form action="#" method="post">
+                <div class="field-wrap">
+                    <label> Enter Your Email<span class="req">*</span> </label>
+                    <input type="email" required autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"/>
+                </div>
+                <div class="field-wrap">
+                    <label> Your Password<span class="req">*</span> </label>
+                    <input type="password" required autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"/>
+                </div>
+                @*<p class="forgot"><a href="#">Forgot Password?</a></p>*@
+                <p class="forgot"><a href="#"><input class="RemMe" type="checkbox" id="switch-modal" data-size="mini" data-on-text="Yes" data-off-text="No" /> Remember Me</a></p>
+                <button class="button button-block">Log In</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+<!-- //main -->
+<!-- copyright -->
+<div class="w3copyright-agile">
+    <p>© 2021 User login Form. All rights reserved | Design by <a href="" target="_blank">Usman & Hafiz Ahmed</a></p>
+</div>
+<!-- //copyright --> 
+  
+<script>
+    $('.form').find('input, textarea').on('keyup blur focus', function (e) {
+        var $this = $(this),
+            label = $this.prev('label');
+
+        if (e.type === 'keyup') {
+            if ($this.val() === '') {
+                label.removeClass('active highlight');
+            } else {
+                label.addClass('active highlight');
+            }
+        } else if (e.type === 'blur') {
+            if ($this.val() === '') {
+                label.removeClass('active highlight');
+            } else {
+                label.removeClass('highlight');
+            }
+        } else if (e.type === 'focus') {
+
+            if ($this.val() === '') {
+                label.removeClass('highlight');
+            }
+            else if ($this.val() !== '') {
+                label.addClass('highlight');
+            }
+        }
+
+    });
+    $('#switch-modal').bootstrapSwitch();
+</script>
+<style>
+    .bootstrap-switch .bootstrap-switch-handle-on {
+        height: auto !important;
+        background: #369697 !important;
+    }
+
+    .bootstrap-switch.bootstrap-switch-on .bootstrap-switch-label, .bootstrap-switch.bootstrap-switch-inverse.bootstrap-switch-off .bootstrap-switch-label {
+        height: auto !important;
+    }
+
+    .bootstrap-switch .bootstrap-switch-handle-off {
+        height: auto !important;
+        background: #369697 !important;
+    }
+
+    .bootstrap-switch.bootstrap-switch-off .bootstrap-switch-label, .bootstrap-switch.bootstrap-switch-inverse.bootstrap-switch-on .bootstrap-switch-label {
+        height: auto !important;
+    }
+</style>

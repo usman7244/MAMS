@@ -1,0 +1,301 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+} 
+<!-- #region Overall Profit Data -->
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="tim-typo">
+            <h4>
+                Yearly Profit
+            </h4>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-warning card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">content_copy</i>
+                </div>
+                <p class="card-category">Used Space</p>
+                <h3 class="card-title">
+                    49/50
+                    <small>GB</small>
+                </h3>
+            </div>
+            @*<div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons text-danger">warning</i>
+                        <a href="javascript:;">Get More Space...</a>
+                    </div>
+                </div>*@
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">store</i>
+                </div>
+                <p class="card-category">Revenue</p>
+                <h3 class="card-title">$34,245</h3>
+            </div>
+            @*<div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">date_range</i> Last 24 Hours
+                    </div>
+                </div>*@
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-danger card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">info_outline</i>
+                </div>
+                <p class="card-category">Fixed Issues</p>
+                <h3 class="card-title">75</h3>
+            </div>
+            @*<div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">local_offer</i> Tracked from Github
+                    </div>
+                </div>*@
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-info card-header-icon">
+                <div class="card-icon">
+                    <i class="fa fa-twitter"></i>
+                </div>
+                <p class="card-category">Followers</p>
+                <h3 class="card-title">+245</h3>
+            </div>
+            @*<div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">update</i> Just Updated
+                    </div>
+                </div>*@
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+<!-- #region Monthly base profit  -->
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="tim-typo">
+            <h4>
+                Monthly Profit
+            </h4>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-warning card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">content_copy</i>
+                </div>
+                <p class="card-category">Used Space</p>
+                <h3 class="card-title">
+                    49/50
+                    <small>GB</small>
+                </h3>
+            </div>
+            @*<div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons text-danger">warning</i>
+                        <a href="javascript:;">Get More Space...</a>
+                    </div>
+                </div>*@
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">store</i>
+                </div>
+                <p class="card-category">Revenue</p>
+                <h3 class="card-title">$34,245</h3>
+            </div>
+            @*<div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">date_range</i> Last 24 Hours
+                    </div>
+                </div>*@
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-danger card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">info_outline</i>
+                </div>
+                <p class="card-category">Fixed Issues</p>
+                <h3 class="card-title">75</h3>
+            </div>
+            @*<div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">local_offer</i> Tracked from Github
+                    </div>
+                </div>*@
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-info card-header-icon">
+                <div class="card-icon">
+                    <i class="fa fa-twitter"></i>
+                </div>
+                <p class="card-category">Followers</p>
+                <h3 class="card-title">+245</h3>
+            </div>
+            @*<div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">update</i> Just Updated
+                    </div>
+                </div>*@
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+<!-- #region  profit in graph --> 
+<div class="row" style=" margin-bottom: 10%;">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card ">
+            <div class="card-header card-header-primary" id="changecolor2">
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper"> 
+                        <ul class="nav nav-tabs" data-tabs="tabs">
+                            <li class="nav-item">
+                                <a class="nav-link @*active*@" data-toggle="tab">
+                                    <i class="material-icons">leaderboard</i> Profit Percent Graph
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Graphs" asp-action="UserSelectionGraph" target="_blank" >
+                                    <i class="material-icons">trending_up</i> User selection graph
+                                    <div class="ripple-container"></div>
+                                </a>                                
+                            </li>                           
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive" style="height:480px; overflow:hidden; ">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- BEGIN CHART PORTLET-->
+                            <div class="portlet light bordered">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-bar-chart font-green-haze"></i>
+                                    </div>
+                                    <div class="tools">
+                                        <a href="javascript:;" class="reload"> </a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div id="chartContainer" style="height: 480px; width: 100%;"></div>
+                                </div>
+                            </div>
+                            <!-- END CHART PORTLET-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+<!-- #region Links JavaScript Section -->
+@section Scripts {
+    <script src="~/js/canvas.min.js"></script>
+}
+<!-- #endregion -->
+<!-- #region JQuery Methods -->
+<script type="text/javascript">
+    window.onload = function () {
+        
+        @*var dataObj1 = JSON.parse('@Html.Raw(ViewBag.ShrinkDetailsPercent)');
+        var cars = [];
+        var carsb = [];
+        $.each(dataObj1, function (i, reservation) {
+            
+            cars.push({ "label": $.trim(reservation.Label), "y": reservation.value });
+        });
+        if (dataObj1.length <= 3) {
+            cars.push({ "label": " ", "y": 0.0 });
+            cars.push({ "label": " ", "y": 0.0 });
+            cars.push({ "label": " ", "y": 0.0 });
+        }*@
+        var cars = [];
+        cars.push({ "label": "1 Weak", "y": 8 });
+        cars.push({ "label": "2 Weak", "y": 7 });
+        cars.push({ "label": "3 Weak", "y": 12 });
+        cars.push({ "label": "4 Weak", "y": 3 });
+        cars.push({ "label": "1 Weak", "y": 8 });
+        cars.push({ "label": "2 Weak", "y": 7 });
+        cars.push({ "label": "3 Weak", "y": 12 });
+        cars.push({ "label": "4 Weak", "y": 3 });
+        var options = {
+            animationEnabled: true,
+            title: {
+                //text: "profit Percent",
+                text: "profit Percent by month",
+                fontSize: 25,
+            },
+            axisY: {
+                title: "Weekly (in %)",
+                suffix: "%"
+            },
+            axisX: {
+                interval: 1,
+                title: "Weeks",
+                //titleFontSize: 40
+            },
+            dataPointWidth: 60,
+            data: [{
+                type: "column",
+                yValueFormatString: "#,##0.0#" % "",
+                dataPoints: cars
+            }
+            ]
+        };
+        $("#chartContainer").CanvasJSChart(options);
+
+    } 
+</script>
+<!-- #endregion -->
+<!-- #region   Style/CSS -->
+<style>
+    div#changecolor2 {
+        padding: 8px;
+    }
+    a.canvasjs-chart-credit {
+        display: none;
+    } 
+    .portlet > .portlet-title > .caption > .caption-helper {
+        font-size: 16px !important;
+    } 
+   /* .card-icon {
+        height: 66px;
+        width: 71px; 
+        padding: 6px !important; 
+    } */
+    .card.card-stats {
+        margin-top: 0px !important;
+    }
+    
+     
+    ul.nav.nav-tabs {
+        border-bottom: 0px;
+    }
+</style>
+<!-- #endregion -->
