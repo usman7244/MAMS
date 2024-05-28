@@ -99,7 +99,7 @@ namespace MAMS.Controllers
 
             ViewBag.Crops = _crops;
             ViewBag.Bags = _bags;
-            ViewBag.CashHistory = _cashHistory.TotalCash == null ? "00" : _cashHistory.TotalCash;
+            ViewBag.CashHistory = _cashHistory?.TotalCash ?? "00";
             return View();
         }
         [HttpPost]

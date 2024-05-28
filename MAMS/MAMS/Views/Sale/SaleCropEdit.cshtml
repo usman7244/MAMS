@@ -701,7 +701,7 @@
                 FK_BagType: parseInt(bagType),
                 BagWeight: parseInt(bagWeight),
                 BagTotal: parseInt(totallBags),
-                DiffCash:@Model.DiffCash
+                DiffCash:'@Model.DiffCash'
 
             };
 
@@ -776,7 +776,7 @@
             $("#idPriceWithExpense").parent().next(".validation").remove();
 
             if (cashInHand < parseInt(priceWithExpense)) {
-                $("#idPriceWithExpense").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Total Cash is less then Purchase</div>");
+                $("#idPriceWithExpense").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Total Cash is less then Sale</div>");
             }
             if (totalCropWeight == "") {
                 $("#totallWeight").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter weight</div>");
