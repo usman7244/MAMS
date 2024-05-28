@@ -94,3 +94,6 @@ bld/
 /MAMS/MAMS_Models/obj/Debug/netcoreapp3.1/MAMS_Models.dll
 /MAMS/MAMS_Models/obj/Debug/netcoreapp3.1/MAMS_Models.pdb
 /MAMS/MAMS_Models/obj/Debug/netcoreapp3.1/MAMS_Models.sourcelink.json
+/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.csproj.FileListAbsolute.txt
+/MAMS/DAL/obj/Debug/netcoreapp3.1/DAL.csproj.FileListAbsolute.txt
+/MAMS/MAMS/obj/Debug/netcoreapp3.1/MAMS.csproj.FileListAbsolute.txt
