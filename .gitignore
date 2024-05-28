@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.AssemblyInfo.cs
+/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.AssemblyInfoInputs.cache
+/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.csproj.AssemblyReference.cache
