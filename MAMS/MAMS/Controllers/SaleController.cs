@@ -151,13 +151,13 @@ namespace MAMS.Controllers
 
 
             _cashHistory = await _objPurchaseBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
-
+         
 
             _crop.Type = EnumExtension.GetDisplayName(ExpenseType.Bag);
             _bags = await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy, _crop.Type, _connectionFactory);
             _sale = await _objSALEBOL.GetSaleCropById(Id, _connectionFactory);
             _expenseList = await _objSALEBOL.GetSaleExpenseById(Id, _connectionFactory);
-            
+            _sale.DiffCash = _sale.TotalCropPrice.ToString();
             _custTypeList = await _objCommonBOL.GetCustomerType(_sale.FK_CustomerType, _crop.BranchId, _crop.CreatedBy, _connectionFactory);
             ViewBag.Crops = _crops;
             ViewBag.Bags = _bags;

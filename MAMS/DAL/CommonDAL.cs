@@ -4,6 +4,7 @@ using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -60,24 +61,43 @@ namespace DAL
 
         public async Task<int> UpdateCashHistorybyProfit(CashHistory param, ISqlConnectionFactory connectionFactory)
         {
-            await using var connection = connectionFactory.CreateConnection();
-            var parameters = new DynamicParameters();
-            parameters.Add("@BranchId", param.BranchId, DbType.Guid);
-            parameters.Add("@CreatedBy", param.CreatedBy, DbType.Guid);
-            parameters.Add("@CashProfit", param.CashProfit, DbType.Decimal);
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+                var parameters = new DynamicParameters();
+                parameters.Add("@BranchId", param.BranchId, DbType.Guid);
+                parameters.Add("@CreatedBy", param.CreatedBy, DbType.Guid);
+                parameters.Add("@CashProfit", param.CashProfit, DbType.Decimal);
+                parameters.Add("@Details", param.Details, DbType.Decimal);
 
-            string sqlQuery = @"
-                EXEC [dbo].[spUpdateCashByProfit]
-                    @BranchId,
-                    @CreatedBy,
-                    @CashProfit
-            ";
+                string sqlQuery = @"
+                                        EXEC [dbo].[spUpdateCashByProfit]
+                                        @BranchId,
+                                        @CreatedBy,
+                                        @CashProfit,
+                                        @Details
+                                ";
 
-            int result = await connection.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters);
+                int result = await connection.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters);
 
-            return result;
-
+                return result;
+            }
+            catch (SqlException ex)
+            {
+                // Log the SQL exception (you can use any logging framework)
+                Console.WriteLine($"SQL Exception: {ex.Message}");
+                // Optionally, rethrow or handle the exception as needed
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Log the general exception
+                Console.WriteLine($"Exception: {ex.Message}");
+                // Optionally, rethrow or handle the exception as needed
+                throw;
+            }
         }
+
         public async Task<int> UpdateCashHistorybyLoss(CashHistory param, ISqlConnectionFactory connectionFactory)
         {
             await using var connection = connectionFactory.CreateConnection();
@@ -85,12 +105,14 @@ namespace DAL
             parameters.Add("@BranchId", param.BranchId, DbType.Guid);
             parameters.Add("@CreatedBy", param.CreatedBy, DbType.Guid);
             parameters.Add("@CashLost", param.CashLost, DbType.Decimal);
+            parameters.Add("@Details", param.Details, DbType.Decimal);
 
             string sqlQuery = @"
                 EXEC [dbo].[spUpdateCashByLoss]
                     @BranchId,
                     @CreatedBy,
-                    @CashLost
+                    @CashLost,
+                     @Details
             ";
 
             int result = await connection.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters);

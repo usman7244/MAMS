@@ -52,6 +52,12 @@
                         <input type="number" class="form-control" min="0" max="2147483647" id="TotalPrc" asp-for="@Model.TotalCash">
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group" style="display:none">
+                        <label class="bmd-label-floating">New Total Price</label>
+                        <input type="number" class="form-control" min="0" id="Diffprice" min="0" max="2147483647" asp-for="@Model.DiffCash">
+                    </div>
+                </div>
 
             </div>
             <div class="row">
@@ -167,13 +173,13 @@
         $(document).ready(function () {
             $('#btnSave').click(function (e) {
                 e.preventDefault();
-
+                debugger;
                 var formData = {
                     'CustomerType': $('#slctType').val(),
                     'FKCustomer': $('#slctName').val(),
                     'TotalCash': $('#TotalPrc').val(),
                     'Detail': $('#Detail').val(),
-
+                    'DiffCash': '@Model.DiffCash',
                     'UID': $('#idUID').val(),
                     'status': $('#slctstatus').val(),
 

@@ -31,5 +31,6 @@ namespace MAMS_Models.Model
         public int PurchasePrice { get; set; }
         public int PurchaseExp { get; set; }
         public string Status { get; set; }
+        public string DiffCash { get; set; }
     }
 }

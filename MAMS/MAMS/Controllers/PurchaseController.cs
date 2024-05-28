@@ -142,6 +142,7 @@ namespace MAMS.Controllers
             _crop.Type = EnumExtension.GetDisplayName(ExpenseType.Bag);
             _bags =await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy,_crop.Type, _connectionFactory);
             _purchase =await _objPurchaseBOL.GetPurchasedCropById(Id,_connectionFactory);
+            _purchase.DiffCash = _purchase.TotalCropPrice.ToString();
             _expenseList =await _objPurchaseBOL.GetPurchasedExpenseById(Id, _connectionFactory);
             _custTypeList =await _objPurchaseBOL.GetCustomerType(_purchase.CustomerType, _crop.BranchId, _crop.CreatedBy, _connectionFactory);
             ViewBag.Crops = _crops;

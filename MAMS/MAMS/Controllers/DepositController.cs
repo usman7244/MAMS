@@ -81,6 +81,7 @@ namespace MAMS.Controllers
             _crop.CreatedBy = Guid.Empty;
             _deposit = await _objCashBOL.GetAllDepositById(Id, _connectionFactory);
             _custTypeList = await _objCommonBOL.GetCustomerType(_deposit.CustomerType, _crop.BranchId, _crop.CreatedBy, _connectionFactory);
+            _deposit.DiffCash = _deposit.TotalCash;
 
             ViewBag.CustomersTypeList = _custTypeList;
             return View(_deposit);

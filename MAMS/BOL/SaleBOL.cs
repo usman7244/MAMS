@@ -13,12 +13,13 @@ namespace BOL
         private Sale _sale;
         private List<Sale> _sales;
         private SaleDAL _objSaleDAL;
-
+        private DAL.CommonDAL _objCommonDAL;
         public SaleBOL()
         {
             _sale = new Sale();
             _sales = new List<Sale>();
             _objSaleDAL = new SaleDAL();
+            _objCommonDAL = new DAL.CommonDAL();
         }
         public async Task<int> Update(Sale sale, ISqlConnectionFactory connectionFactory)
         {
@@ -68,8 +69,54 @@ namespace BOL
         }
         public async Task<int> UpdateSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
         {
-            var res = await _objSaleDAL.UpdateSaleCrop(sale, connectionFactory);
-            return res;
+            int affectedrow = 0;
+             await _objSaleDAL.UpdateSaleCrop(sale, connectionFactory);
+            if (affectedrow == 0)
+            {
+
+                if (decimal.TryParse(sale.DiffCash, out decimal diffCash) && decimal.TryParse(sale.TotalCropPrice.ToString(), out decimal totalCash))
+                {
+                    var diff = Convert.ToInt32(diffCash - totalCash);
+                    if (diff < 0)
+                    {
+                        var _cashHistory = new CashHistory
+                        {
+                            BranchId = Guid.Empty,
+                            CashLost = diff.ToString().Replace("-", ""),
+
+                        };
+
+
+                        var re = await _objCommonDAL.UpdateCashHistorybyLoss(_cashHistory, connectionFactory);
+                        return re;
+                    }
+                    else if (diff > 0)
+                    {
+                        var _cashHistory = new CashHistory
+                        {
+                            BranchId = Guid.Empty,
+                            CashProfit = diff.ToString(),
+
+                        };
+
+
+                        var re = await _objCommonDAL.UpdateCashHistorybyProfit(_cashHistory, connectionFactory);
+                        return re;
+                    }
+
+                }
+                else
+                {
+
+                    throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
+                }
+
+            }
+            else
+            {
+                throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
+            }
+            return affectedrow;
         }
         public async Task<string> StockSaleAdd(Sale model, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {

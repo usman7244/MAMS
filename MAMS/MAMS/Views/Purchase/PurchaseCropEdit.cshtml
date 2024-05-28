@@ -96,6 +96,12 @@
                         <input type="text" class="form-control" disabled id="totallPrice" value="@Model.TotalCropPrice">
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group" style="display:none">
+                        <label class="bmd-label-floating">New Total Price</label>
+                        <input type="number" class="form-control" min="0" id="Diffprice" min="0" max="2147483647" asp-for="@Model.DiffCash">
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -637,6 +643,7 @@
         var UID = parseInt($('#idUID').val());
         var priceWithExpense = parseInt($('#idPriceWithExpense').val());
         var totalExpense = parseInt($('#idTotalExpense').val());
+        var DiffCash = parseInt($('#Diffprice').val());
 
         if (isNaN(priceWithExpense)) { 
             priceWithExpense = parseInt(totallPrice);
@@ -669,8 +676,8 @@
 
                 FK_BagType: parseInt(bagType),
                 BagWeight: parseInt(bagWeight),
-                BagTotal: parseInt(totallBags)
-
+                BagTotal: parseInt(totallBags),
+                       DiffCash: @Model.DiffCash
             };
             
             var expItems = new Array();
@@ -718,10 +725,10 @@
                     }
                     else
                     {
-                        $("#alertDanger").show();
+                        $("#alertSuccess").show();
                         setTimeout(function () {
-                            $("#alertDanger").hide();
-                        }, 5000);
+                            window.location.href = '/Purchase/Index';
+                        }, 2000);
 
                     }
 

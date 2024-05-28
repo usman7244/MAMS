@@ -10,10 +10,11 @@ namespace BOL
     public class DepositCashBOL
     {
         private DAL.DepositCashDAL _objCashDAL;
+        private DAL.CommonDAL _objCommonDAL;
         public DepositCashBOL()
         {
             _objCashDAL = new DAL.DepositCashDAL();
-
+            _objCommonDAL = new DAL.CommonDAL();
         }
 
         public async Task<List<Deposit>> GetAllDepositInfo(Deposit deposit, ISqlConnectionFactory connectionFactory)
@@ -50,8 +51,56 @@ namespace BOL
         public async Task<int> UpdateDeposit(Deposit deposit, ISqlConnectionFactory connectionFactory)
 
         {
+            int affectedrow=0;
             var res = await _objCashDAL.UpdateDeposit(deposit, connectionFactory);
-            return res;
+ 
+             if (affectedrow == 0)
+             {
+
+                if (decimal.TryParse(deposit.DiffCash, out decimal diffCash) && decimal.TryParse(deposit.TotalCash, out decimal totalCash))
+                {
+                    var diff = Convert.ToInt32(diffCash - totalCash);
+                    if (diff < 0)
+                    {
+                        var _cashHistory = new CashHistory
+                        {
+                            BranchId = deposit.BranchId,
+                            CashLost = diff.ToString().Replace("-", ""),
+                           Details="Deposit"
+
+                        };
+
+
+                        var re = await _objCommonDAL.UpdateCashHistorybyLoss(_cashHistory, connectionFactory);
+                        return re;
+                    }
+                    else if (diff > 0)
+                    {
+                        var _cashHistory = new CashHistory
+                        {
+                            BranchId = deposit.BranchId,
+                            CashProfit = diff.ToString(),
+                            Details = "Deposit"
+                        };
+
+
+                        var re = await _objCommonDAL.UpdateCashHistorybyProfit(_cashHistory, connectionFactory);
+                        return re;
+                    }
+
+                }
+                else
+                {
+
+                    throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
+                }
+
+            }
+            else
+            {
+                throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
+            }
+            return affectedrow;
         }
 
     }
