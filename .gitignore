@@ -37,6 +37,6 @@ bld/
 *.pidb
 *.svclog
 *.scc
-/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.AssemblyInfo.cs
-/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.AssemblyInfoInputs.cache
-/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.csproj.AssemblyReference.cache
+*.AssemblyInfo.cs
+*.AssemblyInfoInputs.cache
+*.csproj.AssemblyReference.cache
