@@ -1,0 +1,445 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|c:\\users\\admin\\source\\repos\\usman7244\\mams\\mams\\mams\\controllers\\salecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\controllers\\salecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4948F29B-50BC-4F57-AC93-93F5DA8A9B7A}|BOL\\BOL.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\bol\\salebol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4948F29B-50BC-4F57-AC93-93F5DA8A9B7A}|BOL\\BOL.csproj|solutionrelative:bol\\salebol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8F523F42-83A0-427A-9919-FFDE504CB65A}|DAL\\DAL.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\dal\\saledal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F523F42-83A0-427A-9919-FFDE504CB65A}|DAL\\DAL.csproj|solutionrelative:dal\\saledal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\crop\\cropadd.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\crop\\cropadd.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8F523F42-83A0-427A-9919-FFDE504CB65A}|DAL\\DAL.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\dal\\cropdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F523F42-83A0-427A-9919-FFDE504CB65A}|DAL\\DAL.csproj|solutionrelative:dal\\cropdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\wwwroot\\css\\material-dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\wwwroot\\css\\material-dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\wwwroot\\css\\fontawsomestyle.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\wwwroot\\css\\fontawsomestyle.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\wwwroot\\css\\fontawsomeiconsstylecss.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\wwwroot\\css\\fontawsomeiconsstylecss.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\wwwroot\\css\\fontawesomeall.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\wwwroot\\css\\fontawesomeall.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8F523F42-83A0-427A-9919-FFDE504CB65A}|DAL\\DAL.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\dal\\expensedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F523F42-83A0-427A-9919-FFDE504CB65A}|DAL\\DAL.csproj|solutionrelative:dal\\expensedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\crop\\editcrop.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\crop\\editcrop.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\crop\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\crop\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\controllers\\cropcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\controllers\\cropcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\purchase\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\purchase\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\sale\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\sale\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\purchase\\purchasecrop.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\purchase\\purchasecrop.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\controllers\\purchasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\controllers\\purchasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8F523F42-83A0-427A-9919-FFDE504CB65A}|DAL\\DAL.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\dal\\purchasedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F523F42-83A0-427A-9919-FFDE504CB65A}|DAL\\DAL.csproj|solutionrelative:dal\\purchasedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4948F29B-50BC-4F57-AC93-93F5DA8A9B7A}|BOL\\BOL.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\bol\\purchasebol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4948F29B-50BC-4F57-AC93-93F5DA8A9B7A}|BOL\\BOL.csproj|solutionrelative:bol\\purchasebol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4948F29B-50BC-4F57-AC93-93F5DA8A9B7A}|BOL\\BOL.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\bol\\expensebol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4948F29B-50BC-4F57-AC93-93F5DA8A9B7A}|BOL\\BOL.csproj|solutionrelative:bol\\expensebol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\mams\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{346B0C53-6920-491E-B821-C36B3828ED61}|MAMS\\MAMS.csproj|solutionrelative:mams\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FontAwsomeIconsStylecss.css",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\wwwroot\\css\\FontAwsomeIconsStylecss.css",
+              "RelativeDocumentMoniker": "MAMS\\wwwroot\\css\\FontAwsomeIconsStylecss.css",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\wwwroot\\css\\FontAwsomeIconsStylecss.css",
+              "RelativeToolTip": "MAMS\\wwwroot\\css\\FontAwsomeIconsStylecss.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-01-02T06:47:41.647Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "CropController.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Controllers\\CropController.cs",
+              "RelativeDocumentMoniker": "MAMS\\Controllers\\CropController.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Controllers\\CropController.cs",
+              "RelativeToolTip": "MAMS\\Controllers\\CropController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAC4AAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-09-02T17:17:56.412Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Crop\\Index.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\Crop\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Crop\\Index.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\Crop\\Index.cshtml",
+              "ViewState": "AQIAAA8AAAAAAAAAAAAAADEAAADlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2023-09-02T17:13:27.891Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "PurchaseCrop.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Purchase\\PurchaseCrop.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\Purchase\\PurchaseCrop.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Purchase\\PurchaseCrop.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\Purchase\\PurchaseCrop.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2023-08-09T03:09:46.912Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2023-08-09T03:09:46.98Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SaleController.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Controllers\\SaleController.cs",
+              "RelativeDocumentMoniker": "MAMS\\Controllers\\SaleController.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Controllers\\SaleController.cs",
+              "RelativeToolTip": "MAMS\\Controllers\\SaleController.cs",
+              "ViewState": "AQIAABMAAAAAAAAAAADwvyQAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:47.615Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SaleBOL.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\BOL\\SaleBOL.cs",
+              "RelativeDocumentMoniker": "BOL\\SaleBOL.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\BOL\\SaleBOL.cs",
+              "RelativeToolTip": "BOL\\SaleBOL.cs",
+              "ViewState": "AQIAABgAAAAAAAAAAAD4vycAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:46.982Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SaleDAL.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\DAL\\SaleDAL.cs",
+              "RelativeDocumentMoniker": "DAL\\SaleDAL.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\DAL\\SaleDAL.cs",
+              "RelativeToolTip": "DAL\\SaleDAL.cs",
+              "ViewState": "AQIAAEYAAAAAAAAAAIAwwFwAAAA+AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:47.613Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "FontAwsomeStyle.css",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\wwwroot\\css\\FontAwsomeStyle.css",
+              "RelativeDocumentMoniker": "MAMS\\wwwroot\\css\\FontAwsomeStyle.css",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\wwwroot\\css\\FontAwsomeStyle.css",
+              "RelativeToolTip": "MAMS\\wwwroot\\css\\FontAwsomeStyle.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-01-02T06:47:46.606Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CropAdd.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Crop\\CropAdd.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\Crop\\CropAdd.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Crop\\CropAdd.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\Crop\\CropAdd.cshtml",
+              "ViewState": "AQIAAF0AAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-01-02T06:48:10.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "material-dashboard.css",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\wwwroot\\css\\material-dashboard.css",
+              "RelativeDocumentMoniker": "MAMS\\wwwroot\\css\\material-dashboard.css",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\wwwroot\\css\\material-dashboard.css",
+              "RelativeToolTip": "MAMS\\wwwroot\\css\\material-dashboard.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-01-02T06:47:52.428Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CropDAL.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\DAL\\CropDAL.cs",
+              "RelativeDocumentMoniker": "DAL\\CropDAL.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\DAL\\CropDAL.cs",
+              "RelativeToolTip": "DAL\\CropDAL.cs",
+              "ViewState": "AQIAAH4AAAAAAAAAAAAowAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-09-10T17:17:49.168Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "fontawesomeall.css",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\wwwroot\\css\\fontawesomeall.css",
+              "RelativeDocumentMoniker": "MAMS\\wwwroot\\css\\fontawesomeall.css",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\wwwroot\\css\\fontawesomeall.css",
+              "RelativeToolTip": "MAMS\\wwwroot\\css\\fontawesomeall.css",
+              "ViewState": "AQIAAJQ4AAAAAAAAAADwv504AAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-01-02T06:43:19.432Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ExpenseDAL.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\DAL\\ExpenseDAL.cs",
+              "RelativeDocumentMoniker": "DAL\\ExpenseDAL.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\DAL\\ExpenseDAL.cs",
+              "RelativeToolTip": "DAL\\ExpenseDAL.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:46.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Startup.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Startup.cs",
+              "RelativeDocumentMoniker": "MAMS\\Startup.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Startup.cs",
+              "RelativeToolTip": "MAMS\\Startup.cs",
+              "ViewState": "AQIAAB0AAAAAAAAAAAAgwCEAAABKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:46.976Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "_ViewImports.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\_ViewImports.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\_ViewImports.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\_ViewImports.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\_ViewImports.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2023-08-09T03:09:46.978Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "EditCrop.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Crop\\EditCrop.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\Crop\\EditCrop.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Crop\\EditCrop.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\Crop\\EditCrop.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAABGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2023-09-03T04:01:18.964Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Purchase\\Index.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\Purchase\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Purchase\\Index.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\Purchase\\Index.cshtml",
+              "ViewState": "AQIAAHYAAAAAAAAAAAAAAI8AAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2023-08-09T03:09:47.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Sale\\Index.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\Sale\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Sale\\Index.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\Sale\\Index.cshtml",
+              "ViewState": "AQIAABgAAAAAAAAAAAAAAC8AAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2023-08-09T03:09:47.609Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "PurchaseController.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Controllers\\PurchaseController.cs",
+              "RelativeDocumentMoniker": "MAMS\\Controllers\\PurchaseController.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Controllers\\PurchaseController.cs",
+              "RelativeToolTip": "MAMS\\Controllers\\PurchaseController.cs",
+              "ViewState": "AQIAACAAAAAAAAAAAAAxwCAAAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:47.611Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "PurchaseDAL.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\DAL\\PurchaseDAL.cs",
+              "RelativeDocumentMoniker": "DAL\\PurchaseDAL.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\DAL\\PurchaseDAL.cs",
+              "RelativeToolTip": "DAL\\PurchaseDAL.cs",
+              "ViewState": "AQIAAOAAAAAAAAAAAAAxwOAAAAA0AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:47.612Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "MAMS\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "MAMS\\Controllers\\HomeController.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAcwBUAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:47.616Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Error.cshtml",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Shared\\Error.cshtml",
+              "RelativeDocumentMoniker": "MAMS\\Views\\Shared\\Error.cshtml",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Views\\Shared\\Error.cshtml",
+              "RelativeToolTip": "MAMS\\Views\\Shared\\Error.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2023-08-09T03:09:47.618Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "PurchaseBOL.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\BOL\\PurchaseBOL.cs",
+              "RelativeDocumentMoniker": "BOL\\PurchaseBOL.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\BOL\\PurchaseBOL.cs",
+              "RelativeToolTip": "BOL\\PurchaseBOL.cs",
+              "ViewState": "AQIAABgAAAAAAAAAAAAxwBgAAAA/AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:47.619Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "ExpenseBOL.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\BOL\\ExpenseBOL.cs",
+              "RelativeDocumentMoniker": "BOL\\ExpenseBOL.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\BOL\\ExpenseBOL.cs",
+              "RelativeToolTip": "BOL\\ExpenseBOL.cs",
+              "ViewState": "AQIAABIAAAAAAAAAAAAxwBYAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-08-09T03:09:47.62Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "MAMS\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\usman7244\\MAMS\\MAMS\\MAMS\\Properties\\launchSettings.json",
+              "RelativeToolTip": "MAMS\\Properties\\launchSettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2023-08-09T03:09:47.621Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
