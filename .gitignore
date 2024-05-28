@@ -462,3 +462,9 @@ FodyWeavers.xsd
 /MAMS/MAMS_Models/obj/MAMS_Models.csproj.nuget.dgspec.json
 /MAMS/MAMS_Models/obj/project.assets.json
 /MAMS/MAMS_Models/obj/project.nuget.cache
+/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.assets.cache
+/MAMS/BOL/obj/Debug/netcoreapp3.1/BOL.GeneratedMSBuildEditorConfig.editorconfig
+/MAMS/DAL/obj/Debug/netcoreapp3.1/DAL.GeneratedMSBuildEditorConfig.editorconfig
+/MAMS/MAMS/obj/Debug/netcoreapp3.1/MAMS.assets.cache
+/MAMS/MAMS/obj/Debug/netcoreapp3.1/MAMS.GeneratedMSBuildEditorConfig.editorconfig
+/MAMS/MAMS_Models/obj/Debug/netcoreapp3.1/MAMS_Models.GeneratedMSBuildEditorConfig.editorconfig
