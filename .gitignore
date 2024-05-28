@@ -37,6 +37,7 @@ bld/
 *.pidb
 *.svclog
 *.scc
-*.AssemblyInfo.cs
+*AssemblyInfo.cs
 *.AssemblyInfoInputs.cache
 *.csproj.AssemblyReference.cache
+
