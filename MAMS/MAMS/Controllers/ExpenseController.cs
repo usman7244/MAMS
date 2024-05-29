@@ -14,13 +14,17 @@ namespace MAMS.Controllers
 {
     public class ExpenseController : Controller
     {
-
+        private CashHistory _cashHistory;
         private BOL.ExpenseBOL _objExpenseBOL;
         private Expense _expense;
         private readonly ISqlConnectionFactory _connectionFactory;
-
+        private CropAndBag _crop;
+        private CommonBOL _objCommonBOL;
         public ExpenseController(ISqlConnectionFactory connectionFactory)
         {
+            _objCommonBOL = new CommonBOL();
+            _crop = new CropAndBag();
+            _cashHistory = new CashHistory();
             _objExpenseBOL = new BOL.ExpenseBOL();
             _expense = new Expense();
             _connectionFactory = connectionFactory;
@@ -34,30 +38,49 @@ namespace MAMS.Controllers
             List<Expense> customers = await _objExpenseBOL.GetExpenseInfo(_expense, _connectionFactory);
             return View(customers);
         }
-        public IActionResult ExpenseAdd()
+        public async Task<IActionResult> ExpenseAdd()
         {
+            _crop.BranchId = Guid.Empty;
+            _crop.CreatedBy = Guid.Empty;
+            _cashHistory = await _objCommonBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
+            ViewBag.CashHistory = _cashHistory?.TotalCash ?? "00";
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> ExpenseAdd(Expense[] expItems)
         {
-
             foreach (var item in expItems)
             {
-                item.CreatedBy = Guid.Empty;
-                item.BranchId = Guid.Empty;
-                item.Type = EnumExtension.GetDisplayName(ExpenseType.DailyExpense);
-                await _objExpenseBOL.Insert(item, _connectionFactory);
+                try
+                {
+                    item.CreatedBy = Guid.Empty;
+                    item.BranchId = Guid.Empty;
+                    item.Type = EnumExtension.GetDisplayName(ExpenseType.DailyExpense);
 
+                    Console.WriteLine($"Inserting item: {item.UID}, {item.Type}, {item.CreatedBy}, {item.BranchId}");
+
+                    await _objExpenseBOL.Insert(item, _connectionFactory);
+
+                   
+                    Console.WriteLine($"Successfully inserted item: {item.UID}");
+                }
+                catch (Exception ex)
+                {
+           
+                    Console.WriteLine($"Error inserting item: {item.UID}, Exception: {ex.Message}");
+                }
             }
+
             return RedirectToAction("Index");
         }
+
 
 
         public async Task<IActionResult> ExpenseEdit(int Id)
         {
             var expense = await _objExpenseBOL.GetSpecificExpenseInfo(Id, _connectionFactory);
-
+            expense.DiffCash = expense.Amount;
+            
             return View(expense);
         }
 

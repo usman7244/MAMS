@@ -1,11 +1,13 @@
 ﻿using DAL;
 using DAL.Sql;
+using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static MAMS_Models.Enums.EnumTypes;
 
 namespace BOL
 {
@@ -60,11 +62,11 @@ namespace BOL
         }
 
 
-        public async Task<int> UpdatePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdatePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
-            int affectedrow = 0;
+            string affectedrow = null;
             var res=await _objPurchaseDAL.UpdatePurchaseCrop(purchase, connectionFactory);
-            if (affectedrow == 0)
+            if (affectedrow == null)
             {
 
                 if (decimal.TryParse(purchase.DiffCash, out decimal diffCash) && decimal.TryParse(purchase.TotalCropPrice.ToString(), out decimal totalCash))
@@ -76,6 +78,7 @@ namespace BOL
                         {
                             BranchId = Guid.Empty,
                             CashLost = diff.ToString().Replace("-", ""),
+                            Details = EnumExtension.GetDisplayName(ExpenseType.Purchase),
 
                         };
 
@@ -89,6 +92,7 @@ namespace BOL
                         {
                             BranchId = Guid.Empty,
                             CashProfit = diff.ToString(),
+                            Details = EnumExtension.GetDisplayName(ExpenseType.Purchase),
 
                         };
 

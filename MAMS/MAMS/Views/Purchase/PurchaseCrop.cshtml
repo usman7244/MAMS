@@ -263,7 +263,7 @@
             }
         });
         $("#expnsTable").on('click', "#btnDelExpns", function() {
-            
+            debugger;
             var row = $(this).closest('tr');
             var iId = $.trim($(this).closest('tr').find("td:eq(0)").text());
             var iName = $.trim($(this).closest('tr').find("td:eq(2)").text());
@@ -543,7 +543,7 @@
 
             
             var cashInHand = parseInt('@ViewBag.CashHistory');
-
+            debugger;
         if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense) && bagType.length > 0) {
                 totallPrice = parseInt(totallPrice);
                 /*e.preventDefault();*/
@@ -557,7 +557,7 @@
                     TotalCropWeight: parseFloat(totalCropWeight),
 
                      PriceInMaun: pricePerMaun,
-                    PriceInKg: parseFloat(pricePerKG),
+                    PriceInKg: pricePerKG,
                     TotalCropPrice: totallPrice,
                     TotalAmountwithExp: priceWithExpense,
                     TotalExp: totalExpense,

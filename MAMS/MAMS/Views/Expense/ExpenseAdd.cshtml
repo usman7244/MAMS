@@ -1,10 +1,9 @@
 ﻿
-
 @{
     ViewData["Title"] = "Expense";
 }
 <script src="~/js/jquery-191-min.js"></script>
-  <form id="BasicForm" enctype="multipart/form-data" action="/Expense/ExpenseAdd" method="post">
+  <form id="BasicForm" enctype="multipart/form-data">
     <!-- #region Expense form -->
     <div class="card">
         <div class="card-header card-header-primary">
@@ -12,17 +11,25 @@
         </div>
         <div class="card-body">
             <div class="row">
+
                 <div class="col-sm-3 col-md-3">
                     <div class="form-group">
                         <label class="bmd-label-floating">Expense Details</label>
                         <input type="text" class="form-control" id="expDes">
                     </div>
                 </div>
-                <div class="col-sm-3 col-md-3">
+                <div class="col-md-4" style="display:none">
+                    <div class="form-group">
+                        <label class="bmd-label-floating"> UID</label>
+                        <input type="number" class="form-control" min="0" id="idUID" >
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <div class="form-group">
                         <label class="bmd-label-floating">Amount</label>
-                        <input type="number" class="form-control" id="amount" min="1">
-                        <div id="amountError" class="text-danger" style="display:none;">Amount must be greater than 1</div>
+                        <input type="text" id="totalPrice"  min="1" max="2147483647"  class="form-control">
+                        <span id="error-message" style="color: red; display: none;">Total Cash is greate than Cash In Hand.</span>
+                        <span id="error-message" style="color: red; display: none;">Please enter a value greater than or equal to 1.</span>
                     </div>
                 </div>
 
@@ -100,37 +107,114 @@
     $("#alertSuccess").hide();
     $("#alertDanger").hide();
     var itemDetailList = [];
-
-    
+     var cashInHand = parseInt('@ViewBag.CashHistory');
+   
     $("#btnAdd").click(function() {
+        debugger;
         var expDes = $("#expDes").val();
-        var amount = $("#amount").val();
+        var amount = $("#totalPrice").val();
 
         if(expDes && amount) {
-            var newRow = `<tr>
-                <td>${expDes}</td>
-                <td>${amount}</td>
-                    <td style="text-align:center"> <button class="icon-btn" style="height:30px;min-width:35px;margin:0;padding:0;border:0px" id="btnDelExpns"> 
-                        <i class="fa fa-trash" style="color:red"></i>
-                         </button>'</td>
-            </tr>`;
 
-            $("#itemTableBody").append(newRow);
-            itemDetailList.push({ expDes: expDes, amount: parseFloat(amount) });
+            $('#expnsTable tbody').append('<tr class="child">' +
+                '<td><font class="fontsize">' + expDes + '</font></td>' +
+                '<td><font class="fontsize">' + amount + '</font></td>' +
+                '<td><div class="text-center">' +
+                '<button class="icon-btn" style="height:30px;min-width:35px;margin:0;padding:0;border:0px" id="btnDelExpns">' +
+                '<i class="fa fa-trash" style="color:red"></i>' +
+                ' </button>' +
+                '</div></td>' +
+                '</tr>');
+            itemDetails = { Description: expDes, ExpenseAmmount: amount };
+            itemDetailList.push(itemDetails);
+            $("#expDes").val("");
+            $("#amount").val("");
 
-            updateTotalExpense();
+            var items = 0;
+            $('#expnsTable tbody tr td:nth-child(2)').each(function () {
+                items = items + parseInt($(this).text());
+            });
+            var price = $("#totallPrice").val();
+            if (price == "") {
+                price = "0";
+            }
+            var priceWithExp = parseInt(price) + parseInt(items);
+            $("#idTotalExpense").val(parseInt(items) + '  RS');
+            $("#idPriceWithExpense").val(parseInt(priceWithExp) + '  RS');
 
            
         }
     });
+    $("#expnsTable").on('click', "#btnDelExpns", function () {
+
+        event.preventDefault();
+        var row = $(this).closest('tr');
+        var iId = $.trim($(this).closest('tr').find("td:eq(0)").text());
+        var iName = $.trim($(this).closest('tr').find("td:eq(2)").text());
+        var itmPrice = $.trim($(this).closest('tr').find("td:eq(1)").text());
+        $("#txtExpenseDescription").val("");
+        $.confirm({
+            theme: 'material',
+            title: ' Confirm ',
+            content: ' Delete Confirmation ',
+            type: 'orange',
+            typeAnimated: true,
+           
+            buttons: {
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-red',
+                    action: function () {
+                    }
+                },
+                tryAgain: {
+                    text: 'Yes',
+                    btnClass: 'btn-green',
+                    action: function () {
+                        $.each(itemDetailList, function (i, val) {
+                            if (val != null) {
+                                var iiID = val.itemId;
+                                if (iiID == iId) {
+                                    itemDetailList.splice($.inArray(val, itemDetailList), 1);
+                                }
+
+                            }
+                        });
+                        row.remove();
+                        var price = $("#idPriceWithExpense").val();
+                        if (price == "") {
+                            price = "0";
+                        }
+                        var priceWithExp = parseInt(price) - parseInt(itmPrice);
+
+                        var items = 0;
+                        $('#expnsTable tbody tr td:nth-child(2)').each(function () {
+                            items = items + parseInt($(this).text());
+                        });
+                        $("#idTotalExpense").val(parseInt(items) + '  RS');
+                        $("#idPriceWithExpense").val(parseInt(priceWithExp) + '  RS');
+                    },
+                    error: function () {
+                    },
+                    complete: function () {
+                        hideLoader();
+                    },
+                }
+
+            }
+        });
+    });
+    // Button Save data 
     $(document).ready(function () {
+        debugger;
         $('#btnSave').on('click', function () {
             var expItems = [];
             $("#expnsTable tbody").find('tr').each(function (i) {
                 var $tds = $(this).find('td'),
                     description = $tds.eq(0).text(),
-                    amount = $tds.eq(1).text();
-                var itemDetails = { ExpDescription: description, Amount: parseInt(amount) };
+                    amount = $tds.eq(1).text(),
+                    UID = $tds.eq(2).text();
+                var itemDetails = { ExpDescription: description, Amount: parseInt(amount),UID : UID };
                 expItems.push(itemDetails);
             });
 
@@ -161,7 +245,27 @@
             });
         });
     });
+      document.getElementById('totalPrice').addEventListener('input', function () {
+        var totalPriceInput = document.getElementById('totalPrice');
+        var errorMessage = document.getElementById('error-message');
 
+        if (totalPriceInput.value > cashInHand) {
+            errorMessage.style.display = 'block';
+            totalPriceInput.setCustomValidity('Total Cash is greate than Cash In Hand');
+
+        }
+        // if (totalPriceInput.value === '0') {
+        //     errorMessage.style.display = 'block';
+        //     totalPriceInput.setCustomValidity('Please enter a value greater than or equal to 1.');
+
+        // }
+      
+
+        else {
+            errorMessage.style.display = 'none';
+            totalPriceInput.setCustomValidity('');
+        }
+    });
 
 // Update the total expense
 function updateTotalExpense() {
@@ -174,7 +278,7 @@ function updateTotalExpense() {
         var rowIndex = $(this).closest('tr').index();
         itemDetailList.splice(rowIndex, 1);
         $(this).closest('tr').remove();
-        updateTotalExpense();
+        // updateTotalExpense();
     });
 </script>
 <!-- #endregion -->

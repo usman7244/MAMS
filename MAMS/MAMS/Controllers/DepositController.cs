@@ -62,7 +62,7 @@ namespace MAMS.Controllers
             if (deposit != null)
             {
                 affectedRows = await _objCashBOL.DepositAdd(deposit, _connectionFactory);
-                if (affectedRows== "Success")
+                if (affectedRows== "Success" || affectedRows == "Success - Pending")
                 {
                     ModelState.Clear();
 

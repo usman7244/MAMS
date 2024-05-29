@@ -29,6 +29,12 @@ namespace MAMS_Models.Enums
             [Display(Name = "Credit")]
             Credit = 6,
 
+            [Display(Name = "Debit")]
+            Deposit = 7,
+            [Display(Name = "Sale")]
+            Sale = 8,
+
+
         }
 
     }
@@ -36,5 +42,6 @@ namespace MAMS_Models.Enums
     {
         [Display(Name = "InStock")]
         Status = 1,
+     
     }
 }

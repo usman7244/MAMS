@@ -59,7 +59,7 @@ namespace DAL
             return cashHistory;
         }
 
-        public async Task<int> UpdateCashHistorybyProfit(CashHistory param, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdateCashHistorybyProfit(CashHistory param, ISqlConnectionFactory connectionFactory)
         {
             try
             {
@@ -68,17 +68,17 @@ namespace DAL
                 parameters.Add("@BranchId", param.BranchId, DbType.Guid);
                 parameters.Add("@CreatedBy", param.CreatedBy, DbType.Guid);
                 parameters.Add("@CashProfit", param.CashProfit, DbType.Decimal);
-                parameters.Add("@Details", param.Details, DbType.Decimal);
+                parameters.Add("@Detail", param.Details, DbType.String);
 
                 string sqlQuery = @"
                                         EXEC [dbo].[spUpdateCashByProfit]
                                         @BranchId,
                                         @CreatedBy,
                                         @CashProfit,
-                                        @Details
+                                        @Detail
                                 ";
 
-                int result = await connection.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters);
+                string result = await connection.QueryFirstOrDefaultAsync<string>(sqlQuery, parameters);
 
                 return result;
             }
@@ -98,24 +98,24 @@ namespace DAL
             }
         }
 
-        public async Task<int> UpdateCashHistorybyLoss(CashHistory param, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdateCashHistorybyLoss(CashHistory param, ISqlConnectionFactory connectionFactory)
         {
             await using var connection = connectionFactory.CreateConnection();
             var parameters = new DynamicParameters();
             parameters.Add("@BranchId", param.BranchId, DbType.Guid);
             parameters.Add("@CreatedBy", param.CreatedBy, DbType.Guid);
             parameters.Add("@CashLost", param.CashLost, DbType.Decimal);
-            parameters.Add("@Details", param.Details, DbType.Decimal);
+            parameters.Add("@Detail", param.Details, DbType.String);
 
             string sqlQuery = @"
                 EXEC [dbo].[spUpdateCashByLoss]
                     @BranchId,
                     @CreatedBy,
                     @CashLost,
-                     @Details
+                     @Detail
             ";
 
-            int result = await connection.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters);
+            string result = await connection.QueryFirstOrDefaultAsync<string>(sqlQuery, parameters);
 
             return result;
 

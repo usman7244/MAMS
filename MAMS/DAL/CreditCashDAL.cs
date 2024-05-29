@@ -68,9 +68,9 @@ namespace DAL
 
             return credit;
         }
-        public async Task<int> UpdateCredit(Credit param, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdateCredit(Credit param, ISqlConnectionFactory connectionFactory)
         {
-            int affectedRows = 0;
+            String affectedRows = null;
             try
             {
                 await using var connection = connectionFactory.CreateConnection();
@@ -84,7 +84,7 @@ namespace DAL
                                             @BranchId
                                                      ";
 
-                affectedRows = await connection.QueryFirstOrDefaultAsync<int>(SQLQuery, param);
+                affectedRows = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param);
 
                 return affectedRows;
             }

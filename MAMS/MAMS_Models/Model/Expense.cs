@@ -17,5 +17,6 @@ namespace MAMS_Models.Model
         public Guid ModifiedBy { get; set; }
         public Guid BranchId { get; set; }
         public bool IsOld { get; set; }
+        public int DiffCash { get; set; }
     }
 }

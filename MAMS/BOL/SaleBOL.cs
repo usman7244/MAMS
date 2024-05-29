@@ -1,10 +1,12 @@
 ﻿using DAL;
 using DAL.Sql;
+using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static MAMS_Models.Enums.EnumTypes;
 
 namespace BOL
 {
@@ -67,22 +69,23 @@ namespace BOL
             var re = await _objSaleDAL.GetSaleExpenseById(Id, connectionFactory);
             return re;
         }
-        public async Task<int> UpdateSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdateSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
         {
-            int affectedrow = 0;
+            String affectedrow = null;
              await _objSaleDAL.UpdateSaleCrop(sale, connectionFactory);
-            if (affectedrow == 0)
+            if (affectedrow == null)
             {
 
                 if (decimal.TryParse(sale.DiffCash, out decimal diffCash) && decimal.TryParse(sale.TotalCropPrice.ToString(), out decimal totalCash))
                 {
-                    var diff = Convert.ToInt32(diffCash - totalCash);
+                    var diff = Convert.ToInt32(totalCash - diffCash);
                     if (diff < 0)
                     {
                         var _cashHistory = new CashHistory
                         {
                             BranchId = Guid.Empty,
                             CashLost = diff.ToString().Replace("-", ""),
+                            Details = EnumExtension.GetDisplayName(ExpenseType.Sale),
 
                         };
 
@@ -96,6 +99,7 @@ namespace BOL
                         {
                             BranchId = Guid.Empty,
                             CashProfit = diff.ToString(),
+                            Details = EnumExtension.GetDisplayName(ExpenseType.Sale),
 
                         };
 

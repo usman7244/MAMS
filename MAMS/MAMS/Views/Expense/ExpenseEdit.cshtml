@@ -31,6 +31,7 @@
                         <input type="number" class="form-control" id="amount" min="0" asp-for="@Model.Amount">
                     </div>
                 </div>
+                
                 <div class="col-sm-2 col-md-2">
                     <div class="form-group">
                         <!-- Back button -->
@@ -83,16 +84,20 @@
     $(document).ready(function () {
         $("#btnAdd").click(function (event) {
             event.preventDefault();
-
+            debugger;
             // Get the values from the input fields
             var expDes = $("#expDes").val();
             var amount = $("#amount").val();
             var UID = $("#idUID").val();
+            var DiffPrice = '@Model.DiffCash';
+            var Type = '@Model.Type';
             // Construct the model object
             var model = {
                 ExpDescription: expDes,
                 Amount: amount,
-                UID: UID
+                UID: UID,
+                DiffCash: DiffPrice,
+                Type: Type
             };
             debugger;
 

@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <label class="bmd-label-floating">Total Price</label>
                         <input type="text" id="totalPrice" min="1" max="2147483647" required asp-for="TotalCash" class="form-control">
-                        <span id="error-message" style="color: red; display: none;">Total Cash is greate than Cash In Hand.</span>
+
                         <span id="error-message" style="color: red; display: none;">Please enter a value greater than or equal to 1.</span>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                     <div class="form-group" required>
                         <select class="form-select form-control" required id="slctstatus" asp-for="Status">
                             <option value="Pending" selected>Payment Pending</option>
-                            <option value="Sent">Payment Sent</option>
+                            <option value="Recevied">Payment Received</option>
 
                         </select>
                     </div>
@@ -165,16 +165,12 @@
         var totalPriceInput = document.getElementById('totalPrice');
         var errorMessage = document.getElementById('error-message');
 
-        if (totalPriceInput.value > cashInHand) {
+
+        if (totalPriceInput.value === '0') {
             errorMessage.style.display = 'block';
-            totalPriceInput.setCustomValidity('Total Cash is greate than Cash In Hand');
+            totalPriceInput.setCustomValidity('Please enter a value greater than or equal to 1.');
 
         }
-        // if (totalPriceInput.value === '0') {
-        //     errorMessage.style.display = 'block';
-        //     totalPriceInput.setCustomValidity('Please enter a value greater than or equal to 1.');
-
-        // }
 
 
         else {

@@ -1,9 +1,11 @@
 ﻿using DAL.Sql;
+using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static MAMS_Models.Enums.EnumTypes;
 
 namespace BOL
 {
@@ -48,55 +50,59 @@ namespace BOL
 
             return result;
         }
-        public async Task<int> UpdateCredit(Credit credit, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdateCredit(Credit credit, ISqlConnectionFactory connectionFactory)
         {
-            int affectedrow;
+            string affectedrow;
             affectedrow = await _objCashDAL.UpdateCredit(credit, connectionFactory);
-
-            if (affectedrow == 0)
+            if (credit.Status == "Recevied")
             {
-
-                if (decimal.TryParse(credit.DiffCash, out decimal diffCash) && decimal.TryParse(credit.TotalCash, out decimal totalCash))
+                if (affectedrow == null)
                 {
-                    var diff = Convert.ToInt32(diffCash - totalCash);
-                    if (diff < 0)
+
+                    if (decimal.TryParse(credit.DiffCash, out decimal diffCash) && decimal.TryParse(credit.TotalCash, out decimal totalCash))
                     {
-                        var _cashHistory = new CashHistory
+                        var diff = Convert.ToInt32(totalCash - diffCash);
+                        if (diff < 0)
                         {
-                            BranchId = credit.BranchId,
-                            CashLost = diff.ToString().Replace("-",""),
+                            var _cashHistory = new CashHistory
+                            {
+                                BranchId = credit.BranchId,
+                                CashLost = diff.ToString().Replace("-", ""),
+                                Details = EnumExtension.GetDisplayName(ExpenseType.Credit),
 
-                        };
+                            };
 
 
-                        var re = await _objCommonDAL.UpdateCashHistorybyLoss(_cashHistory, connectionFactory);
-                        return re;
+                            var re = await _objCommonDAL.UpdateCashHistorybyLoss(_cashHistory, connectionFactory);
+                            return re;
+                        }
+                        else if (diff > 0)
+                        {
+                            var _cashHistory = new CashHistory
+                            {
+                                BranchId = credit.BranchId,
+                                CashProfit = diff.ToString(),
+                                Details = EnumExtension.GetDisplayName(ExpenseType.Credit),
+
+                            };
+
+
+                            var re = await _objCommonDAL.UpdateCashHistorybyProfit(_cashHistory, connectionFactory);
+                            return re;
+                        }
+
                     }
-                    else if (diff>0)
+                    else
                     {
-                        var _cashHistory = new CashHistory
-                        {
-                            BranchId = credit.BranchId,
-                            CashProfit = diff.ToString(),
 
-                        };
-
-
-                        var re = await _objCommonDAL.UpdateCashHistorybyProfit(_cashHistory, connectionFactory);
-                        return re;
+                        throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
                     }
 
                 }
                 else
                 {
-
                     throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
                 }
-
-            }
-            else
-            {
-                throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
             }
             return affectedrow;
         }
