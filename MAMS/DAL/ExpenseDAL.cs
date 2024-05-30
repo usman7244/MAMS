@@ -40,20 +40,20 @@ namespace DAL
         }
 
 
-        public async Task<int> Update(Expense param, ISqlConnectionFactory sqlConnectionFactory)
+        public async Task<string> Update(Expense param, ISqlConnectionFactory sqlConnectionFactory)
         {
+            string resultMessage = string.Empty;
             try
             {
                 await using var connection = sqlConnectionFactory.CreateConnection();
-                string SQLQuery = @"UPDATE [dbo].[StockMgt.Expense]
-                            SET Amount = @Amount, 
-                                ExpDescription = @ExpDescription, 
-                                ModifiedBy = @ModifiedBy,
-                                ModifiedDate = GETUTCDATE()
-                            WHERE [UID] = @UID;";
+               string SQLQuery = @"EXEC [dbo].[sp_UpdateStockMgtExpense]
+                                                        @UID = @UID,
+                                                        @Amount = @Amount,
+                                                        @ExpDescription = @ExpDescription,
+                                                        @ModifiedBy = @ModifiedBy;";
 
-                var res = await connection.QueryFirstOrDefaultAsync<int>(SQLQuery, param, null);
-                return res;
+                 resultMessage = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
+                return resultMessage;
             }
             catch (SqlException sqlEx)
             {
@@ -84,15 +84,16 @@ namespace DAL
             return 1;
         }
 
-        public async Task<int> Insert(Expense param, ISqlConnectionFactory sqlConnectionFactory)
+        public async Task<string> Insert(Expense param, ISqlConnectionFactory sqlConnectionFactory)
         {
+            string Status = "";
             string _expense = JsonConvert.SerializeObject(param);
            
                 await using var connection = sqlConnectionFactory.CreateConnection();
                 string SQLQuery = "EXEC [dbo].[spCreateExpense] @JsonStringExpense";
 
-                var res = await connection.QueryFirstOrDefaultAsync<int>(SQLQuery, new { JsonStringExpense = _expense });
-                return res;
+                Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringExpense = _expense });
+                return Status;
             
         }
         public async Task<Expense> GetSpecificExpenseInfo(int Id, ISqlConnectionFactory connectionFactory)

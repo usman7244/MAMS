@@ -52,10 +52,10 @@ namespace MAMS.Controllers
         }
         public async Task<IActionResult> CreditAdd()
         {
-            _crop.BranchId = Guid.Empty;
-            _crop.CreatedBy = Guid.Empty;
-            _cashHistory = await _objCommonBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
-            ViewBag.CashHistory = _cashHistory?.TotalCash ?? "00";
+            //_crop.BranchId = Guid.Empty;
+            //_crop.CreatedBy = Guid.Empty;
+            //_cashHistory = await _objCommonBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
+            //ViewBag.CashHistory = _cashHistory?.TotalCash ?? "00";
             return View();
         }
         [HttpPost]
@@ -70,13 +70,14 @@ namespace MAMS.Controllers
                 affectedRows = await _objCashBOL.CreditAdd(credit, _connectionFactory);
                 if (affectedRows == "Success")
                 {
-                    ModelState.Clear();
+                    ViewBag.CreditAddStatus = affectedRows;
 
-                    return Redirect("Index");
+
                 }
                
             }
-           
+
+
             return View();
         }
     

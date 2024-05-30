@@ -14,13 +14,11 @@ namespace DAL
 {
     public class Customer_DAL
     {
-        private ConnectionLayer _connection;
         private List<Customer> _customers;
         private Customer _customer;
 
         public Customer_DAL()
         {
-            _connection = new ConnectionLayer();
             _customers = new List<Customer>();
             _customer = new Customer();
         }

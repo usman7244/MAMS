@@ -26,11 +26,11 @@ namespace BOL
         }
         public async Task<string> Update(Expense expense, ISqlConnectionFactory sqlConnectionFactory)
         {
-            string affectedrow=null;
-            var res = await _objExpenseDAL.Update(expense, sqlConnectionFactory);
+            string Status=string.Empty;
+            Status = await _objExpenseDAL.Update(expense, sqlConnectionFactory);
             if (expense.Type == "DailyExpense")
             {
-                if (affectedrow == null)
+                if (Status == "Success")
                 {
 
                     if (decimal.TryParse(expense.DiffCash.ToString(), out decimal diffCash) && decimal.TryParse(expense.Amount.ToString(), out decimal totalCash))
@@ -66,20 +66,13 @@ namespace BOL
                         }
 
                     }
-                    else
-                    {
-
-                        throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
-                    }
+                    
 
                 }
-                else
-                {
-                    throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
-                }
+              
             }
 
-            return affectedrow;
+            return Status;
         }
 
         public async Task<int> Delete(Expense expense, ISqlConnectionFactory sqlConnectionFactory)
@@ -88,11 +81,11 @@ namespace BOL
             return res;
         }
 
-        public async Task<int> Insert(Expense model, ISqlConnectionFactory sqlConnectionFactory)
+        public async Task<string> Insert(Expense model, ISqlConnectionFactory sqlConnectionFactory)
         {
-            
-            var res = await _objExpenseDAL.Insert(model, sqlConnectionFactory);
-            return res;
+            string Status = "";
+             Status = await _objExpenseDAL.Insert(model, sqlConnectionFactory);
+            return Status;
         }
 
 

@@ -55,9 +55,9 @@ namespace BOL
             var result=await _objPurchaseDAL.AddPurchaseCrop(purchase, expenses, connectionFactory);
             return result;
         }
-        public async Task<int> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
+        public async Task<string> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
-            var result = await _objPurchaseDAL.DeletePurchaseCrop(purchase, connectionFactory);
+            string result = await _objPurchaseDAL.DeletePurchaseCrop(purchase, connectionFactory);
             return result;
         }
 
@@ -65,8 +65,8 @@ namespace BOL
         public async Task<string> UpdatePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
             string affectedrow = null;
-            var res=await _objPurchaseDAL.UpdatePurchaseCrop(purchase, connectionFactory);
-            if (affectedrow == null)
+             affectedrow = await _objPurchaseDAL.UpdatePurchaseCrop(purchase, connectionFactory);
+            if (affectedrow == "Success")
             {
 
                 if (decimal.TryParse(purchase.DiffCash, out decimal diffCash) && decimal.TryParse(purchase.TotalCropPrice.ToString(), out decimal totalCash))

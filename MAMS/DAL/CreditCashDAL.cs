@@ -100,17 +100,17 @@ namespace DAL
         }
 
 
-        public async Task<int> DeleteCredit(Credit credit, ISqlConnectionFactory connectionFactory)
+        public async Task<string> DeleteCredit(Credit credit, ISqlConnectionFactory connectionFactory)
         {
-
+            string Status = "";
 
             await using var connection = connectionFactory.CreateConnection();
 
             string SQLQuery = "EXEC [dbo].[spDeleteCredit] @UID, @ModifiedBy";
 
-            var effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = credit.UID, ModifiedBy = credit.ModifiedBy });
+            Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { UID = credit.UID, ModifiedBy = credit.ModifiedBy });
 
-            return effectedRows;
+            return Status;
         }
 
 

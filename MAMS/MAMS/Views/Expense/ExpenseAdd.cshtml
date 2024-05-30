@@ -224,23 +224,20 @@
                 data: {
                     'expItems': expItems
                 },
+                
                 success: function (data) {
-                    var dataObj1 = JSON.parse(data.data.response);
-                    if (dataObj1 == "Success") {
-                        $("#alertSuccess").show();
-                        setTimeout(function () {
-                            window.location.href = '/Expense/Index';
-                        }, 2000);
-                    } else {
-                        $("#alertDanger").show();
-                        setTimeout(function () {
-                            $("#alertDanger").hide();
+                    debugger;
+                    console.log(data);
 
-                        }, 5000);
-                    }
+                    $('#alertSuccess').show();
+                    setTimeout(function () {
+                        window.location.href = '/Expense/Index';
+                    }, 2000);
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert('Error: ' + textStatus + ' - ' + errorThrown);
+                error: function (xhr, status, error) {
+
+                    console.log(xhr.responseText);
+                    $("#alertDanger").show();
                 }
             });
         });

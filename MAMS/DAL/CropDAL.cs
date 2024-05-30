@@ -14,13 +14,11 @@ namespace DAL
 {
    public class CropDAL
     {
-        private ConnectionLayer _connection;
         private List<CropAndBag> _croplist;
         private CropAndBag _crop;
 
         public CropDAL()
         {
-            _connection = new ConnectionLayer();
             _croplist = new List<CropAndBag>();
             _crop = new CropAndBag();
         }

@@ -144,17 +144,17 @@ namespace DAL
 
             return response;
         }
-        public async Task<int> DeleteSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
+        public async Task<string> DeleteSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
         {
 
-
+            string Status = "";
             await using var connection = connectionFactory.CreateConnection();
 
             string SQLQuery = "EXEC [dbo].[spDeleteSaleCrop]  @UID, @ModifiedBy";
 
-            var effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = sale.UID, ModifiedBy = sale.ModifiedBy });
+            Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { UID = sale.UID, ModifiedBy = sale.ModifiedBy });
 
-            return effectedRows;
+            return Status;
         }
         public async Task<Sale> GetSaleCropById(int Id, ISqlConnectionFactory sqlConnectionFactory)
        {
@@ -193,8 +193,9 @@ namespace DAL
 
             return expenseList;
         }
-        public async Task<int> UpdateSaleCrop(Sale param, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdateSaleCrop(Sale param, ISqlConnectionFactory connectionFactory)
         {
+            string Status = "";
             try
             {
                 await using var connection = connectionFactory.CreateConnection();
@@ -216,8 +217,8 @@ namespace DAL
                                                                 @ModifiedBy";
                 
 
-                var res = await connection.QueryFirstOrDefaultAsync<int>(SQLQuery, param);
-                return res;
+                 Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param);
+                return Status;
             }
             catch (Exception ex)
             {

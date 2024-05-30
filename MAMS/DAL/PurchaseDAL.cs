@@ -19,7 +19,6 @@ namespace DAL
 {
     public class PurchaseDAL
     {
-        private ConnectionLayer _connection;
         private Purchase _purchase;
         private List<Purchase> _purchaseList;
         private CustomerType _custType;
@@ -33,7 +32,6 @@ namespace DAL
 
         public PurchaseDAL()
         {
-            _connection = new ConnectionLayer();
             _purchaseList = new List<Purchase>();
             _purchase = new Purchase();
             _custType = new CustomerType();
@@ -176,7 +174,7 @@ namespace DAL
         }
 
 
-        public async Task<int> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
+        public async Task<string> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
             
 
@@ -184,13 +182,14 @@ namespace DAL
 
             string SQLQuery = "EXEC [dbo].[spDeletePurchaseCrop] @UID, @ModifiedBy";
 
-            var effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = purchase.UID, ModifiedBy = purchase.ModifiedBy });
+            string effectedRows = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { UID = purchase.UID, ModifiedBy = purchase.ModifiedBy });
 
             return effectedRows;
         }
 
-        public async Task<int> UpdatePurchaseCrop(Purchase param, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdatePurchaseCrop(Purchase param, ISqlConnectionFactory connectionFactory)
         {
+            string Status = "";
             try
             {
                 await using var connection = connectionFactory.CreateConnection();
@@ -212,8 +211,8 @@ namespace DAL
                                  @BagTotal ,
                                  @ModifiedBy";
 
-                var res = await connection.QueryFirstOrDefaultAsync<int>(SQLQuery, param, null);
-                return res;
+                 Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
+                return Status;
             }
             catch (SqlException sqlEx)
             {

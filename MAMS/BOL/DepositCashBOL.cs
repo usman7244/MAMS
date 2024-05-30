@@ -43,21 +43,21 @@ namespace BOL
 
             return result;
         }
-        public async Task<int> DeleteDeposit(Deposit deposit, ISqlConnectionFactory connectionFactory)
+        public async Task<string> DeleteDeposit(Deposit deposit, ISqlConnectionFactory connectionFactory)
         {
-
-            var result = await _objCashDAL.DeleteDeposit(deposit, connectionFactory);
+            string result = "";
+             result = await _objCashDAL.DeleteDeposit(deposit, connectionFactory);
 
             return result;
         }
         public async Task<string> UpdateDeposit(Deposit deposit, ISqlConnectionFactory connectionFactory)
 
         {
-            string affectedrow=null;
-            var res = await _objCashDAL.UpdateDeposit(deposit, connectionFactory);
+            string affectedrow=string.Empty;
+             affectedrow = await _objCashDAL.UpdateDeposit(deposit, connectionFactory);
             if (deposit.Status == "Sent")
             {
-                if (affectedrow == null)
+                if (affectedrow == "Success")
                 {
 
                     if (decimal.TryParse(deposit.DiffCash, out decimal diffCash) && decimal.TryParse(deposit.TotalCash, out decimal totalCash))

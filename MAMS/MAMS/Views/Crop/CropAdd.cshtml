@@ -85,10 +85,10 @@
     var status = ('@status');
     if (status == "1")
     {
-        $("#alertSuccess").show();
+        $('#alertSuccess').show();
         setTimeout(function () {
-            $("#alertSuccess").hide();
-        }, 3000);
+            window.location.href = '/Crop/Index';
+        }, 2000);
     }
     if (status == "0")
     {

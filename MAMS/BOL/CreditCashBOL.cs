@@ -36,10 +36,10 @@ namespace BOL
 
             return result;
         }
-        public async Task<int> DeleteCredit(Credit credit, ISqlConnectionFactory connectionFactory)
+        public async Task<string> DeleteCredit(Credit credit, ISqlConnectionFactory connectionFactory)
         {
-
-            var result = await _objCashDAL.DeleteCredit(credit, connectionFactory);
+            string result = "";
+             result = await _objCashDAL.DeleteCredit(credit, connectionFactory);
 
             return result;
         }
@@ -52,11 +52,11 @@ namespace BOL
         }
         public async Task<string> UpdateCredit(Credit credit, ISqlConnectionFactory connectionFactory)
         {
-            string affectedrow;
+            string affectedrow="";
             affectedrow = await _objCashDAL.UpdateCredit(credit, connectionFactory);
             if (credit.Status == "Recevied")
             {
-                if (affectedrow == null)
+                if (affectedrow == "Success")
                 {
 
                     if (decimal.TryParse(credit.DiffCash, out decimal diffCash) && decimal.TryParse(credit.TotalCash, out decimal totalCash))
@@ -92,17 +92,10 @@ namespace BOL
                         }
 
                     }
-                    else
-                    {
-
-                        throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
-                    }
+                   
 
                 }
-                else
-                {
-                    throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
-                }
+               
             }
             return affectedrow;
         }

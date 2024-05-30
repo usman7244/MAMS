@@ -70,13 +70,11 @@ namespace MAMS.Controllers
                     Console.WriteLine($"Error inserting item: {item.UID}, Exception: {ex.Message}");
                 }
             }
-
+            var response = JsonConvert.SerializeObject("Success");
+            return Json(new { success = "true", data = new { response } });
             return RedirectToAction("Index");
         }
-
-
-
-        public async Task<IActionResult> ExpenseEdit(int Id)
+       public async Task<IActionResult> ExpenseEdit(int Id)
         {
             var expense = await _objExpenseBOL.GetSpecificExpenseInfo(Id, _connectionFactory);
             expense.DiffCash = expense.Amount;

@@ -138,10 +138,12 @@
                                 url: "/Deposit/DeleteDeposit",
                                 data: { ID: uId },
                                 success: function (data) {
+                                    debugger;
                                     console.log(data);
 
                                     $('#alertSuccess').show();
                                     setTimeout(function () {
+                                        $("#alertDanger").hide();
                                         window.location.href = '/Deposit/Index';
                                     }, 2000);
                                 }

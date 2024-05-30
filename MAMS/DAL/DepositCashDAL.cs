@@ -73,20 +73,21 @@ namespace DAL
 
             return deposit;
         }
-        public async Task<int> DeleteDeposit(Deposit deposit, ISqlConnectionFactory connectionFactory)
+        public async Task<string> DeleteDeposit(Deposit deposit, ISqlConnectionFactory connectionFactory)
         {
-
+            string Status = "";
 
             await using var connection = connectionFactory.CreateConnection();
 
             string SQLQuery = "EXEC [dbo].[spDeleteDeposit]  @UID, @ModifiedBy";
 
-            var effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = deposit.UID, ModifiedBy = deposit.ModifiedBy });
+            Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { UID = deposit.UID, ModifiedBy = deposit.ModifiedBy });
 
-            return effectedRows;
+            return Status;
         }
-        public async Task<int> UpdateDeposit(Deposit param, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdateDeposit(Deposit param, ISqlConnectionFactory connectionFactory)
         {
+            string Status = "";
             try
             {
                 await using var connection = connectionFactory.CreateConnection();
@@ -100,9 +101,9 @@ namespace DAL
                                             @BranchId
                                                      ";
 
-                var res = await connection.QueryFirstOrDefaultAsync<int>(SQLQuery, param, null);
+                 Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
 
-                return res;
+                return Status;
             }
             catch (Exception ex)
             {

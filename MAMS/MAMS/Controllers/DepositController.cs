@@ -62,14 +62,12 @@ namespace MAMS.Controllers
             if (deposit != null)
             {
                 affectedRows = await _objCashBOL.DepositAdd(deposit, _connectionFactory);
-                if (affectedRows== "Success" || affectedRows == "Success - Pending")
+                if (affectedRows== "Success")
                 {
-                    ModelState.Clear();
-
-                    return Redirect("Index");
+                    ViewBag.DepositAddStatus = affectedRows;
                 }
             }
-            ViewBag.CreditAddStatus = affectedRows;
+          
             return View();
         }
         public async Task<IActionResult> EditDeposit(int Id)
@@ -113,6 +111,7 @@ namespace MAMS.Controllers
             _deposit.UID = ID;
             _deposit.ModifiedBy = Guid.Empty;
             var affectedRows = _objCashBOL.DeleteDeposit(_deposit, _connectionFactory);
+
             //return Ok(affectedRows);
             return RedirectToAction("Index");
         }

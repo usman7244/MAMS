@@ -58,11 +58,11 @@ namespace MAMS.Controllers
                 affectedRows =await _objCropBOL.CropAdd(crop, _connectionFactory);
                 if (affectedRows > 0)
                 {
-                    ModelState.Clear();
+                    ViewBag.CropAddStatus = affectedRows;
                 }
             }
-            ViewBag.CropAddStatus = affectedRows;
-            return RedirectToAction("Index");
+          
+            return View();
         }
         public async Task<IActionResult> EditCrop(int Id)
         {
@@ -80,11 +80,14 @@ namespace MAMS.Controllers
                 affectedRows = await _objCropBOL.EditCrop(crop, _connectionFactory);
                 if (affectedRows > 0)
                 {
-                  
-                    return RedirectToAction("Index");
+
+                    //return RedirectToAction("Index");
+                    ViewBag.CropAddStatus = affectedRows;
+
                 }
+               
             }
-            ViewBag.CropAddStatus = affectedRows;
+        
             return View();
         }
 
