@@ -1,8 +1,8 @@
 ﻿@model  MAMS_Models.Model.Purchase
 @{
     ViewData["Title"] = "Purchase Crop Edit";
-    List<MAMS_Models.Model.Crop> Crops = new List<MAMS_Models.Model.Crop>();
-    List<MAMS_Models.Model.Bag> Bags = new List<MAMS_Models.Model.Bag>();
+    List<MAMS_Models.Model.CropAndBag> Crops = new List<MAMS_Models.Model.CropAndBag>();
+    List<MAMS_Models.Model.CropAndBag> Bags = new List<MAMS_Models.Model.CropAndBag>();
     List<MAMS_Models.Model.Expense> ExpenseList = new List<MAMS_Models.Model.Expense>();
     List<MAMS_Models.Model.CustomerType> CustomersType = new List<MAMS_Models.Model.CustomerType>();
     
@@ -96,6 +96,12 @@
                         <input type="text" class="form-control" disabled id="totallPrice" value="@Model.TotalCropPrice">
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group" style="display:none">
+                        <label class="bmd-label-floating">New Total Price</label>
+                        <input type="number" class="form-control" min="0" id="Diffprice" min="0" max="2147483647" asp-for="@Model.DiffCash">
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -118,6 +124,10 @@
                         <input type="number" class="form-control" min="0" id="idTotallBags" value="@Model.BagTotal">
                     </div>
                 </div>
+                @* New Code Add *@
+               
+
+
             </div>
         </div>
     </div>
@@ -239,11 +249,14 @@
         var uid = 0;
         if (description == "" || amount == "" || parseInt(amount) == 0) {
             //doNothing
-        } else {
+        } else
+            {
+            
             $('#expnsTable tbody').append('<tr class="child">' + 
                 '<td><font class="fontsize">' + description + '</font></td>' +
                 '<td><font class="fontsize">' + amount + '</font></td>' +
                 '<td><div class="text-center">' +
+             
                 '<button class="icon-btn" style="height:30px;min-width:35px;margin:0;padding:0;border:0px" id="btnDelExpns">' +
                 '<i class="fa fa-trash" style="color:red"></i>' +
                 ' </button>' +
@@ -271,11 +284,11 @@
         }
     });
     $("#expnsTable").on('click', "#btnDelExpns", function () {
-       debugger;
+       
         var row = $(this).closest('tr');
         var iId = $.trim($(this).closest('tr').find("td:eq(3)").text());
         var itmPrice = $.trim($(this).closest('tr').find("td:eq(1)").text()); 
-        debugger;
+        
 
         var fKCustomerType = $('#slctCusType').val();
         var fkCustomer = $('#slctCusName').val();
@@ -326,6 +339,7 @@
         var expItem = { ExpDescription: '', Amount: parseInt(itmPrice), UID: parseInt(iId) };
         $("#txtExpenseDescription").val("");
         $.confirm({
+            
             theme: 'material',
             title: ' Confirm ',
             content: ' Delete Confirmation ',
@@ -342,9 +356,10 @@
                     text: 'Yes',
                     btnClass: 'btn-green',
                     action: function () {
+                        
                         $.each(itemDetailList, function (i, val) {
                             if (val != null) {
-                                debugger;
+                                
                                 var iiID = val.UID;
                                 if (iiID == parseInt(iId)) {
 
@@ -611,7 +626,7 @@
 
     /* $("#btnSave").click(function () {*/
     $('form').on('submit', function (e) {
-
+        debugger;
         
         var fKCustomerType = $('#slctCusType').val();
         var fkCustomer = $('#slctCusName').val();
@@ -628,13 +643,21 @@
         var UID = parseInt($('#idUID').val());
         var priceWithExpense = parseInt($('#idPriceWithExpense').val());
         var totalExpense = parseInt($('#idTotalExpense').val());
+        var DiffCash = parseInt($('#Diffprice').val());
 
+        if (isNaN(priceWithExpense)) { 
+            priceWithExpense = parseInt(totallPrice);
+        }
+
+        if (isNaN(totalExpense)) {
+            totalExpense = 0;
+        }
         
         var cashInHand = parseInt('@ViewBag.CashHistory');
-
-        if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense)) {
+        debugger;
+        if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense) && bagType.length > 0) {
             totallPrice = parseInt(totallPrice);
-            /*e.preventDefault();*/
+            e.preventDefault();
             var model =
             {
                 UID: UID,
@@ -653,8 +676,8 @@
 
                 FK_BagType: parseInt(bagType),
                 BagWeight: parseInt(bagWeight),
-                BagTotal: parseInt(totallBags)
-
+                BagTotal: parseInt(totallBags),
+                       DiffCash: @Model.DiffCash
             };
             
             var expItems = new Array();
@@ -675,12 +698,12 @@
                 {
                     
                     var dataObj1 = JSON.parse(data.data.response);
-                    if (dataObj1 == "Success")
-                    {
+                    if (dataObj1 == "Success") {
                         $("#alertSuccess").show();
                         setTimeout(function () {
-                            $("#alertSuccess").hide();
-                        }, 5000);
+                            window.location.href = '/Purchase/Index';
+                        }, 2000);
+
                         $('#slctCusType').val("");
                         $('#slctCusName').val("");
                         $('#slctCrop').val("");
@@ -702,10 +725,10 @@
                     }
                     else
                     {
-                        $("#alertDanger").show();
+                        $("#alertSuccess").show();
                         setTimeout(function () {
-                            $("#alertDanger").hide();
-                        }, 5000);
+                            window.location.href = '/Purchase/Index';
+                        }, 2000);
 
                     }
 
@@ -734,6 +757,15 @@
             }
             if (totallPrice=="") {
                 $("#totallPrice").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter price</div>");
+            }
+            if (bagType == "") {
+                $("#slctBagType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Bag</div>");
+            }
+            if (fKCustomerType == "") {
+                $("#slctCusType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Customer</div>");
+            }
+            if (fkCustomer == "") {
+                $("#slctCusName").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Name</div>");
             }
             return false;
         }

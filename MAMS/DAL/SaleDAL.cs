@@ -10,6 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Linq;
+using Newtonsoft.Json;
+using MAMS_Models.Extenions;
+using static MAMS_Models.Enums.EnumTypes;
+using MAMS_Models.Enums;
 
 namespace DAL
 {
@@ -96,17 +100,168 @@ namespace DAL
              _sale = await connection.QueryFirstOrDefaultAsync<Sale>(SQLQuery, param, null); 
             return _sale;
         }
-        public async Task<List<Sale>> GetAll(Sale param, ISqlConnectionFactory connectionFactory)
-        {
-            _sales = new List<Sale>();
-            await using var connection = connectionFactory.CreateConnection();
-            string SQLQuery = @" EXEC [dbo].[spGetAllSaleCrop]
-                                        @BranchId ,
-		                                @CreatedBy ; ";
 
-            var result = await connection.QueryMultipleAsync(SQLQuery, param, null);
-            _sales = result.Read<Sale>().ToList();
-            return _sales;
+        public async Task<List<Sale>> GetAllSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
+        {
+            var saleList = new List<Sale>();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetSaleCrop] @BranchId, @CreatedBy";
+
+            var sales = await connection.QueryAsync<Sale>(SQLQuery, new { BranchId = sale.BranchId, CreatedBy = sale.CreatedBy });
+
+            saleList = sales.ToList();
+            return saleList;
         }
+
+
+        public async Task<string> SaleCropAdd(Sale sale, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        {
+            string _sale = JsonConvert.SerializeObject(sale);
+            string _expenses = JsonConvert.SerializeObject(expenses);
+            string response = "";
+
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+
+                string SQLQuery = "EXEC [dbo].[spCreateSaleCrop] @JsonStringSale, @JsonStringExpense";
+
+                var result = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringSale = _sale, JsonStringExpense = _expenses });
+
+                if (result != null)
+                {
+                    response = result;
+                }
+            }
+            catch (Exception ex)
+            {
+               
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            
+            }
+
+            return response;
+        }
+        public async Task<string> DeleteSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
+        {
+
+            string Status = "";
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spDeleteSaleCrop]  @UID, @ModifiedBy";
+
+            Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { UID = sale.UID, ModifiedBy = sale.ModifiedBy });
+
+            return Status;
+        }
+        public async Task<Sale> GetSaleCropById(int Id, ISqlConnectionFactory sqlConnectionFactory)
+       {
+            Sale sale = null;
+
+            try
+            {
+                await using var connection = sqlConnectionFactory.CreateConnection();
+
+                string SQLQuery = @"EXEC [dbo].[spGetSaleCropById]  @UID";
+
+                sale = await connection.QueryFirstOrDefaultAsync<Sale>(SQLQuery, new { UID = Id });
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here, you can log it or throw a custom exception
+                Console.WriteLine($"An error occurred while fetching Sale Crop by Id: {ex.Message}");
+                // Optionally, rethrow the exception
+                throw;
+            }
+
+            return sale;
+        }
+
+        public async Task<List<Expense>> GetSaleExpenseById(int Id, ISqlConnectionFactory connectionFactory)
+        {
+            var expenseList = new List<Expense>();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetSaleExpenseById] @PUID";
+
+            var expenses = await connection.QueryAsync<Expense>(SQLQuery, new { PUID = Id });
+
+            expenseList = expenses.ToList();
+
+            return expenseList;
+        }
+        public async Task<string> UpdateSaleCrop(Sale param, ISqlConnectionFactory connectionFactory)
+        {
+            string Status = "";
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+                string SQLQuery = @" EXEC [dbo].[UpdateSaleCrop]
+                                                                @UID,
+                                                                @Fk_Customer,
+                                                                @Fk_Crop,
+                                                                @WeightInMaun,
+                                                                @WeightInkg,
+                                                                @TotalCropWeight,
+                                                                @PriceInMaun,
+                                                                @PriceInKg,
+                                                                @TotalCropPrice,
+                                                                @TotalExp,
+                                                                @TotalAmountwithExp,
+                                                                @FK_BagType,
+                                                                @BagWeight,
+                                                                @BagTotal,
+                                                                @ModifiedBy";
+                
+
+                 Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param);
+                return Status;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (logging logic would be here)
+                Console.WriteLine(ex.Message); // Replace with actual logging
+                throw; 
+            }
+        }
+        public async Task<string> StockSaleAdd(Sale model, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        {
+            model.Status = EnumExtension.GetDisplayName(StatusEnum.Status);
+           
+            expenses = expenses.Select(expense =>
+            {
+                expense.IsOld = true;
+                return expense;
+            }).ToList();
+            string _sale = JsonConvert.SerializeObject(model);
+            string _expenses = JsonConvert.SerializeObject(expenses);
+            string response = "";
+
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+
+                string SQLQuery = "EXEC [dbo].[spCreateSaleCrop] @JsonStringSale, @JsonStringExpense";
+
+                var result = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringSale = _sale, JsonStringExpense = _expenses });
+
+                if (result != null)
+                {
+                    response = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (you can replace this with your logging mechanism)
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                // Optionally rethrow the exception or handle it as per your requirements
+            }
+
+            return response;
+        }
+
     }
 }

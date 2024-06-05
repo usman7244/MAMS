@@ -1,184 +1,126 @@
-﻿using MAMS_Models.Extenions;
+﻿using DAL.Sql;
+using Dapper;
+using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DAL
 {
     public class Customer_DAL
     {
-        private ConnectionLayer _connection;
         private List<Customer> _customers;
         private Customer _customer;
 
         public Customer_DAL()
         {
-            _connection = new ConnectionLayer();
             _customers = new List<Customer>();
             _customer = new Customer();
         }
 
-        public int InsertCustomerInfo(Customer customer)
+        
+        public async Task<int> InsertCustomerInfo(Customer customer, ISqlConnectionFactory connectionFactory)
         {
             int effectedRows = 0;
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spCreateCustomer";
-                    cmd.Parameters.AddWithValue("@Name", customer.Name);
-                    cmd.Parameters.AddWithValue("@Phone", customer.Phone);
-                    cmd.Parameters.AddWithValue("@Email", customer.Email);
-                    cmd.Parameters.AddWithValue("@CNIC", customer.CNIC);
-                    cmd.Parameters.AddWithValue("@City", customer.City);
-                    cmd.Parameters.AddWithValue("@Country", customer.Country);
-                    cmd.Parameters.AddWithValue("@CusType", customer.CusType);
-                    cmd.Parameters.AddWithValue("@ComShopName", customer.ComShopName);
-                    cmd.Parameters.AddWithValue("@ComAddress", customer.ComAddress);
-                    cmd.Parameters.AddWithValue("@CreatedBy", customer.CreatedBy);
-                    cmd.Parameters.AddWithValue("@BranchId", customer.BranchId);
 
-                    effectedRows = cmd.ExecuteNonQuery();
-                }
-            }
-            _connection.ConnectionClose();
-            return effectedRows;
-        }
-        public List<Customer> GetCustomerInfo(Customer customer)
-        {
-            _customers = new List<Customer>();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetAllCustomerInfo";
-                    cmd.Parameters.AddWithValue("@CreatedBy", customer.CreatedBy);
-                    cmd.Parameters.AddWithValue("@BranchId", customer.BranchId);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _customer = new Customer();
-                            _customer.UID =reader[0].ToString().ToGuid();
-                            _customer.Name = reader[1].ToString();
-                            _customer.Phone = reader[2].ToString();
-                            _customer.Email = reader[3].ToString();
-                            _customer.CNIC = reader[4].ToString();
-                            _customer.City = reader[5].ToString();
-                            _customer.Country = reader[6].ToString();
-                            _customer.CusType = reader[7].ToString();
-                            _customer.ComShopName = reader[8].ToString();
-                            _customer.ComAddress = reader[9].ToString();  
-                            _customer.CreatedDate = Convert.ToDateTime(reader[11].ToString());
-                            _customer.UserName = reader[10].ToString();
-                            _customers.Add(_customer);
-                        }
-                    }
-                    reader.Close();
-                }
-            }
-            _connection.ConnectionClose();
-            return _customers;
-        }
-        public Customer GetSpecificCustomerInfo(Guid Id)
-        {
-            _customer = new Customer();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetCustomerInfo";
-                    cmd.Parameters.AddWithValue("@UID", Id);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _customer.UID = reader[0].ToString().ToGuid();
-                            _customer.Name = reader[1].ToString();
-                            _customer.Phone = reader[2].ToString();
-                            _customer.Email = reader[3].ToString();
-                            _customer.CNIC = reader[4].ToString();
-                            _customer.City = reader[5].ToString();
-                            _customer.Country = reader[6].ToString();
-                            _customer.CusType = reader[7].ToString();
-                            _customer.ComShopName = reader[8].ToString();
-                            _customer.ComAddress = reader[9].ToString(); 
-                            _customer.CreatedBy = reader[10].ToString().ToGuid(); 
-                            _customer.CreatedDate =Convert.ToDateTime(reader[11].ToString()); 
-                        }
-                    }
-                    reader.Close();
-                }
-            }
-            _connection.ConnectionClose();
-            return _customer;
-        }
-        public int CustomerEdit(Customer customer)
-        {
-            int effectedRows = 0;
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spUpdateCustomerInfo";
-                    cmd.Parameters.AddWithValue("@UID", customer.UID);
-                    cmd.Parameters.AddWithValue("@Name", customer.Name);
-                    cmd.Parameters.AddWithValue("@Phone", customer.Phone);
-                    cmd.Parameters.AddWithValue("@Email", customer.Email);
-                    cmd.Parameters.AddWithValue("@CNIC", customer.CNIC);
-                    cmd.Parameters.AddWithValue("@City", customer.City);
-                    cmd.Parameters.AddWithValue("@Country", customer.Country);
-                    cmd.Parameters.AddWithValue("@CusType", customer.CusType);
-                    cmd.Parameters.AddWithValue("@ComShopName", customer.ComShopName);
-                    cmd.Parameters.AddWithValue("@ComAddress", customer.ComAddress);
-                    cmd.Parameters.AddWithValue("@ModifiedBy", customer.ModifiedBy);
+            await using var connection = connectionFactory.CreateConnection();
 
-                    effectedRows = cmd.ExecuteNonQuery();
-                }
-            }
-            _connection.ConnectionClose();
+            string SQLQuery = "EXEC [dbo].[spCreateCustomer] @Name, @Phone, @Email, @CNIC, @City, @Country, @CusType, @ComShopName, @ComAddress, @CreatedBy, @BranchId";
+
+            effectedRows = await connection.ExecuteAsync(SQLQuery, new
+            {
+                Name = customer.Name,
+                Phone = customer.Phone,
+                Email = customer.Email,
+                CNIC = customer.CNIC,
+                City = customer.City,
+                Country = customer.Country,
+                CusType = customer.CusType,
+                ComShopName = customer.ComShopName,
+                ComAddress = customer.ComAddress,
+                CreatedBy = customer.CreatedBy,
+                BranchId = customer.BranchId
+            });
+
             return effectedRows;
         }
-        public int DeleteCustomer(Customer customer)
+
+        public async Task<List<Customer>> GetCustomerInfo(Customer customer, ISqlConnectionFactory connectionFactory)
+        {
+            var customerList = new List<Customer>();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetAllCustomerInfo]  @BranchId,@CreatedBy";
+
+            var customers = await connection.QueryAsync<Customer>(SQLQuery, new { BranchId = customer.BranchId, CreatedBy = customer.CreatedBy });
+
+            customerList = customers.ToList();
+
+            return customerList;
+        }
+
+            
+
+
+        public async Task<Customer> GetSpecificCustomerInfo(Guid Id, ISqlConnectionFactory connectionFactory)
+        {
+            Customer customer = null;
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetCustomerInfo] @UID";
+
+            customer = await connection.QueryFirstOrDefaultAsync<Customer>(SQLQuery, new { UID = Id });
+
+            return customer;
+        }
+
+
+       
+        public async Task<int> CustomerEdit(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
+        {
+            int affectedRows = 0;
+            await using var connection = sqlConnectionFactory.CreateConnection();
+
+            string SQLQuery = @"UPDATE [dbo].[CustomerMgt.CustomerInfo]
+                        SET [Name] = @Name,
+                            [Phone] = @Phone,
+                            [Email] = @Email,
+                            [CNIC] = @CNIC,
+                            [City] = @City,
+                            [Country] = @Country,
+                            [CusType] = @CusType,
+                            [ComShopName] = @ComShopName,
+                            [ComAddress] = @ComAddress,
+                            [ModifiedBy] = @ModifiedBy,
+                            [ModifiedDate] = GETUTCDATE()
+                        WHERE [UID] = @UID";
+
+            affectedRows = await connection.ExecuteAsync(SQLQuery, customer);
+
+            return affectedRows;
+        }
+
+        public async Task<int> DeleteCustomer(Customer customer, ISqlConnectionFactory connectionFactory)
         {
             int effectedRows = 0;
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spDeleteCustomerInfo";
-                    cmd.Parameters.AddWithValue("@UID", customer.UID);
-                    cmd.Parameters.AddWithValue("@ModifiedBy", customer.ModifiedBy);
-                    effectedRows = cmd.ExecuteNonQuery();
-                }
-            }
-            _connection.ConnectionClose();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spDeleteCustomerInfo] @UID, @ModifiedBy";
+
+            effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = customer.UID, ModifiedBy = customer.ModifiedBy });
+
             return effectedRows;
         }
+
+
+       
     }
 }

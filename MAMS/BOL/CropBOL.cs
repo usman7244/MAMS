@@ -1,7 +1,9 @@
-﻿using MAMS_Models.Model;
+﻿using DAL.Sql;
+using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BOL
 {
@@ -13,16 +15,18 @@ namespace BOL
             _objCropDAL = new DAL.CropDAL();
 
         }
-        public List<Crop> GetCropInfo(Crop crop)
+        public async Task<List<CropAndBag>> GetCropInfo(CropAndBag crop, ISqlConnectionFactory connectionFactory)
         {
-            return _objCropDAL.GetCropInfo(crop);
+            var result =await _objCropDAL.GetCropInfo(crop, connectionFactory);
+            return result;
         }
-        public int CropAdd(Crop crop)
+
+        public async Task<int> CropAdd(CropAndBag crop, ISqlConnectionFactory connectionFactory)
         {
             int affectedRows = 0;
             if (crop != null)
             {
-                affectedRows = _objCropDAL.CropAdd(crop);
+                affectedRows =await _objCropDAL.CropAdd(crop, connectionFactory);
                 return affectedRows;
             }
             else
@@ -30,16 +34,17 @@ namespace BOL
                 return affectedRows;
             }
         }
-        public Crop GetSpecificCropInfo(int Id)
+        public async Task<CropAndBag> GetSpecificCropInfo(int Id, ISqlConnectionFactory connectionFactory)
         {
-            return _objCropDAL.GetSpecificCropInfo(Id);
+            var result=await _objCropDAL.GetSpecificCropInfo(Id, connectionFactory);
+            return result;
         }
-        public int EditCrop(Crop crop)
+        public async Task<int> EditCrop(CropAndBag crop, ISqlConnectionFactory connectionFactory)
         {
             int affectedRows = 0;
             if (crop != null)
             {
-                affectedRows = _objCropDAL.EditCrop(crop);
+                affectedRows =await _objCropDAL.EditCrop(crop, connectionFactory);
                 return affectedRows;
             }
             else
@@ -47,9 +52,9 @@ namespace BOL
                 return affectedRows;
             }
         }
-        public int DeleteCrop(Crop crop)
+        public Task <int> DeleteCrop(CropAndBag crop, ISqlConnectionFactory connectionFactory)
         {
-            return _objCropDAL.DeleteCrop(crop);
+            return _objCropDAL.DeleteCrop(crop,connectionFactory);
         }
     }
 }

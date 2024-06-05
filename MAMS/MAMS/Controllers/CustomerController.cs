@@ -1,4 +1,6 @@
-﻿using MAMS_Models.Model;
+﻿using DAL.Sql;
+using MAMS_Models.Model;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,17 +13,19 @@ namespace MAMS.Controllers
     {
         private BOL.CustomerBOL _objCustomerBOL;
         private Customer _customer;
-        public CustomerController()
+        private readonly ISqlConnectionFactory _connectionFactory;
+        public CustomerController(ISqlConnectionFactory connectionFactory)
         {
             _objCustomerBOL = new BOL.CustomerBOL();
             _customer= new Customer();
+            _connectionFactory = connectionFactory;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             _customer=new Customer();
             _customer.CreatedBy = Guid.Empty;
             _customer.BranchId = Guid.Empty;
-            List<Customer> customers= _objCustomerBOL.GetCustomerInfo(_customer);
+            List<Customer> customers=await _objCustomerBOL.GetCustomerInfo(_customer, _connectionFactory);
             return View(customers);
         }
         
@@ -30,38 +34,38 @@ namespace MAMS.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult NewCustomerAdd(Customer customer)
+        public async Task<IActionResult> NewCustomerAdd(Customer customer)
         {
             int affectedRows = 0;
             customer.BranchId=Guid.Empty;
             customer.CreatedBy=Guid.Empty;
             if (customer!=null)
             {
-                affectedRows= _objCustomerBOL.InsertCustomerInfo(customer);
+                affectedRows=await _objCustomerBOL.InsertCustomerInfo(customer, _connectionFactory);
                 if (affectedRows>0)
                 {
                     ModelState.Clear(); 
                 }
             }
             ViewBag.CusAddStatus = affectedRows;
-            return View();
+            return RedirectToAction("Index");
         }
         
-        public IActionResult CustomerEdit(Guid Id)
+        public async Task<IActionResult> CustomerEdit(Guid Id)
         {
-             var customer = _objCustomerBOL.GetSpecificCustomerInfo(Id);
+             var customer =await _objCustomerBOL.GetSpecificCustomerInfo(Id, _connectionFactory);
 
             return View(customer);
         }
         [HttpPost]
-        public IActionResult CustomerEdit(Customer customer)
+        public async Task<IActionResult> CustomerEdit(Customer customer)
         {
             int affectedRows = 0;
             customer.ModifiedBy=Guid.Empty;
 
             if (customer != null)
             {
-                affectedRows = _objCustomerBOL.CustomerEdit(customer);
+                affectedRows =await _objCustomerBOL.CustomerEdit(customer, _connectionFactory);
                 if (affectedRows > 0)
                 {
                     return RedirectToAction("Index");
@@ -71,13 +75,13 @@ namespace MAMS.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult DeleteCustomer(Guid cusId)
+        public async Task<IActionResult> DeleteCustomer(Guid cusId)
         {
             _customer = new Customer();
             _customer.ModifiedBy = Guid.Empty;
             _customer.UID = cusId;
 
-            int affectedRows = _objCustomerBOL.DeleteCustomer(_customer); 
+            int affectedRows =await _objCustomerBOL.DeleteCustomer(_customer, _connectionFactory); 
             return Ok(affectedRows);
         }
          

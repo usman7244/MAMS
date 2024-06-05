@@ -1,60 +1,119 @@
 ﻿using DAL;
 using DAL.Sql;
+using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static MAMS_Models.Enums.EnumTypes;
 
 namespace BOL
 {
     public class PurchaseBOL
     {
         private PurchaseDAL _objPurchaseDAL;
-        private List<Bag> _bags;
+        private List<CropAndBag> _bags;
+        private DAL.CommonDAL _objCommonDAL;
         public PurchaseBOL()
         {
             _objPurchaseDAL = new PurchaseDAL();
-            _bags = new List<Bag>();
+            _bags = new List<CropAndBag>();
+            _objCommonDAL = new DAL.CommonDAL();
         }
-        public List<CustomerType> GetCustomerType(string cusType, Guid branchId, Guid createdBy)
+        public async Task<List<CustomerType>> GetCustomerType(string cusType, Guid branchId, Guid createdBy, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objPurchaseDAL.GetCustomerType(cusType, branchId, createdBy);
+            return await _objPurchaseDAL.GetCustomerType(cusType, branchId, createdBy, sqlConnectionFactory);
         }
-        public List<Bag> GetBags(Guid branchId, Guid createdBy)
+        public async Task<List<CropAndBag>> GetBags(Guid branchId, Guid createdBy,string Type, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objPurchaseDAL.GetBags(branchId, createdBy);
+            return await _objPurchaseDAL.GetBags(branchId, createdBy,Type, sqlConnectionFactory);
         }
-        public CashHistory GetCashHistory(Guid branchId, Guid createdBy)
+        public async Task<CashHistory> GetCashHistory(Guid branchId, Guid createdBy, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objPurchaseDAL.GetCashHistory(branchId, createdBy);
+            return await _objPurchaseDAL.GetCashHistory(branchId, createdBy, sqlConnectionFactory);
         }
-        public List<Purchase> GetAllPurchasedCrop(Purchase purchase)
+        public async Task<List<Purchase>> GetAllPurchasedCrop(Purchase purchase, ISqlConnectionFactory sqlConnectionFactory)
         {
-            return _objPurchaseDAL.GetAllPurchasedCrop(purchase);
-        }
-        public Purchase GetPurchasedCropById(int purchCropId)
-        {
-            return _objPurchaseDAL.GetPurchasedCropById(purchCropId);
-        }
-        public List<Expense> GetPurchasedExpenseById(int purchCropId)
-        {
-            return _objPurchaseDAL.GetPurchasedExpenseById(purchCropId);
-        }
-        public string AddPurchaseCrop(Purchase purchase, List<Expense> expenses)
-        {
-            return _objPurchaseDAL.AddPurchaseCrop(purchase, expenses);
-        }
-        public int DeletePurchaseCrop(Purchase purchase)
-        {
-            return _objPurchaseDAL.DeletePurchaseCrop(purchase);
+            return await _objPurchaseDAL.GetAllPurchasedCrop(purchase, sqlConnectionFactory);
         }
 
-        public async Task<int> UpdatePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
+
+        public async Task<Purchase> GetPurchasedCropById(int purchCropId, ISqlConnectionFactory connectionFactory)
         {
-            var res=await _objPurchaseDAL.UpdatePurchaseCrop(purchase, connectionFactory);
-            return res;
+           var resul =await _objPurchaseDAL.GetPurchasedCropById(purchCropId, connectionFactory);
+            return resul;
+        }
+        public async Task<List<Expense>> GetPurchasedExpenseById(int purchCropId, ISqlConnectionFactory connectionFactory)
+        {
+            var re=await _objPurchaseDAL.GetPurchasedExpenseById(purchCropId, connectionFactory);
+            return re;
+        }
+        public async Task<string> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        {
+            var result=await _objPurchaseDAL.AddPurchaseCrop(purchase, expenses, connectionFactory);
+            return result;
+        }
+        public async Task<string> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
+        {
+            string result = await _objPurchaseDAL.DeletePurchaseCrop(purchase, connectionFactory);
+            return result;
+        }
+
+
+        public async Task<string> UpdatePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
+        {
+            string affectedrow = null;
+             affectedrow = await _objPurchaseDAL.UpdatePurchaseCrop(purchase, connectionFactory);
+            if (affectedrow == "Success")
+            {
+
+                if (decimal.TryParse(purchase.DiffCash, out decimal diffCash) && decimal.TryParse(purchase.TotalCropPrice.ToString(), out decimal totalCash))
+                {
+                    var diff = Convert.ToInt32(diffCash - totalCash);
+                    if (diff < 0)
+                    {
+                        var _cashHistory = new CashHistory
+                        {
+                            BranchId = Guid.Empty,
+                            CashLost = diff.ToString().Replace("-", ""),
+                            Details = EnumExtension.GetDisplayName(ExpenseType.Purchase),
+
+                        };
+
+
+                        var re = await _objCommonDAL.UpdateCashHistorybyLoss(_cashHistory, connectionFactory);
+                        return re;
+                    }
+                    else if (diff > 0)
+                    {
+                        var _cashHistory = new CashHistory
+                        {
+                            BranchId = Guid.Empty,
+                            CashProfit = diff.ToString(),
+                            Details = EnumExtension.GetDisplayName(ExpenseType.Purchase),
+
+                        };
+
+
+                        var re = await _objCommonDAL.UpdateCashHistorybyProfit(_cashHistory, connectionFactory);
+                        return re;
+                    }
+
+                }
+                else
+                {
+
+                    throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
+                }
+
+            }
+            else
+            {
+                throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
+            }
+            return affectedrow;
         }
 
     }

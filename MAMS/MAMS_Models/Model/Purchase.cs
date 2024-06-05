@@ -17,7 +17,7 @@ namespace MAMS_Models.Model
         public Decimal WeightInkg { get; set; }
         public Decimal TotalCropWeight { get; set; }
         public int PriceInMaun { get; set; }
-        public Decimal PriceInKg { get; set; }
+        public decimal PriceInKg { get; set; }
         public int TotalCropPrice { get; set; }
         public int TotalExp { get; set; } 
         public int TotalAmountwithExp { get; set; }
@@ -29,7 +29,7 @@ namespace MAMS_Models.Model
         public Guid? ModifiedBy { get; set; } 
         public Guid? BranchId { get; set; }
         public string UserName { get; set; }
-        
+        public string DiffCash { get; set; }
     }
      
 }

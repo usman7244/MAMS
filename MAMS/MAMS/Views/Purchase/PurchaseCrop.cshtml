@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Purchase Crop";
-    List<MAMS_Models.Model.Crop> Crops = new List<MAMS_Models.Model.Crop>();
-    List<MAMS_Models.Model.Bag> Bags = new List<MAMS_Models.Model.Bag>();
+    List<MAMS_Models.Model.CropAndBag> Crops = new List<MAMS_Models.Model.CropAndBag>();
+    List<MAMS_Models.Model.CropAndBag> Bags = new List<MAMS_Models.Model.CropAndBag>();
     Crops = ViewBag.Crops;
     Bags = ViewBag.Bags;
 
@@ -49,19 +49,19 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="bmd-label-floating">Weight In Maun</label>
-                        <input type="number" class="form-control" min="0" id="idWeightInMaun">
+                        <input type="number" class="form-control" " min="0" max="2147483647"  id="idWeightInMaun">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="bmd-label-floating">Weight In KG</label>
-                        <input type="number" class="form-control" min="0" id="idWeightInKG">
+                        <input type="number" class="form-control" " min="0" max="2147483647" id="idWeightInKG">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="bmd-label-floating" id="lblTotallWeight">Totall Weight In Maun </label>
-                        <input type="text" class="form-control" disabled id="totallWeight">
+                        <input type="text" class="form-control" " min="0" max="2147483647" disabled id="totallWeight">
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="bmd-label-floating">Price per KG</label>
-                        <input type="number" class="form-control" min="0" id="idPricePerKG">
+                        <input type="number" class="form-control" " min="0" max="2147483647" id="idPricePerKG">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -84,12 +84,13 @@
                         <input type="text" class="form-control" disabled id="totallPrice">
                     </div>
                 </div>
+
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         @*<label class="bmd-label-floating"> Bag Type</label>*@
-                        <select class="form-select form-control" id="slctBagType" asp-items="@BagsList">
+                        <select class="form-select form-control" required id="slctBagType" asp-items="@BagsList">
                             <option value="">Select Bag Type</option>
                         </select>
                     </div>
@@ -97,13 +98,13 @@
                 <div class="col-md-4">
                     <div class="form-group" id="BagFB">
                         <label class="bmd-label-floating"> Bag Weight</label>
-                        <input type="number" class="form-control" min="0" id="idBagWeight">
+                        <input type="number" class="form-control" " min="0" max="2147483647" id="idBagWeight">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group" id="BagFB">
                         <label class="bmd-label-floating">Totall Bags</label>
-                        <input type="number" class="form-control" min="0" id="idTotallBags">
+                        <input type="number" class="form-control" " min="0" max="2147483647"   id="idTotallBags">
                     </div>
                 </div>
             </div>
@@ -221,12 +222,16 @@
         var itemDetailList = [];
 
         $("#btnAdd").click(function() {
+            debugger;
             var itemDetails;
             var description = $.trim($("#expDes").val());
             var amount = $.trim($("#amount").val());
-            if (description == "" || amount == "" || parseInt(amount) == 0) {
+            if (description == "" || amount == "" || parseInt(amount) == 0) 
+            {
                 //doNothing
-            } else {
+            } 
+            else 
+            {
                 $('#expnsTable tbody').append('<tr class="child">' +
                     '<td><font class="fontsize">' + description + '</font></td>' +
                     '<td><font class="fontsize">' + amount + '</font></td>' +
@@ -242,7 +247,8 @@
                 $("#amount").val("");
                 
                 var items = 0;
-                $('#expnsTable tbody tr td:nth-child(2)').each(function() {
+                $('#expnsTable tbody tr td:nth-child(2)').each(function() 
+                {
                     items = items + parseInt($(this).text());
                 });
                 var price = $("#totallPrice").val();
@@ -257,7 +263,7 @@
             }
         });
         $("#expnsTable").on('click', "#btnDelExpns", function() {
-            
+            debugger;
             var row = $(this).closest('tr');
             var iId = $.trim($(this).closest('tr').find("td:eq(0)").text());
             var iName = $.trim($(this).closest('tr').find("td:eq(2)").text());
@@ -514,8 +520,9 @@
             $(e.target).blur();
         });
 
-        /* $("#btnSave").click(function () {*/
-        $('form').on('submit', function(e) {
+        $("#btnSave").click(function () 
+        
+       /*  $('form').on('submit', function(e) */ {
 
 
             var fKCustomerType = $('#slctCusType').val();
@@ -536,8 +543,8 @@
 
             
             var cashInHand = parseInt('@ViewBag.CashHistory');
-
-            if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense)) {
+            debugger;
+        if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense) && bagType.length > 0) {
                 totallPrice = parseInt(totallPrice);
                 /*e.preventDefault();*/
                 var model =
@@ -549,8 +556,8 @@
                     WeightInkg: parseFloat(weightInkg),
                     TotalCropWeight: parseFloat(totalCropWeight),
 
-                    PriceInMaun: pricePerMaun,
-                    PriceInKg: parseFloat(pricePerKG),
+                     PriceInMaun: pricePerMaun,
+                    PriceInKg: pricePerKG,
                     TotalCropPrice: totallPrice,
                     TotalAmountwithExp: priceWithExpense,
                     TotalExp: totalExpense,
@@ -577,11 +584,11 @@
                     success: function(data) {
                         
                         var dataObj1 = JSON.parse(data.data.response);
-                        if (dataObj1 == "Success") {
-                            $("#alertSuccess").show();
-                            setTimeout(function() {
-                                $("#alertSuccess").hide();
-                            }, 5000);
+                    if (dataObj1 == "Success") {
+                        $("#alertSuccess").show();
+                        setTimeout(function () {
+                            window.location.href = '/Purchase/Index';
+                        }, 2000);
                             $('#slctCusType').val("");
                             $('#slctCusName').val("");
                             $('#slctCrop').val("");
@@ -634,14 +641,23 @@
                 }
                 if (totallPrice == "") {
                     $("#totallPrice").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter price</div>");
-                } 
-                return false;
+                }
+            if (bagType == "") {
+                $("#slctBagType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Bag</div>");
+            }
+            if (fKCustomerType == "") {
+                $("#slctCusType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Customer</div>");
+            }
+            if (fkCustomer == "") {
+                $("#slctCusName").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Name</div>");
+            }
+            return false;
             }
 
 
         });
 
-
+    
 
 
         function showLoader() {

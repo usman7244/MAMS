@@ -1,5 +1,7 @@
 ﻿@model MAMS_Models.Model.Customer
-@{ var status = ViewBag.CusAddStatus; }
+@{
+    var status = ViewBag.CusAddStatus;
+}
 @{
     ViewData["Title"] = "Customer";
 }
@@ -23,7 +25,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label class="bmd-label-floating">Phone</label>
-                        <input type="text" asp-for="Phone" class="form-control" required>
+                        <input type="text" asp-for="Phone" min="0" max="2147483647" class="form-control" required>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -35,7 +37,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label class="bmd-label-floating">CNIC</label>
-                        <input type="text" asp-for="CNIC" class="form-control">
+                        <input type="text" asp-for="CNIC" min="0" max="2147483647"  class="form-control">
                     </div>
                 </div>
             </div>
@@ -116,24 +118,25 @@
     <script src="~/js/bootstrap-notify.js"></script>
 }
 <script type="text/javascript">
-    
+
+
     $("#alertSuccess").hide();
     $("#alertDanger").hide();
+    debugger;
     var status = ('@status');
-    if (status == "1")
-    {
+    if (status == "1") {
         $("#alertSuccess").show();
         setTimeout(function () {
             $("#alertSuccess").hide();
         }, 5000);
     }
-    if (status == "0")
-    {
+    if (status == "0") {
         $("#alertDanger").show();
         setTimeout(function () {
             $("#alertDanger").hide();
         }, 5000);
     }
+
 
     function getval(sel) {
         var CheckCust = $('#cusSlct').val();
@@ -176,5 +179,10 @@
     i.fa.fa-plus-circle {
         font-size: 15px !important;
     }
+
+
 </style>
+<!-- CSS section of the first page -->
+
+
 <!-- #endregion -->

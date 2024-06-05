@@ -13,330 +13,226 @@ using Dapper;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 namespace DAL
 {
     public class PurchaseDAL
     {
-        private ConnectionLayer _connection;
         private Purchase _purchase;
         private List<Purchase> _purchaseList;
         private CustomerType _custType;
         private List<CustomerType> _custTypeList;
         private CashHistory _cashHistory;
         private List<CashHistory> _cashHistoryList;
-        private Bag _bag;
-        private List<Bag> _bags;
+        private CropAndBag _bag;
+        private List<CropAndBag> _bags;
         private Expense _expense;
         private List<Expense> _expenseList;
 
         public PurchaseDAL()
         {
-            _connection = new ConnectionLayer();
             _purchaseList = new List<Purchase>();
             _purchase = new Purchase();
             _custType = new CustomerType();
             _custTypeList = new List<CustomerType>();
             _cashHistory = new CashHistory();
             _cashHistoryList = new List<CashHistory>();
-            _bag = new Bag();
-            _bags = new List<Bag>();
+            _bag = new CropAndBag();
+            _bags = new List<CropAndBag>();
             _expense = new Expense();
             _expenseList = new List<Expense>();
 
         }
-        public List<CustomerType> GetCustomerType(string cusType, Guid branchId, Guid createdBy)
+
+        public async Task<List<CustomerType>> GetCustomerType(string cusType, Guid branchId, Guid createdBy, ISqlConnectionFactory connectionFactory)
         {
-            _custTypeList = new List<CustomerType>();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetCustType";
-                    cmd.Parameters.AddWithValue("@CusType", cusType);
-                    cmd.Parameters.AddWithValue("@BranchId", branchId);
-                    cmd.Parameters.AddWithValue("@CreatedBy", createdBy);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _custType = new CustomerType();
-                            _custType.UID = reader["UID"].ToString().ToGuid();
-                            _custType.Name = reader["Cust_Name"].ToString();
-                            _custTypeList.Add(_custType);
-                        }
-                    }
-                    reader.Close();
-                    _connection.ConnectionClose();
-                }
-            }
-            return _custTypeList;
+            var custTypeList = new List<CustomerType>();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetCustType] @CusType, @BranchId, @CreatedBy";
+
+            var custTypes = await connection.QueryAsync<CustomerType>(SQLQuery, new { CusType = cusType, BranchId = branchId, CreatedBy = createdBy });
+
+            custTypeList = custTypes.ToList();
+
+            return custTypeList;
         }
-        public List<Bag> GetBags(Guid branchId, Guid createdBy)
+
+        
+        public async Task<List<CropAndBag>> GetBags(Guid branchId, Guid createdBy,string Type, ISqlConnectionFactory connectionFactory)
         {
-            _bags = new List<Bag>();
-            using (_connection._connection)
+            var bags = new List<CropAndBag>();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetBag] @BranchId, @CreatedBy,@Type";
+
+            var bagReader = await connection.ExecuteReaderAsync(SQLQuery, new { BranchId = branchId, CreatedBy = createdBy,Type=Type });
+
+            while (await bagReader.ReadAsync())
             {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetBag";
-                    cmd.Parameters.AddWithValue("@BranchId", branchId);
-                    cmd.Parameters.AddWithValue("@CreatedBy", createdBy);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _bag = new Bag();
-                            _bag.UID = Convert.ToInt32(reader["UID"]);
-                            _bag.Name = reader["BagName"].ToString();
-                            _bags.Add(_bag);
-                        }
-                    }
-                    reader.Close();
-
-                }
+                var bag = new CropAndBag();
+                bag.UID = Convert.ToInt32(bagReader["UID"]);
+                bag.Name = bagReader["Name"].ToString();
+                bags.Add(bag);
             }
-            _connection.ConnectionClose();
-            return _bags;
-        }
-        public CashHistory GetCashHistory(Guid branchId, Guid createdBy)
-        {
-            _cashHistory = new CashHistory();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetCashHistory";
-                    cmd.Parameters.AddWithValue("@BranchId", branchId);
-                    cmd.Parameters.AddWithValue("@CreatedBy", createdBy);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _cashHistory.UID = Convert.ToInt32(reader["UID"]);
-                            _cashHistory.TotalCash = reader["TotalCash"].ToString();
-                        }
-                    }
-                    reader.Close();
-                    _connection.ConnectionClose();
-                }
-            }
-            return _cashHistory;
-        }
-        public List<Purchase> GetAllPurchasedCrop(Purchase purchase)
-        {
-            _purchaseList = new List<Purchase>();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetPurchaseCrop";
-                    cmd.Parameters.AddWithValue("@BranchId", purchase.BranchId);
-                    cmd.Parameters.AddWithValue("@CreatedBy", purchase.CreatedBy);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _purchase = new Purchase();
-                            _purchase.UID = Convert.ToInt32(reader["UID"]);
-                            _purchase.CustomerName = reader["CustomerName"].ToString();
-                            _purchase.Status = reader["Status"].ToString();
-                            _purchase.CropName = reader["CropName"].ToString();
-                            _purchase.TotalCropWeight = Convert.ToDecimal(reader["TotalCropWeight"].ToString());
-                            _purchase.TotalCropPrice = Convert.ToInt32(reader["TotalCropPrice"].ToString());
-                            _purchase.TotalAmountwithExp = Convert.ToInt32(reader["TotalAmountwithExp"].ToString());
-                            _purchase.TotalExp = Convert.ToInt32(reader["TotalExp"].ToString());
-                            _purchase.UserName = reader["CreatedBy"].ToString();
-                            _purchase.CreatedDate = Convert.ToDateTime(reader["CreatedDate"].ToString());
-                            _purchaseList.Add(_purchase);
-                        }
-                    }
-                    reader.Close();
 
-                }
-            }
-            _connection.ConnectionClose();
-            return _purchaseList;
-        }
-        public Purchase GetPurchasedCropById(int purchCropId)
-        {
-            _purchase = new Purchase();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetPurchaseCropById";
-                    cmd.Parameters.AddWithValue("@UID", purchCropId);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _purchase.UID = Convert.ToInt32(reader["UID"]);
-                            _purchase.CustomerType = reader["FK_CustomerType"].ToString();
-                            _purchase.Fk_Crop = Convert.ToInt32(reader["Fk_Crop"].ToString());
-                            _purchase.WeightInMaun = Convert.ToInt32(reader["WeightInMaun"].ToString());
-                            _purchase.WeightInkg = Convert.ToDecimal(reader["WeightInkg"].ToString());
-                            _purchase.TotalCropWeight = Convert.ToDecimal(reader["TotalCropWeight"].ToString());
-                            _purchase.PriceInMaun = Convert.ToInt32(reader["PriceInMaun"].ToString());
-                            _purchase.PriceInKg = Convert.ToDecimal(reader["PriceInKg"].ToString());
-                            _purchase.TotalCropPrice = Convert.ToInt32(reader["TotalCropPrice"].ToString());
-                            _purchase.TotalExp = Convert.ToInt32(reader["TotalExp"].ToString());
-                            _purchase.TotalAmountwithExp = Convert.ToInt32(reader["TotalAmountwithExp"].ToString());
-                            _purchase.FK_BagType = Convert.ToInt32(reader["FK_BagType"].ToString());
-                            _purchase.BagWeight = Convert.ToInt32(reader["BagWeight"].ToString());
-                            _purchase.BagTotal = Convert.ToInt32(reader["BagTotal"].ToString());
-                            _purchase.CreatedDate = Convert.ToDateTime(reader["CreatedDate"].ToString());
-                            _purchase.Fk_CustomerId = reader["Fk_Customer"].ToString().ToGuid();
-                            _purchase.UserName = reader["CreatedBy"].ToString();
-                        }
-                    }
-                    reader.Close();
+            await bagReader.CloseAsync();
 
-                }
-            }
-            _connection.ConnectionClose();
-            return _purchase;
-        }
-        public List<Expense> GetPurchasedExpenseById(int purchCropId)
-        {
-
-            _expenseList = new List<Expense>();
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spGetPurchaseExpenseById";
-                    cmd.Parameters.AddWithValue("@PUID", purchCropId);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            _expense = new Expense();
-                            _expense.UID = Convert.ToInt32(reader["UID"]);
-                            _expense.ExpDescription = reader["ExpDescription"].ToString();
-                            _expense.Amount = Convert.ToInt32(reader["Amount"].ToString());
-                            _expense.CreatedBy = reader["CreatedBy"].ToString().ToGuid();
-                            _expense.CreatedDate = Convert.ToDateTime(reader["CreatedDate"].ToString());
-
-                            _expenseList.Add(_expense);
-                        }
-                    }
-                    reader.Close();
-
-                }
-            }
-            _connection.ConnectionClose();
-            return _expenseList;
+            return bags;
         }
 
 
-        public string AddPurchaseCrop(Purchase purchase, List<Expense> expenses)
+
+        public async Task<CashHistory> GetCashHistory(Guid branchId, Guid createdBy, ISqlConnectionFactory connectionFactory)
+        {
+            CashHistory cashHistory = null;
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetCashHistory] @BranchId, @CreatedBy";
+
+            cashHistory = await connection.QueryFirstOrDefaultAsync<CashHistory>(SQLQuery, new { BranchId = branchId, CreatedBy = createdBy });
+
+            return cashHistory;
+        }
+
+
+        public async Task<List<Purchase>> GetAllPurchasedCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
+        {
+            var purchaseList = new List<Purchase>();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetPurchaseCrop] @BranchId, @CreatedBy";
+
+            var purchases = await connection.QueryAsync<Purchase>(SQLQuery, new { BranchId = purchase.BranchId, CreatedBy = purchase.CreatedBy });
+
+            purchaseList = purchases.ToList();
+
+            return purchaseList;
+        }
+
+
+
+        public async Task<Purchase> GetPurchasedCropById(int purchCropId, ISqlConnectionFactory sqlConnectionFactory)
+        {
+            Purchase purchase = null;
+            await using var connection = sqlConnectionFactory.CreateConnection();
+
+            string SQLQuery = @"EXEC [dbo].[spGetPurchaseCropById] @UID";
+
+            purchase = await connection.QueryFirstOrDefaultAsync<Purchase>(SQLQuery, new { UID = purchCropId });
+
+            return purchase;
+        }
+
+
+
+
+
+
+  
+        public async Task<List<Expense>> GetPurchasedExpenseById(int purchCropId, ISqlConnectionFactory connectionFactory)
+        {
+            var expenseList = new List<Expense>();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetPurchaseExpenseById] @PUID";
+
+            var expenses = await connection.QueryAsync<Expense>(SQLQuery, new { PUID = purchCropId });
+
+            expenseList = expenses.ToList();
+
+            return expenseList;
+        }
+
+
+
+        
+        public async Task<string> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
             string _purchase = JsonConvert.SerializeObject(purchase);
             string _expenses = JsonConvert.SerializeObject(expenses);
             string response = "";
-            using (_connection._connection)
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spCreatePurchaseCrop] @JsonStringPurchase, @JsonStringExpense";
+
+            var result = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringPurchase = _purchase, JsonStringExpense = _expenses });
+
+            if (result != null)
             {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spCreatePurchaseCrop";
-                    cmd.Parameters.AddWithValue("@JsonStringPurchase", _purchase);
-                    cmd.Parameters.AddWithValue("@JsonStringExpense", _expenses);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            response = reader["Message"].ToString();
-                        }
-                    }
-                    reader.Close();
-                }
+                response = result;
             }
-            _connection.ConnectionClose();
+
             return response;
         }
-        public int DeletePurchaseCrop(Purchase purchase)
+
+
+        public async Task<string> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
-            int effectedRows = 0;
-            using (_connection._connection)
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    _connection.ConnectionOpen();
-                    cmd.Connection = _connection._connection;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection.CreateCommand();
-                    cmd.CommandText = "spDeletePurchaseCrop";
-                    cmd.Parameters.AddWithValue("@UID", purchase.UID);
-                    cmd.Parameters.AddWithValue("@ModifiedBy", purchase.ModifiedBy);
-                    effectedRows = cmd.ExecuteNonQuery();
-                }
-            }
-            _connection.ConnectionClose();
+            
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spDeletePurchaseCrop] @UID, @ModifiedBy";
+
+            string effectedRows = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { UID = purchase.UID, ModifiedBy = purchase.ModifiedBy });
+
             return effectedRows;
         }
 
-        public async Task<int> UpdatePurchaseCrop(Purchase param, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UpdatePurchaseCrop(Purchase param, ISqlConnectionFactory connectionFactory)
         {
-            await using var connection = connectionFactory.CreateConnection();
-            string SQLQuery = @"EXEC [dbo].[UpdatePurchaseCrop] 
-                                     @UID ,
-	                                 @CustomerType ,
-	                                 @Fk_CustomerId ,
-	                                 @Fk_Crop,
-	                                 @WeightInMaun ,
-	                                 @WeightInkg,
-	                                 @TotalCropWeight ,
-	                                 @PriceInMaun ,
-	                                 @PriceInKg ,
-	                                 @TotalCropPrice ,
-	                                 @TotalExp ,
-	                                 @TotalAmountwithExp ,
-	                                 @FK_BagType ,
-	                                 @BagWeight ,
-	                                 @BagTotal ,
-	                                 @ModifiedBy  
-                                     ";
+            string Status = "";
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+                string SQLQuery = @"EXEC [dbo].[UpdatePurchaseCrop] 
+                                 @UID ,
+                                 @CustomerType ,
+                                 @Fk_CustomerId ,
+                                 @Fk_Crop,
+                                 @WeightInMaun ,
+                                 @WeightInkg,
+                                 @TotalCropWeight ,
+                                 @PriceInMaun ,
+                                 @PriceInKg ,
+                                 @TotalCropPrice ,
+                                 @TotalExp ,
+                                 @TotalAmountwithExp ,
+                                 @FK_BagType ,
+                                 @BagWeight ,
+                                 @BagTotal ,
+                                 @ModifiedBy";
 
-            var res = await connection.QueryFirstOrDefaultAsync<int>(SQLQuery, param, null);
-
-            return res;
+                 Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
+                return Status;
+            }
+            catch (SqlException sqlEx)
+            {
+                
+                Console.WriteLine($"SQL Exception: {sqlEx.Message}");
+                throw; 
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"Exception: {ex.Message}");
+                throw; 
+            }
         }
+
+
+
+
+
+
 
     }
 }
