@@ -1,0 +1,15 @@
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\net8.0\MAMS_Models.exe
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\net8.0\MAMS_Models.deps.json
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\net8.0\MAMS_Models.runtimeconfig.json
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\net8.0\MAMS_Models.dll
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\bin\Debug\net8.0\MAMS_Models.pdb
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\MAMS_Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\MAMS_Models.AssemblyInfoInputs.cache
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\MAMS_Models.AssemblyInfo.cs
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\MAMS_Models.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\MAMS_Models.sourcelink.json
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\MAMS_Models.dll
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\refint\MAMS_Models.dll
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\MAMS_Models.pdb
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\MAMS_Models.genruntimeconfig.cache
+C:\Users\Admin\source\repos\usman7244\MAMS\MAMS\MAMS_Models\obj\Debug\net8.0\ref\MAMS_Models.dll

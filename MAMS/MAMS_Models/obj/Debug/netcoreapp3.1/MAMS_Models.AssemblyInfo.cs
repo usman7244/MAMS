@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MAMS_Models")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2362f47bcb717bc808595317d074aa2f97693b6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+98f4788e935ddff0515ceb4232dfdb5c8b576a48")]
 [assembly: System.Reflection.AssemblyProductAttribute("MAMS_Models")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MAMS_Models")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
