@@ -37,18 +37,31 @@
             color: #f1f1f1;
         }
 
-        #SubMenuNav {
+        #SubMenuNavManagement {
             display: none;
         }
 
-        #management:hover > ul {
+        #SubMenuNavStock {
+            display: none;
+        }
+
+        #SubMenuNavCash {
+            display: none;
+        }
+
+        #btnStock:hover > ul {
             display: block;
         }
 
-        #btnLogOut {
-            position: absolute;
-            bottom: 20px;
+        #btnCash:hover > ul {
+            display: block;
         }
+
+        #btnManagement:hover > ul {
+            display: block;
+        }
+
+         
     </style>
 </head>
 <body class="">
@@ -58,7 +71,7 @@
             <div class="sidebar-wrapper" style="margin-top: 60px;">
                 <ul class="nav page-sidebar-menu-hover-submenu">
 
-                    <li class="nav-item active" id="homeBtn">
+                    <li class="nav-item " id="homeBtn">
                         <a class="nav-link" href="~/Home/Index">
                             <i class="material-icons">dashboard</i>
                             <p>Dashboard</p>
@@ -77,12 +90,12 @@
                             <p>Customers</p>
                         </a>
                     </li>
-                    <li class="nav-item " id="management">
+                    <li class="nav-item " id="btnStock">
                         <a class="nav-link" href="javascript:;">
                             <i class="material-icons">landscape</i>
                             <p>Stock</p>
                         </a>
-                        <ul class="nav-item" id="SubMenuNav">
+                        <ul class="nav-item" id="SubMenuNavStock">
                             <li class="nav-item" id="Roles">
                                 <a class="nav-link" href="~/Purchase/Index">
                                     @* <i class="material-icons">trending_down</i> *@
@@ -98,12 +111,12 @@
                         </ul>
                     </li> 
                     @* changes *@
-                    <li class="nav-item " id="management">
+                    <li class="nav-item " id="btnCash">
                         <a class="nav-link" href="javascript:;">
                             <i class="material-icons">payments</i>
                             <p>Cash</p>
                         </a>
-                        <ul class="nav-item" id="SubMenuNav">
+                        <ul class="nav-item" id="SubMenuNavCash">
                             <li class="nav-item" id="depit">
                                 <a class="nav-link" href="~/Deposit/Index">
                                  
@@ -139,12 +152,12 @@
                             <p>Crop And Bag</p>
                         </a>
                     </li>
-                    <li class="nav-item " id="management">
+                    <li class="nav-item " id="btnManagement">
                         <a class="nav-link" href="javascript:;">
                             <i class="material-icons">manage_accounts</i>
                             <p>Management</p>
                         </a>
-                        <ul class="nav-item" id="SubMenuNav">
+                        <ul class="nav-item" id="SubMenuNavManagement">
                             <li class="nav-item" id="Roles">
                                 <a class="nav-link" href="~/Admin/RoleList">
                                     <i class="material-icons">admin_panel_settings</i>
@@ -159,13 +172,13 @@
                             </li>
                         </ul>
                     </li>
-                    
-                    <li class="nav-item active-pro " id="btnLogOut">
-                        <a class="nav-link" href="javascript:;">
+                    <li class="nav-item" id="btnLogOut">
+                        <a class="nav-link">
                             <i class="material-icons">logout</i>
                             <p>Logout</p>
                         </a>
                     </li>
+                    
                 </ul>
             </div>
         </div>
@@ -281,6 +294,49 @@
     <link href="~/css/confirm.css" rel="stylesheet" />
     <script src="~/js/confirm.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var navLinks = document.querySelectorAll('.nav-link');
+            var currentUrl = window.location.pathname.toLowerCase();
+
+            navLinks.forEach(function (link) {
+                var linkHref = link.getAttribute('href').replace('~', '').toLowerCase();
+                if (currentUrl.includes(linkHref)) {
+                    var parentNavItem = link.parentElement;
+                    parentNavItem.classList.add('active');
+
+                    // If this is a submenu item, make sure the parent menu is also active
+                    var grandparentNavItem = parentNavItem.closest('.nav-item');
+                    if (grandparentNavItem) {
+                        grandparentNavItem.classList.add('active');
+                    }
+                }
+
+                debugger;
+                // Check if it's the default 'homeBtn' link and add 'active' class
+                if (currentUrl === '/') {
+                    const dbItem = document.getElementById('homeBtn');
+                    dbItem.classList.add('active');
+                } 
+                else if (currentUrl === "/deposit/index") {
+                    const dbItem = document.getElementById('btnCash');
+                    dbItem.classList.add('active');
+                }
+                else if (currentUrl === "/credit/index") {
+                    const dbItem = document.getElementById('btnCash');
+                    dbItem.classList.add('active');
+                }
+                else if (currentUrl === "/purchase/index") {
+                    const dbItem = document.getElementById('btnStock');
+                    dbItem.classList.add('active');
+                }
+                else if (currentUrl === "/sale/index") {
+                    const dbItem = document.getElementById('btnStock');
+                    dbItem.classList.add('active');
+                }
+            });
+        });
+
         $(document).ready(function () {
             $sidebar = $('.sidebar');
             $sidebar_img_container = $sidebar.find('.sidebar-background');
