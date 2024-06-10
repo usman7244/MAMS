@@ -54,16 +54,7 @@
 <body class="">
     <div class="wrapper ">
         <div class="sidebar" data-color="green" data-background-color="black" data-image="/images/sidebar-1.jpg">
-            <!--
-                Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-
-                Tip 2: you can also add an image using data-image tag
-            -->
-            @*<div class="logo" style="padding-bottom: 7px;">
-            <a href="#" class="simple-text logo-normal">
-            Shrink App
-            </a>
-            </div>*@
+           
             <div class="sidebar-wrapper" style="margin-top: 60px;">
                 <ul class="nav page-sidebar-menu-hover-submenu">
 
@@ -73,10 +64,17 @@
                             <p>Dashboard</p>
                         </a>
                     </li>
+                    <li class="nav-item" id="btnCashHistory">
+                        <a class="nav-link" href="~/CashHistory/Index">
+                            <i class="fas fa-tasks"></i>
+                            <p>Cash History</p>
+                        </a>
+                    </li>
                     <li class="nav-item" id="btnCustomer">
                         <a class="nav-link" href="~/Customer/Index">
-                            <i class="fas fa-user-tie"></i>
-                            <p>Customer</p>
+                            <i class="fas fa-users"></i>
+
+                            <p>Customers</p>
                         </a>
                     </li>
                     <li class="nav-item " id="management">
@@ -87,21 +85,18 @@
                         <ul class="nav-item" id="SubMenuNav">
                             <li class="nav-item" id="Roles">
                                 <a class="nav-link" href="~/Purchase/Index">
-                                    <i class="material-icons">trending_down</i>
+                                    @* <i class="material-icons">trending_down</i> *@
                                     <p>Purchase</p>
                                 </a>
                             </li>
                             <li class="nav-item" id="users">
                                 <a class="nav-link" href="~/Sale/Index">
-                                    <i class="material-icons">trending_up</i>
+                                    @* <i class="material-icons">trending_up</i> *@
                                     <p>Sale</p>
                                 </a>
                             </li>
                         </ul>
-                    </li>
-
-
-
+                    </li> 
                     @* changes *@
                     <li class="nav-item " id="management">
                         <a class="nav-link" href="javascript:;">
@@ -112,16 +107,16 @@
                             <li class="nav-item" id="depit">
                                 <a class="nav-link" href="~/Deposit/Index">
                                  
-                                    <i class="material-icons">upload</i>
-                                    <p>Debit</p>
+                                    @* <i class="material-icons">remove</i> *@
+                                    <p>Debit ( نام )</p>
                                 </a>
                             </li>
                             <li class="nav-item" id="credit">
                                 <a class="nav-link" href="~/Credit/Index">
                                  
-                                    <i class="material-icons">download</i>
+                                    @* <i class="material-icons">add</i> *@ 
                                     @* <i class="material-icons">credit_card</i> *@
-                                    <p>Credit</p>
+                                    <p>Credit ( جمح )</p>
                                 </a>
                             </li>
                         </ul>
@@ -134,19 +129,10 @@
                     </li>*@
                     <li class="nav-item" id="btnExpense">
                         <a class="nav-link" href="~/Expense/Index">
-                            <i class="fas fa-user-tie"></i>
-                            <p>Expense</p>
+                            <i class="far fa-newspaper"></i>
+                            <p>Expenses</p>
                         </a>
-                    </li>
-
-                    <li class="nav-item" id="btnCashHistory">
-                        <a class="nav-link" href="~/CashHistory/Index">
-                            <i class="fas fa-user-tie"></i>
-                            <p>CashHistory</p>
-                        </a>
-                    </li>
-
-
+                    </li> 
                     <li class="nav-item" id="btnCrop">
                         <a class="nav-link" href="~/Crop/Index">
                             <i class="fab fa-pagelines"></i>
@@ -173,6 +159,7 @@
                             </li>
                         </ul>
                     </li>
+                    
                     <li class="nav-item active-pro " id="btnLogOut">
                         <a class="nav-link" href="javascript:;">
                             <i class="material-icons">logout</i>
