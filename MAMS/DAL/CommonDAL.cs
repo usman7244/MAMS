@@ -6,15 +6,16 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL
 {
-    public  class CommonDAL
+    public class CommonDAL
     {
-       
+
 
 
         public async Task<List<CustomerType>> GetCustomerType(string cusType, Guid branchId, Guid createdBy, ISqlConnectionFactory connectionFactory)
@@ -120,6 +121,31 @@ namespace DAL
             return result;
 
 
+        }
+        public async Task<List<Role>> GetRole(ISqlConnectionFactory connectionFactory)
+        {
+
+            var _roleList = new List<Role>();
+
+            try
+            {
+
+                await using var connection = connectionFactory.CreateConnection();
+
+                string SQLQuery = "EXEC [dbo].[spGetRole] ";
+
+                var Role = await connection.QueryAsync<Role>(SQLQuery, new { });
+
+                _roleList = Role.ToList();
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                throw;
+            }
+
+            return _roleList;
         }
 
     }

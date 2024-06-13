@@ -58,6 +58,7 @@ namespace DAL
 
             await using var connection = connectionFactory.CreateConnection();
 
+
             string SQLQuery = "EXEC [dbo].[spCreateCrop] @Name, @CreatedBy, @BranchId,@Type";
 
             effectedRows = await connection.ExecuteAsync(SQLQuery, new { Name = crop.Name, CreatedBy = crop.CreatedBy, BranchId = crop.BranchId,Type=crop.Type });
