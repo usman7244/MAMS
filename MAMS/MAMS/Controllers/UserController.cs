@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 namespace MAMS.Controllers
 {
@@ -28,12 +29,15 @@ namespace MAMS.Controllers
             _user.ModifiedBy = Guid.Empty;
             _user.CreatedBy = Guid.Empty;
 
+          
+            List<User> users = await _objUserBOL.GetUserInfo(_connectionFactory);
+            foreach (var user in users)
+            {
+                user.Password =await _objCommonBOL.Decrypt(user.Password, "mams@74");
+            }
 
-            List<User> user = await _objUserBOL.GetUserInfo(_connectionFactory);
 
-
-
-            return View(user);
+            return View(users);
         }
         public async Task<IActionResult> UserAdd()
         {
@@ -48,11 +52,12 @@ namespace MAMS.Controllers
         [HttpPost]
         public async Task<IActionResult> UserAdd(User User)
         {
-            int affectedRows = 0;
+            string affectedRows = string.Empty;
             if (User != null)
             {
+                User.Password = await _objCommonBOL.Encrypt(User.Password, "mams@74");
                 affectedRows = await _objUserBOL.UserAdd(User, _connectionFactory);
-                if (affectedRows > 0)
+                if (affectedRows !=null)
                 {
                     ViewBag.UserAddStatus = affectedRows;
                 }

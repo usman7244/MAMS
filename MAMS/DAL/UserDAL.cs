@@ -44,9 +44,9 @@ namespace DAL
 
             return _UserList;
         }
-        public async Task<int> UserAdd(User user, ISqlConnectionFactory connectionFactory)
+        public async Task<String> UserAdd(User user, ISqlConnectionFactory connectionFactory)
         {
-            int affectedRows = 0;
+            string result = string.Empty;
 
             try
             {
@@ -55,7 +55,7 @@ namespace DAL
 
                 string SQLQuery = "EXEC [dbo].[spAddUser] @BranchUID, @Name,@Email,@Phone,@CNIC,@City,@Country,@Address,@Password ,@Status,@RoleID, @CreatedBy";
 
-                affectedRows = await connection.ExecuteAsync(SQLQuery, new
+                result = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new
                 {
                     BranchUID=user.BranchUID,
                     Name = user.Name,
@@ -65,19 +65,20 @@ namespace DAL
                     City=user.City,
                     Country=user.Country,
                     Address=user.Address,
-                    Passward=user.Password,
+                    Password=user.Password,
                     Status = user.Status,
                     RoleID=user.RoleID,
-                    CreatedBy = user.CreatedBy
+                    CreatedBy = user.CreatedBy,
+                    
                 });
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it as needed
+                
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
 
-            return affectedRows;
+            return result;
         }
         public async Task<int> DeleteUser(User user, ISqlConnectionFactory connectionFactory)
         {
@@ -115,7 +116,7 @@ namespace DAL
 
                 string SQLQuery = "EXEC [dbo].[spUpdateUser] @UID, @Name, @Email, @Phone, @CNIC, @City, @Country, @Address, @Password, @Status, @Role ";
 
-                effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = user.UID, Name = user.Name, Email = user.Email, Phone = user.Phone, CNIC = user.CNIC, City = user.City, Country = user.Country, Address = user.Address, Passward = user.Password, Status = user.Status, Role = user.RoleID });
+                effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = user.UID, Name = user.Name, Email = user.Email, Phone = user.Phone, CNIC = user.CNIC, City = user.City, Country = user.Country, Address = user.Address, Password = user.Password, Status = user.Status, Role = user.RoleID });
             }
             catch (Exception ex)
             {

@@ -14,6 +14,7 @@ namespace MAMS.Controllers
     {
         private readonly ISqlConnectionFactory _connectionFactory;
         private LoginBOL _objLoginBOL;
+        private CommonBOL _objCommonBOL;
         public AdminController(ISqlConnectionFactory connectionFactory)
         {
 
@@ -29,6 +30,7 @@ namespace MAMS.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string Email, string Password)
         {
+            Password = await _objCommonBOL.Encrypt(Password, "mams@74");
             string Credential = await _objLoginBOL.Authenticate(Email, Password, _connectionFactory);
 
             if (Credential == "Success")

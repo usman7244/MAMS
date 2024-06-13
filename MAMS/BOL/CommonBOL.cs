@@ -49,5 +49,15 @@ namespace BOL
             var result = await _ObjCommonDAL.GetRole(connectionFactory);
             return result;
         }
+        public async Task<string> Decrypt(string cipherText, string EncryptionKey)
+        {
+            var result = _ObjCommonDAL.Decrypt(cipherText, EncryptionKey);
+            return result;
+        }
+        public async Task<string> Encrypt(string clearText, string EncryptionKey)
+        {
+            var result = _ObjCommonDAL.Encrypt(clearText, EncryptionKey);
+            return result;
+        }
     }
 }

@@ -21,9 +21,9 @@ namespace BOL
             var result = await _objUserDAL.GetUserInfo(connectionFactory);
             return result;
         }
-        public async Task<int> UserAdd(User user, ISqlConnectionFactory connectionFactory)
+        public async Task<string> UserAdd(User user, ISqlConnectionFactory connectionFactory)
         {
-            int affectedRows = 0;
+            string affectedRows = string.Empty;
             if (user != null)
             {
                 affectedRows = await _objUserDAL.UserAdd(user, connectionFactory);

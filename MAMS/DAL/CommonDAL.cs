@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Security.Cryptography;
@@ -17,7 +18,66 @@ namespace DAL
     {
 
 
+        public string Encrypt(string clearText, string EncryptionKey)
+        {
 
+            byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Close();
+                    }
+                    clearText = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            return clearText;
+        }
+        public string Decrypt(string cipherText, string encryptionKey)
+        {
+            try
+            {
+                // Replacing spaces with '+' to handle Base64 encoded strings
+                cipherText = cipherText.Replace(" ", "+");
+
+                // Convert Base64 encoded string to byte array
+                byte[] cipherBytes = Convert.FromBase64String(cipherText);
+
+                using (Aes encryptor = Aes.Create())
+                {
+                    // Derive key and IV using encryptionKey
+                    Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                    encryptor.Key = pdb.GetBytes(32);
+                    encryptor.IV = pdb.GetBytes(16);
+
+                    // Create a MemoryStream to hold decrypted data
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        // Create a CryptoStream to perform decryption
+                        using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                        {
+                            // Write decrypted bytes to CryptoStream
+                            cs.Write(cipherBytes, 0, cipherBytes.Length);
+                            cs.Close();
+                        }
+                        // Convert MemoryStream to string using Unicode encoding
+                        return Encoding.Unicode.GetString(ms.ToArray());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (e.g., invalid cipher text, key, etc.)
+                Console.WriteLine("An error occurred while decrypting the text: " + ex.Message);
+                return null;
+            }
+        }
         public async Task<List<CustomerType>> GetCustomerType(string cusType, Guid branchId, Guid createdBy, ISqlConnectionFactory connectionFactory)
         {
             var custTypeList = new List<CustomerType>();
