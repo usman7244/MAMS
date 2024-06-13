@@ -53,7 +53,7 @@ namespace DAL
                 user.UID = Guid.NewGuid();
                 await using var connection = connectionFactory.CreateConnection();
 
-                string SQLQuery = "EXEC [dbo].[spAddUser] @BranchUID, @Name,@Email,@Phone,@CNIC,@City,@Country,@Address,@Passward ,@Status,@RoleID, @CreatedBy";
+                string SQLQuery = "EXEC [dbo].[spAddUser] @BranchUID, @Name,@Email,@Phone,@CNIC,@City,@Country,@Address,@Password ,@Status,@RoleID, @CreatedBy";
 
                 affectedRows = await connection.ExecuteAsync(SQLQuery, new
                 {
@@ -65,7 +65,7 @@ namespace DAL
                     City=user.City,
                     Country=user.Country,
                     Address=user.Address,
-                    Passward=user.Passward,
+                    Passward=user.Password,
                     Status = user.Status,
                     RoleID=user.RoleID,
                     CreatedBy = user.CreatedBy
@@ -113,9 +113,9 @@ namespace DAL
             {
                 await using var connection = connectionFactory.CreateConnection();
 
-                string SQLQuery = "EXEC [dbo].[spUpdateUser] @UID, @Name, @Email, @Phone, @CNIC, @City, @Country, @Address, @Passward, @Status, @Role ";
+                string SQLQuery = "EXEC [dbo].[spUpdateUser] @UID, @Name, @Email, @Phone, @CNIC, @City, @Country, @Address, @Password, @Status, @Role ";
 
-                effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = user.UID, Name = user.Name, Email = user.Email, Phone = user.Phone, CNIC = user.CNIC, City = user.City, Country = user.Country, Address = user.Address, Passward = user.Passward, Status = user.Status, Role = user.RoleID });
+                effectedRows = await connection.ExecuteAsync(SQLQuery, new { UID = user.UID, Name = user.Name, Email = user.Email, Phone = user.Phone, CNIC = user.CNIC, City = user.City, Country = user.Country, Address = user.Address, Passward = user.Password, Status = user.Status, Role = user.RoleID });
             }
             catch (Exception ex)
             {

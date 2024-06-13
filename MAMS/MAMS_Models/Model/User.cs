@@ -18,7 +18,7 @@ namespace MAMS_Models.Model
         public string City { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
-        public string Passward { get; set; }
+        public string Password { get; set; }
         public string Status { get; set; }
         public int RoleID { get; set; }
         public DateTimeOffset DeletedDate { get; set; }
