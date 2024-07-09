@@ -1,4 +1,6 @@
-﻿using MAMS.Models;
+﻿using MAMS.CustomFilters;
+using MAMS.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,7 +11,9 @@ using System.Threading.Tasks;
 
 namespace MAMS.Controllers
 {
-    public class HomeController : Controller
+    
+    [IdentityUser]
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
 
@@ -17,7 +21,7 @@ namespace MAMS.Controllers
         {
             _logger = logger;
         }
-
+        [HttpGet]
         public IActionResult Index()
         {
             return View();

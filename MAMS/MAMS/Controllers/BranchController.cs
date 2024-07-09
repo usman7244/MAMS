@@ -5,10 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Microsoft.AspNetCore.Authorization;
+using MAMS.CustomFilters;
 
 namespace MAMS.Controllers
 {
-    public class BranchController : Controller
+     
+    [IdentityUser]
+    public class BranchController : BaseController
     {
         private readonly ISqlConnectionFactory _connectionFactory;
         private Branch _branch;
@@ -22,18 +26,11 @@ namespace MAMS.Controllers
             _connectionFactory = connectionFactory;
             _branch = new Branch();
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-
-            _branch = new Branch();
-            _branch.ModifiedBy = Guid.Empty;
-            _branch.CreatedBy = Guid.Empty;
-
-
+             
             List<Branch> branch = await _objBranchBOL.GetBranchInfo(_connectionFactory);
-
-
-
             return View(branch);
         }
         public async Task<IActionResult> BranchAdd()
@@ -50,6 +47,7 @@ namespace MAMS.Controllers
             int affectedRows = 0;
             if (branch != null)
             {
+                 
                 affectedRows = await _objBranchBOL.BranchAdd(branch, _connectionFactory);
                 if (affectedRows > 0)
                 {

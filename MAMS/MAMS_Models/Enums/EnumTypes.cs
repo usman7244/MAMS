@@ -44,4 +44,20 @@ namespace MAMS_Models.Enums
         Status = 1,
      
     }
+    public enum CustomClaimType
+    {
+        
+        [Display(Name = "Email")]
+        Email = 1,
+        [Display(Name = "Name")] 
+        Name = 2,
+        [Display(Name = "Fullname")]
+        Fullname = 3,
+        [Display(Name = "Userid")]
+        Userid = 4, 
+       [Display(Name = "RoleId")]
+        RoleId = 5,
+        [Display(Name = "BranchId")]
+        BranchId = 6,
+    }
 }

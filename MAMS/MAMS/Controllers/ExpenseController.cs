@@ -9,10 +9,14 @@ using BOL;
 using MAMS_Models.Extenions;
 using static MAMS_Models.Enums.EnumTypes;
 using Newtonsoft.Json;
+using MAMS.CustomFilters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MAMS.Controllers
 {
-    public class ExpenseController : Controller
+    
+    [IdentityUser]
+    public class ExpenseController : BaseController
     {
         private CashHistory _cashHistory;
         private BOL.ExpenseBOL _objExpenseBOL;
@@ -29,11 +33,12 @@ namespace MAMS.Controllers
             _expense = new Expense();
             _connectionFactory = connectionFactory;
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             _expense = new Expense();
             _expense.CreatedBy = Guid.Empty;
-            _expense.BranchId = Guid.Empty;
+            _expense.BranchId = GetBranchId();
             _expense.Type= EnumExtension.GetDisplayName(ExpenseType.DailyExpense);
             List<Expense> customers = await _objExpenseBOL.GetExpenseInfo(_expense, _connectionFactory);
             return View(customers);
@@ -54,7 +59,7 @@ namespace MAMS.Controllers
                 try
                 {
                     item.CreatedBy = Guid.Empty;
-                    item.BranchId = Guid.Empty;
+                    item.BranchId = GetBranchId();
                     item.Type = EnumExtension.GetDisplayName(ExpenseType.DailyExpense);
 
                     Console.WriteLine($"Inserting item: {item.UID}, {item.Type}, {item.CreatedBy}, {item.BranchId}");

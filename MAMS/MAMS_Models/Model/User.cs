@@ -20,7 +20,7 @@ namespace MAMS_Models.Model
         public string Address { get; set; }
         public string Password { get; set; }
         public string Status { get; set; }
-        public int RoleID { get; set; }
+        public string RoleID { get; set; }
         public DateTimeOffset DeletedDate { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTimeOffset CreatedDate { get; set; }

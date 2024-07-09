@@ -1,6 +1,8 @@
 ﻿using BOL;
 using DAL.Sql;
+using MAMS.CustomFilters;
 using MAMS_Models.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,9 @@ using System.Threading.Tasks;
 
 namespace MAMS.Controllers
 {
-    public class CompanyController : Controller
+    
+    [IdentityUser]
+    public class CompanyController : BaseController
     {
         private readonly ISqlConnectionFactory _connectionFactory;
         private Company _company;
@@ -20,6 +24,7 @@ namespace MAMS.Controllers
             _connectionFactory = connectionFactory;
             _company = new Company();
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
 

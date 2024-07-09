@@ -6,10 +6,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using MAMS.CustomFilters;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace MAMS.Controllers
 {
-    public class UserController : Controller
+    [AllowAnonymous]
+    [IdentityUser]
+    [Authorize(Roles = "1")]
+    public class UserController : BaseController 
     {
         private CommonBOL _objCommonBOL;
         private readonly ISqlConnectionFactory _connectionFactory;
@@ -22,14 +28,13 @@ namespace MAMS.Controllers
             _connectionFactory = connectionFactory;
             _user = new User();
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-
+            
             _user = new User();
             _user.ModifiedBy = Guid.Empty;
             _user.CreatedBy = Guid.Empty;
-
-          
             List<User> users = await _objUserBOL.GetUserInfo(_connectionFactory);
             foreach (var user in users)
             {
@@ -60,7 +65,13 @@ namespace MAMS.Controllers
                 if (affectedRows !=null)
                 {
                     ViewBag.UserAddStatus = affectedRows;
+
+                    var Branches = await _objCommonBOL.GetBranches(_connectionFactory);
+                    var Roles = await _objCommonBOL.GetRole(_connectionFactory);
+                    ViewBag.Roles = Roles;
+                    ViewBag.Branches = Branches;
                 }
+                
             }
 
             return View();
@@ -79,6 +90,7 @@ namespace MAMS.Controllers
         public async Task<IActionResult> EditUser(Guid Id)
         {
             var user = await _objUserBOL.GetSpecificUserInfo(Id, _connectionFactory);
+            user.Password = await _objCommonBOL.Decrypt(user.Password, "mams@74");
             var Branches = await _objCommonBOL.GetBranches(_connectionFactory);
             var Roles = await _objCommonBOL.GetRole(_connectionFactory);
             ViewBag.Roles = Roles;
@@ -92,6 +104,7 @@ namespace MAMS.Controllers
             int affectedRows = 0;
             if (user != null)
             {
+               
                 affectedRows = await _objUserBOL.EditUser(user, _connectionFactory);
                 if (affectedRows > 0)
                 {

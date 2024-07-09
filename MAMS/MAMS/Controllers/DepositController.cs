@@ -6,16 +6,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using Newtonsoft.Json;
+using MAMS.CustomFilters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MAMS.Controllers
 {
-    public class DepositController : Controller
+    
+    [IdentityUser]
+    public class DepositController : BaseController
     {
 
         private readonly ISqlConnectionFactory _connectionFactory;
         private Deposit _deposit;
         private BOL.DepositCashBOL _objCashBOL;
-
         private CashHistory _cashHistory;
         private CustomerType _custType;
         private List<CustomerType> _custTypeList;
@@ -34,10 +37,11 @@ namespace MAMS.Controllers
             _custType = new CustomerType();
             _custTypeList = new List<CustomerType>();
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             _deposit = new Deposit();
-            _deposit.BranchId = Guid.Empty;
+            _deposit.BranchId = GetBranchId();
             _deposit.CreatedBy = Guid.Empty;
 
             
@@ -56,7 +60,7 @@ namespace MAMS.Controllers
         [HttpPost]
         public async Task<IActionResult> DepositAdd(Deposit deposit)
         {
-            deposit.BranchId = Guid.Empty;
+            deposit.BranchId = GetBranchId();
             deposit.CreatedBy = Guid.Empty;
             string affectedRows = "";
             if (deposit != null)

@@ -12,16 +12,16 @@ namespace BOL
     public class LoginBOL
     {
    
-        private DAL.LoginDAL _objLoginDAL;
+        private LoginDAL _objLoginDAL;
         public LoginBOL()
         {
-            _objLoginDAL = new DAL.LoginDAL();
+            _objLoginDAL = new LoginDAL();
         }
-        public async Task<string> Authenticate(string email,string password,ISqlConnectionFactory connectionFactory)
+        public async Task<User> Authenticate(User user, ISqlConnectionFactory connectionFactory)
         {
-            string result = string.Empty;
-             result = await _objLoginDAL.Authenticate(email,password,connectionFactory);
+            User result = await _objLoginDAL.Authenticate(user, connectionFactory);
             return result;
         }
+
     }
 }

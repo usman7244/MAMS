@@ -73,7 +73,6 @@ namespace DAL
 
             return affectedRows;
         }
-
         public async Task<int> DeleteBranch(Branch branch, ISqlConnectionFactory connectionFactory)
         {
             int effectedRows = 0;

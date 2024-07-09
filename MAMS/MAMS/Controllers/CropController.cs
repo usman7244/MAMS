@@ -1,7 +1,9 @@
 ﻿using BOL;
 using DAL.Sql;
+using MAMS.CustomFilters;
 using MAMS_Models.Extenions;
 using MAMS_Models.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,7 +14,9 @@ using static MAMS_Models.Enums.EnumTypes;
 
 namespace MAMS.Controllers
 {
-    public class CropController : Controller
+    
+    [IdentityUser]
+    public class CropController : BaseController
     {
         private Sale _sale;
         private List<Sale> _saleList;
@@ -32,6 +36,7 @@ namespace MAMS.Controllers
             _saleList = new List<Sale>();
             _connectionFactory = connectionFactory;
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             _crop = new CropAndBag();

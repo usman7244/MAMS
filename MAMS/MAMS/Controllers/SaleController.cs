@@ -10,10 +10,14 @@ using Newtonsoft.Json;
 using static MAMS_Models.Enums.EnumTypes;
 using System.Linq;
 using System.Xml.Schema;
+using MAMS.CustomFilters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MAMS.Controllers
 {
-    public class SaleController : Controller
+     
+    [IdentityUser]
+    public class SaleController : BaseController
     {
         private CropBOL _objCropBOL;
         private PurchaseBOL _objPurchaseBOL;
@@ -63,12 +67,13 @@ namespace MAMS.Controllers
             _saleList = new List<Sale>();
 
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             _saleList = new List<Sale>();
             _sale = new Sale();
 
-            _sale.BranchId = Guid.Empty;
+            _sale.BranchId = GetBranchId();
             _sale.CreatedBy = Guid.Empty;
 
             _saleList =await _objSALEBOL.GetAllSaleCrop(_sale, _connectionFactory);
@@ -106,7 +111,7 @@ namespace MAMS.Controllers
         public async Task<IActionResult> SaleCropAdd(Sale sale, Expense[] expItems)
         {
             sale.CreatedBy = Guid.Empty;
-            sale.BranchId = Guid.Empty;
+            sale.BranchId = GetBranchId();
 
 
             List<Expense> expenseList = new List<Expense>();

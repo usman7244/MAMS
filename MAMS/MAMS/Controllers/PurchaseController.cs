@@ -1,7 +1,9 @@
 ﻿using BOL;
 using DAL.Sql;
+using MAMS.CustomFilters;
 using MAMS_Models.Extenions;
 using MAMS_Models.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -14,7 +16,9 @@ using static MAMS_Models.Enums.EnumTypes;
 
 namespace MAMS.Controllers
 {
-    public class PurchaseController : Controller
+    
+    [IdentityUser]
+    public class PurchaseController : BaseController
     {
         private CropBOL _objCropBOL;
         private PurchaseBOL _objPurchaseBOL;
@@ -48,12 +52,13 @@ namespace MAMS.Controllers
             _objExpenseBOL = new ExpenseBOL();
             _connectionFactory = connectionFactory;
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             _purchaseList = new List<Purchase>();
             _purchase = new Purchase();
 
-            _purchase.BranchId = Guid.Empty;
+            _purchase.BranchId = GetBranchId();
             _purchase.CreatedBy = Guid.Empty;
 
             
@@ -90,7 +95,7 @@ namespace MAMS.Controllers
         public async Task<IActionResult> AddPurchaseCrop(Purchase purchase, Expense[] expItems)
         {
             purchase.CreatedBy = Guid.Empty;
-            purchase.BranchId = Guid.Empty;
+            purchase.BranchId = GetBranchId();
             purchase.Status = EnumExtension.GetDisplayName(ExpenseType.Purchase);
 
             List<Expense> expenseList = new List<Expense>();

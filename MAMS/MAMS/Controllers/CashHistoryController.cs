@@ -6,10 +6,15 @@ using System;
 using BOL;
 using DAL.Sql;
 using System.Threading.Tasks;
+using MAMS.CustomFilters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MAMS.Controllers
 {
-    public class CashHistoryController : Controller
+    
+    [IdentityUser]
+   
+    public class CashHistoryController : BaseController
     {
         private ISqlConnectionFactory _connectionFactory;
         private CashHistory _cashHistory;
@@ -23,11 +28,12 @@ namespace MAMS.Controllers
             _objCommonBOL = new CommonBOL();
 
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
 
             _cashHistory = new CashHistory();
-            _cashHistory.BranchId = Guid.Empty;
+            _cashHistory.BranchId = GetBranchId();
             _cashHistory.CreatedBy = Guid.Empty;
 
 

@@ -1,7 +1,9 @@
 ﻿using BOL;
 using DAL.Sql;
+using MAMS.CustomFilters;
 using MAMS_Models.Extenions;
 using MAMS_Models.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -12,7 +14,9 @@ using static MAMS_Models.Enums.EnumTypes;
 
 namespace MAMS.Controllers
 {
-    public class CreditController : Controller
+    
+    [IdentityUser]
+    public class CreditController : BaseController
     {
         
         private readonly ISqlConnectionFactory _connectionFactory;
@@ -39,10 +43,11 @@ namespace MAMS.Controllers
            
 
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             _credit = new Credit();
-            _credit.BranchId = Guid.Empty;
+            _credit.BranchId = GetBranchId();
             _credit.CreatedBy = Guid.Empty;
 
 
@@ -61,7 +66,7 @@ namespace MAMS.Controllers
         [HttpPost]
         public async Task<IActionResult> CreditAdd(Credit credit)
         {
-            credit.BranchId = Guid.Empty;
+            credit.BranchId = GetBranchId();
             credit.CreatedBy = Guid.Empty;
           
             string affectedRows = "";
