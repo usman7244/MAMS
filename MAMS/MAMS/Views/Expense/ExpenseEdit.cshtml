@@ -80,11 +80,11 @@
    
 
 
-    debugger;
+    
     $(document).ready(function () {
         $("#btnAdd").click(function (event) {
             event.preventDefault();
-            debugger;
+           
             // Get the values from the input fields
             var expDes = $("#expDes").val();
             var amount = $("#amount").val();
@@ -99,7 +99,7 @@
                 DiffCash: DiffPrice,
                 Type: Type
             };
-            debugger;
+       
 
             $.ajax({
                 type: 'POST',
@@ -107,7 +107,7 @@
                 data: {
                     'model': model
                 },
-                debugger;
+                 
                 success: function (data) {
                
                     console.log(data);

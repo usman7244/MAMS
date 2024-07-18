@@ -107,6 +107,20 @@ namespace DAL
 
             return cashHistoryList;
         }
+        public async Task<List<CashHistory>> GetFilterCashHistory(CashHistory cashHistory, ISqlConnectionFactory connectionFactory)
+        {
+            var cashHistoryList = new List<CashHistory>();
+
+            await using var connection = connectionFactory.CreateConnection();
+
+            string SQLQuery = "EXEC [dbo].[spGetFilterCashHistory]  @BranchId,@FromDate,@ToDate";
+
+            var cashHistoryResult = await connection.QueryAsync<CashHistory>(SQLQuery, new { BranchId = cashHistory.BranchId,FromDate = cashHistory.FromDate,ToDate = cashHistory.ToDate });
+           
+            cashHistoryList = cashHistoryResult.ToList();
+        
+            return cashHistoryList;
+        }
         public async Task<CashHistory> GetCashHistory(Guid branchId, Guid createdBy, ISqlConnectionFactory connectionFactory)
         {
             CashHistory cashHistory = null;

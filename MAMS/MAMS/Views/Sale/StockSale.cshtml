@@ -234,10 +234,10 @@
     $("#alertDanger").hide();
     var itemDetailList = [];
 
-    debugger;
+    
     $("#btnAdd").click(function () {
 
-        debugger;
+        
         var itemDetails;
         var description = $.trim($("#expDes").val());
         var amount = $.trim($("#amount").val());
@@ -254,7 +254,7 @@
                 ' </button>' +
                 '</div></td>' +
                 '</tr>');
-            debugger;
+            
             itemDetails = { Description: description, ExpenseAmmount: amount };
             itemDetailList.push(itemDetails);
             $("#expDes").val("");
@@ -653,7 +653,7 @@
         if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense)) {
             totallPrice = parseInt(totallPrice);
             e.preventDefault();
-            debugger;
+            
             var model =
             {
 
@@ -699,7 +699,7 @@
                     'expItems': expItems
                 },
                 success: function (data) {
-                    debugger;
+                    
                     var dataObj1 = JSON.parse(data.data.response);
                     if (dataObj1 == "Success") {
                         $("#alertSuccess").show();
@@ -764,7 +764,7 @@
 
     });
 
-    debugger;
+    
 
     var ExpenseList = [
         { Description: "Sample expense 1", ExpenseAmount: 100, IsOld: false },
@@ -784,7 +784,7 @@
         $("#idPriceWithExpense").prop("disabled", true);
         $("#idTotalExpense").prop("disabled", true);
     }
-    debugger;
+    
     var expenses = @Html.Raw(Json.Serialize(ExpenseList));
     jQuery.each(expenses, (index, item) => {
 

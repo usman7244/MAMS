@@ -264,13 +264,13 @@
     window.onload = function () {
         disableDropdowns();
     };
-    debugger;
+    
     $("#btnAdd").click(function () {
         var itemDetails;
         var description = $.trim($("#expDes").val());
         var amount = $.trim($("#amount").val());
         var uid = 0;
-        debugger;
+        
         if (description == "" || amount == "" || parseInt(amount) == 0) {
             //doNothing
         } else {
@@ -651,7 +651,7 @@
 
     /* $("#btnSave").click(function () {*/
     $('form').on('submit', function (e) {
-        debugger;
+        
 
         var fKCustomerType = $('#slctCusType').val();
         var fkCustomer = $('#slctCusName').val();
@@ -811,7 +811,7 @@
         $("#idTotalExpense").prop("disabled", true);
     }
 
-    debugger;
+    
     var expenses = @Html.Raw(Json.Serialize(ExpenseList));
     jQuery.each(expenses, (index, item) => {
 
@@ -837,7 +837,7 @@
         itemDetailList.push(itemDetails);
         $("#expDes").val("");
         $("#amount").val("");
-        debugger;
+        
         var items = 0;
         $('#expnsTable tbody tr td:nth-child(2)').each(function () {
             items = items + parseInt($(this).text());
@@ -851,7 +851,7 @@
         $("#idPriceWithExpense").val(parseInt(priceWithExp) + '  RS');
         
         // New Addition
-        debugger;
+        
         var item = 0;
         var pricee = $("#totaloldPrice").val();
         if (pricee == "") {

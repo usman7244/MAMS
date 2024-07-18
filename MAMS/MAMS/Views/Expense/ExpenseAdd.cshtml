@@ -110,7 +110,7 @@
      var cashInHand = parseInt('@ViewBag.CashHistory');
    
     $("#btnAdd").click(function() {
-        debugger;
+     
         var expDes = $("#expDes").val();
         var amount = $("#totalPrice").val();
 
@@ -206,7 +206,7 @@
     });
     // Button Save data 
     $(document).ready(function () {
-        debugger;
+       
         $('#btnSave').on('click', function () {
             var expItems = [];
             $("#expnsTable tbody").find('tr').each(function (i) {
@@ -226,7 +226,7 @@
                 },
                 
                 success: function (data) {
-                    debugger;
+                   
                     console.log(data);
 
                     $('#alertSuccess').show();

@@ -17,5 +17,9 @@ namespace MAMS_Models.Model
         public Guid ModifiedBy { get; set; }
         public DateTimeOffset ModifiedDate { get; set; }
         public Guid BranchId { get; set; }
+        public DateTime FromDate {  get; set; }
+        public DateTime ToDate {  get; set; }
+
+
     }
 }

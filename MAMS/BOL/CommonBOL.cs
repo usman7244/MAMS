@@ -30,6 +30,11 @@ namespace BOL
             var result = await _ObjCommonDAL.GetAllCashHistoryInfo(cashHistory, connectionFactory);
             return result;
         }
+        public async Task<List<CashHistory>> GetFilterCashHistory(CashHistory cashHistory,  ISqlConnectionFactory connectionFactory)
+        {
+            var result = await _ObjCommonDAL.GetFilterCashHistory(cashHistory,  connectionFactory);
+            return result;
+        }
         public async Task<CashHistory> GetCashHistory(Guid branchId, Guid createdBy, ISqlConnectionFactory sqlConnectionFactory)
         {
             return await _ObjCommonDAL.GetCashHistory(branchId, createdBy, sqlConnectionFactory);

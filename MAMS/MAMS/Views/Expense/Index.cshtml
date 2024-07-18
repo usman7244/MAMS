@@ -98,7 +98,7 @@
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
         $("#tblDetailList").on('click', "a[name='btnDel']", function () {
-            debugger;
+            
             var uId = $.trim($(this).closest('tr').find("td:eq(1)").text());
             $.confirm({
 
@@ -119,7 +119,7 @@
                         text: 'Yes',
                         btnClass: 'btn-blue',
                         action: function () {
-                            debugger;
+                           
 
                             $.ajax({
 
