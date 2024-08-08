@@ -81,7 +81,7 @@ namespace MAMS.Controllers
             }
         }
         [HttpGet]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync();
@@ -89,7 +89,7 @@ namespace MAMS.Controllers
             {
                 Response.Cookies.Delete(cookie);
             }
-            return Redirect("/Admin/Login");
+            return Redirect("/Admin/Login"); 
         }
 
        
