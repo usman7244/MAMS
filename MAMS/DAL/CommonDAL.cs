@@ -1,23 +1,36 @@
 ﻿using DAL.Sql;
 using Dapper;
+using Google.Apis.Drive.v3;
+using MAMS_Models.Extenions;
 using MAMS_Models.Model;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices.JavaScript;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static MAMS_Models.Enums.EnumTypes;
 
 namespace DAL
 {
     public class CommonDAL
     {
 
+        //private GoogleDriveService _ObjDriveDAL;
 
+
+        //public CommonDAL()
+        //{
+
+        //    _ObjDriveDAL = new GoogleDriveService();
+
+        //}
         public string Encrypt(string clearText, string EncryptionKey)
         {
 
@@ -115,10 +128,10 @@ namespace DAL
 
             string SQLQuery = "EXEC [dbo].[spGetFilterCashHistory]  @BranchId,@FromDate,@ToDate";
 
-            var cashHistoryResult = await connection.QueryAsync<CashHistory>(SQLQuery, new { BranchId = cashHistory.BranchId,FromDate = cashHistory.FromDate,ToDate = cashHistory.ToDate });
-           
+            var cashHistoryResult = await connection.QueryAsync<CashHistory>(SQLQuery, new { BranchId = cashHistory.BranchId, FromDate = cashHistory.FromDate, ToDate = cashHistory.ToDate });
+
             cashHistoryList = cashHistoryResult.ToList();
-        
+
             return cashHistoryList;
         }
         public async Task<CashHistory> GetCashHistory(Guid branchId, Guid createdBy, ISqlConnectionFactory connectionFactory)
@@ -221,6 +234,82 @@ namespace DAL
 
             return _roleList;
         }
+        public async Task<int> DocumentsAdd(Documents document, ISqlConnectionFactory connectionFactory)
+        {
+            int affectedRows = 0;
+            try
+            {
+                using (var connection = connectionFactory.CreateConnection())
+                {
+                    (string FileId, string fileUrl) = await GoogleDriveServiceHelper.UploadFileAsync(document);
+                    string sqlQuery = @"
+                                            INSERT INTO [dbo].[Documents] 
+                                            (
+                                             ContentType,Fk_Id, CreatedBy, CreatedDate,FK_Type,FileId,fileUrl
+                                            ) 
+                                            VALUES 
+                                            (
+                                             @ContentType, @Fk_Id, @CreatedBy, @CreatedDate, @FK_Type,@FileId,@fileUrl
+                                             )";
+
+                    var parameters = new
+                    {
+                        DocumentId = document,
+                        ContentType = document.ContentType,
+                        Fk_Id = document.Fk_Id,
+                        CreatedBy = document.CreatedBy,
+                        CreatedDate = document.CreatedDate,
+                        FileUrl = fileUrl,
+                        FK_Type = document.FK_Type,
+                        FileId = FileId
+
+                    };
+                    affectedRows += await connection.ExecuteAsync(sqlQuery, parameters);
+
+                    
+                   
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error in data access layer: " + ex.Message);
+            }
+            return affectedRows;
+
+        }
+        public async Task<List<string>> GetDocumentsInfo(Guid id, ISqlConnectionFactory connectionFactory)
+        {
+            List<string> result = new List<string>();
+
+            try
+            {
+                using (var connection = connectionFactory.CreateConnection())
+                {
+                    string sqlQuery = @"
+                                        SELECT 
+                                            FileId,
+                                            fileUrl
+                                        FROM [dbo].[Documents]
+                                        WHERE Fk_Id = @Fk_Id";
+
+                    var parameters = new { Fk_Id = id };
+                    var documents = await connection.QueryAsync(sqlQuery, parameters);
+                    result = documents.Select(doc => $"{doc.FileId}:{doc.fileUrl}").ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Add("Error in data access layer: " + ex.Message);
+            }
+
+            return result;
+        }
+
+
+
+
 
     }
 }

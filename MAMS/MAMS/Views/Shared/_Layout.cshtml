@@ -2,9 +2,9 @@
  @using MAMS_Models.Enums;
 @{
     var RoleId = User.FindFirst(CustomClaimType.RoleId.ToString())?.Value;
- 
+
     var UserName = User.FindFirst(CustomClaimType.Fullname.ToString())?.Value;
-  
+
 
 }
 <!DOCTYPE html>
@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MAMS</title>
 
- 
+
     <link href="~/css/RobotoFontFamilyStyle.css" rel="stylesheet" />
     <link href="~/css/FontAwsomeStyle.css" rel="stylesheet" />
     <link href="~/css/material-dashboard.css" rel="stylesheet" />
@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/css/FontAwsomeIconsStylecss.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    
+
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <style>
@@ -67,6 +67,32 @@
         #btnManagement:hover > ul {
             display: block;
         }
+ 
+
+        #logoutbtn {
+            margin-left: 10px;  
+        }
+
+        #logoutForm {
+            display: flex;
+            align-items: center;
+        }
+
+            #logoutForm button {
+                display: flex;
+                align-items: center;
+                border: none;
+                background: none;
+                padding: 5px; /* Adjust padding as needed */
+            }
+
+            #logoutForm i {
+                margin-left: 15px;
+                /* Space between icon and text */
+            }
+
+             
+
 
     </style>
 </head>
@@ -75,18 +101,18 @@
         <div class="sidebar" data-color="green" data-background-color="black" data-image="/images/sidebar-1.jpg">
 
             <div class="sidebar-wrapper" style="margin-top: 60px;">
-                @if (User.Identity.IsAuthenticated  )
+                @if (User.Identity.IsAuthenticated)
                 {
                     <ul class="nav page-sidebar-menu-hover-submenu">
-                          @if(RoleId !="1")
-                          {
+                        @if (RoleId != "1")
+                        {
                             <li class="nav-item " id="homeBtn">
                                 <a class="nav-link" href="~/Graphs/UserSelectionGraph">
                                     <i class="material-icons">dashboard</i>
                                     <p>Dashboard</p>
                                 </a>
                             </li>
-                          }
+                        }
                         @if (RoleId != "1")
                         {
                             <li class="nav-item" id="btnCashHistory">
@@ -103,6 +129,16 @@
                                     <i class="fas fa-users"></i>
 
                                     <p>Customers</p>
+                                </a>
+                            </li>
+                        }
+                        @if (RoleId != "1")
+                        {
+                            <li class="nav-item" id="btnImage">
+                                <a class="nav-link" href="~/Image/Index">
+                                    <i class="fas fa-users"></i>
+
+                                    <p>ImageUpload</p>
                                 </a>
                             </li>
                         }
@@ -215,12 +251,15 @@
                                 </ul>
                             </li>
                         }
-                        <li class="nav-item" id="btnLogOut">
-                            <a class="nav-link" href="~/Admin/LogOut">
+                        <li class="nav-item" id="logoutbtn">
+                        <form id="logoutForm" method="post" action="@Url.Action("LogOut", "Admin")">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="nav-link btn-link">
                                 <i class="material-icons">logout</i>
                                 <p>Logout</p>
-                            </a>
-                        </li>
+                            </button>
+                        </form>
+                        <li/>
 
                     </ul>
                 }
@@ -356,7 +395,7 @@
                     }
                 }
 
-                
+
                 // Check if it's the default 'homeBtn' link and add 'active' class
                 if (currentUrl === '/') {
                     const dbItem = document.getElementById('homeBtn');
@@ -553,23 +592,35 @@
                 }, 1000);
 
             });
-            $('#btnLogOut').click(function () {
+            $(document).ready(function () {
+                $('#logoutLink').click(function (e) {
+                    e.preventDefault(); 
 
-                $.ajax({
-        @*@Url.Action("Logout", "Account") *@
-                    url: '../Account/Logout',
-                    type: 'post',
-                    contentType: 'application/json',
-                    success: function () {
+                    $.ajax({
+                        url: '@Url.Action("LogOut", "Admin")', 
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: {
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (response) {
 
-                        window.location.href = '../Account/Login';
+                            window.location.href = '@Url.Action("Login", "Admin")';
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("An error occurred during the logout process:", status, error);
+                        }
+                    });
+                });
+            });
 
-                    },
-                                        });
+
+
+
         });
 
 
-                                });
+                                        });
 
 
 

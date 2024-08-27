@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace MAMS_Models.Model
@@ -23,5 +25,9 @@ namespace MAMS_Models.Model
         public Guid ModifiedBy { get; set; }
         public DateTimeOffset ModifiedDate { get; set; }
         public Guid BranchId { get; set; }
+        public List<IFormFile> UserFiles {  get; set; }
+        public List<string> UserFilesUrl {  get; set; }
+        public List<Documents> Documents { get; set; }
+
     }
 }

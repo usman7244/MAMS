@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Google.Apis.Services;
+using Google.Apis.Util.Store;
 using MAMS_Models.Enums;
 
 namespace MAMS.Controllers
@@ -63,7 +65,7 @@ namespace MAMS.Controllers
 
                     await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
+                    ModelState.Clear();
                     return RedirectToAction("Index", "Home");
 
 
@@ -80,22 +82,22 @@ namespace MAMS.Controllers
                 return View();
             }
         }
-        [HttpGet]
-        [ValidateAntiForgeryToken]
+        [HttpPost] // Ensure it only accepts POST requests
+        [ValidateAntiForgeryToken] // Ensure anti-forgery token validation
         public async Task<IActionResult> LogOut()
         {
+            // Sign out the user
             await HttpContext.SignOutAsync();
+
+            // Clear all cookies
             foreach (var cookie in Request.Cookies.Keys)
             {
                 Response.Cookies.Delete(cookie);
             }
-            return Redirect("/Admin/Login"); 
+            ModelState.Clear();
+            return RedirectToAction("Login", "Admin");
+             
         }
-
-       
-
-
-
-
+         
     }
 }

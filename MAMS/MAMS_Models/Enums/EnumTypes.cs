@@ -33,6 +33,8 @@ namespace MAMS_Models.Enums
             Deposit = 7,
             [Display(Name = "Sale")]
             Sale = 8,
+            [Display(Name = "Customer")]
+            Customer = 9,
 
 
         }

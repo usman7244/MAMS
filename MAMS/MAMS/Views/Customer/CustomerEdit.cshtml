@@ -1,5 +1,45 @@
 ﻿@model MAMS_Models.Model.Customer
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Preview</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #imagePreview img {
+            max-width: 150px;
+            margin: 10px;
+        }
 
+        .document-area {
+            border: 1px solid #d2d2d2;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .image-container {
+            display: inline-block;
+            position: relative;
+            margin: 10px;
+        }
+
+        .remove-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            line-height: 22px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<script src="~/js/jquery-191-min.js"></script>
 <!-- #region Farmer detail form -->
 <div class="row" style=" margin-bottom: 10%;">
     <div class="col-md-12">
@@ -75,7 +115,48 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row float-right">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Documents Area</label>
+                                <div class="form-group document-area">
+
+                                    <!-- Display Uploaded Images -->
+                                    <div class="form-group">
+                                        <div id="imagePreview" class="mb-3">
+                                            @if (Model.UserFilesUrl != null && Model.UserFilesUrl.Any())
+                                            {
+                                                @foreach (var fileUrl in Model.UserFilesUrl)
+                                                {
+
+                                                    var directUrl = fileUrl.Replace("/view?usp=drivesdk", "/preview");
+                                                    <iframe src="@directUrl" width="300" height="200" frameborder="0"></iframe>
+                                                }
+                                            }
+                                            else
+                                            {
+                                               
+                                                <p>No files to display</p>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <!-- File Upload -->
+                                    <div class="form-group">
+                                        <div class="custom-file">
+                                            <!-- File input for uploading images -->
+                                            <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                                            <label class="custom-file-label" for="UserFiles">Choose files</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                     <div class="row float-right">
                         <div class="form-group">
                             <a type="button" class="btn btn-success btn-round float-right" asp-controller="Customer" asp-action="Index">
                                 <i class="fa fa-arrow-left"></i> Back
@@ -109,7 +190,32 @@
             $("#idShopName").val("");
             $("#idShopName").prop("disabled", true);
         }
-    }</script>
+    }
+    document.getElementById('UserFiles').addEventListener('change', function (event) {
+        const files = event.target.files;
+        const imagePreview = document.getElementById('imagePreview');
+
+        imagePreview.innerHTML = ''; // Clear existing previews
+
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('img-thumbnail');
+                imagePreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    document.getElementById('UserFiles').addEventListener('change', function (event) {
+        var input = event.target;
+        var label = input.nextElementSibling;
+        var fileName = input.files.length > 0 ? Array.from(input.files).map(file => file.name).join(', ') : 'Choose files';
+        label.textContent = fileName;
+    });
+
+</script>
 <!-- #endregion -->
 <!-- #region   Style/CSS -->
 <style>

@@ -5,7 +5,44 @@
 @{
     ViewData["Title"] = "Customer";
 }
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Preview</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #imagePreview img {
+            max-width: 150px;
+            margin: 10px;
+        }
+        .document-area {
+            border: 1px solid #d2d2d2;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .image-container {
+            display: inline-block;
+            position: relative;
+            margin: 10px;
+        }
+        .remove-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            line-height: 22px;
+            font-size: 14px;
+        }
+      
+    </style>
+</head>
 <script src="~/js/jquery-191-min.js"></script>
 
 <!-- #region Customer detail form -->
@@ -73,9 +110,32 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Complete Adress</label>
+                        <label>Complete Address</label>
                         <div class="form-group">
                             <textarea class="form-control" rows="5" asp-for="ComAddress"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Documents Area</label>
+                        <div class="form-group document-area">
+                         
+                            <div class="form-group">
+                                <div id="imagePreview" class="mb-3"></div>
+                                <div class="form-group">
+                                    <div class="custom-file">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                            <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                                              <label class="custom-file-label" for="UserFiles">Choose files</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -101,13 +161,13 @@
 <div id="alertSuccess" data-notify="container" class="col-11 col-md-4 alert alert-success alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
     <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 50%; margin-top: -9px; z-index: 1033;">
         <i class="material-icons">close</i>
-    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Customer</b> <br>New customer added successfuly!</span>
+    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Customer</b> <br>New customer added successfully!</span>
     <a href="#" target="_blank" data-notify="url"></a>
 </div>
 <div id="alertDanger" data-notify="container" class="col-11 col-md-4 alert alert-danger alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
     <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 50%; margin-top: -9px; z-index: 1033;">
         <i class="material-icons">close</i>
-    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Customer</b> <br>New customer added not successfuly!</span>
+    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Customer</b> <br>New customer addition not successful!</span>
     <a href="#" target="_blank" data-notify="url"></a>
 </div>
 <!-- #endregion -->
@@ -118,17 +178,15 @@
     <script src="~/js/bootstrap-notify.js"></script>
 }
 <script type="text/javascript">
-
-
     $("#alertSuccess").hide();
     $("#alertDanger").hide();
     
     var status = ('@status');
     if (status == "1") {
-        $("#alertSuccess").show();
+        $('#alertSuccess').show();
         setTimeout(function () {
-            $("#alertSuccess").hide();
-        }, 5000);
+            window.location.href = '/Customer/Index';
+        }, 2000);
     }
     if (status == "0") {
         $("#alertDanger").show();
@@ -136,7 +194,6 @@
             $("#alertDanger").hide();
         }, 5000);
     }
-
 
     function getval(sel) {
         var CheckCust = $('#cusSlct').val();
@@ -147,6 +204,38 @@
             $("#idShopName").prop("disabled", true);
         }
     }
+
+    document.getElementById('UserFiles').addEventListener('change', function (event) {
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = '';
+        const files = event.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-container';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    const removeButton = document.createElement('button');
+                    removeButton.className = 'remove-button';
+                    removeButton.innerHTML = '&times;';
+                    removeButton.onclick = function () {
+                        imageContainer.remove();
+                    };
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(removeButton);
+                    imagePreview.appendChild(imageContainer);
+                }
+
+                reader.readAsDataURL(file);
+            }
+        }
+    });
 </script>
 <!-- #endregion -->
 <!-- #region   Style/CSS -->
@@ -154,10 +243,6 @@
     #cusSlct {
         border: 0px !important;
     }
-
-    /* i.material-icons {
-        float: left;
-    }*/
 
     input.form-control {
         border: 0px !important;
@@ -180,9 +265,41 @@
         font-size: 15px !important;
     }
 
+    #imagePreview img {
+        max-width: 150px;
+        margin: 10px;
+    }
 
+ 
+
+    .document-area {
+        border: 1px solid #d2d2d2;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+    .image-container {
+        display: inline-block;
+        position: relative;
+        margin: 10px;
+    }
+
+    .remove-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        line-height: 22px;
+        font-size: 14px;
+    }
 </style>
 <!-- CSS section of the first page -->
-
 
 <!-- #endregion -->

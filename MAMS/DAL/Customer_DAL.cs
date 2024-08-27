@@ -23,32 +23,40 @@ namespace DAL
             _customer = new Customer();
         }
 
-        
-        public async Task<int> InsertCustomerInfo(Customer customer, ISqlConnectionFactory connectionFactory)
+
+        public async Task<(Guid? CustomerUID, int AffectedRows)> InsertCustomerInfo(Customer customer, ISqlConnectionFactory connectionFactory)
         {
-            int effectedRows = 0;
+            Guid? customerUid;
+            int affectedRows = 0;
 
             await using var connection = connectionFactory.CreateConnection();
 
-            string SQLQuery = "EXEC [dbo].[spCreateCustomer] @Name, @Phone, @Email, @CNIC, @City, @Country, @CusType, @ComShopName, @ComAddress, @CreatedBy, @BranchId";
+            string SQLQuery = "EXEC [dbo].[spCreateCustomer] @Name, @Phone, @Email, @CNIC, @City, @Country, @CusType, @ComShopName, @ComAddress, @CreatedBy, @BranchId, @CustomerUID OUTPUT, @AffectedRows OUTPUT";
 
-            effectedRows = await connection.ExecuteAsync(SQLQuery, new
-            {
-                Name = customer.Name,
-                Phone = customer.Phone,
-                Email = customer.Email,
-                CNIC = customer.CNIC,
-                City = customer.City,
-                Country = customer.Country,
-                CusType = customer.CusType,
-                ComShopName = customer.ComShopName,
-                ComAddress = customer.ComAddress,
-                CreatedBy = customer.CreatedBy,
-                BranchId = customer.BranchId
-            });
+            var parameters = new DynamicParameters();
+            parameters.Add("Name", customer.Name);
+            parameters.Add("Phone", customer.Phone);
+            parameters.Add("Email", customer.Email);
+            parameters.Add("CNIC", customer.CNIC);
+            parameters.Add("City", customer.City);
+            parameters.Add("Country", customer.Country);
+            parameters.Add("CusType", customer.CusType);
+            parameters.Add("ComShopName", customer.ComShopName);
+            parameters.Add("ComAddress", customer.ComAddress);
+            parameters.Add("CreatedBy", customer.CreatedBy);
+            parameters.Add("BranchId", customer.BranchId);
+            parameters.Add("CustomerUID", dbType: DbType.Guid, direction: ParameterDirection.Output);
+            parameters.Add("AffectedRows", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            return effectedRows;
+            await connection.ExecuteAsync(SQLQuery, parameters);
+
+            customerUid = parameters.Get<Guid?>("CustomerUID");
+            affectedRows = parameters.Get<int>("AffectedRows");
+
+            return (customerUid, affectedRows);
         }
+
+
 
         public async Task<List<Customer>> GetCustomerInfo(Customer customer, ISqlConnectionFactory connectionFactory)
         {
