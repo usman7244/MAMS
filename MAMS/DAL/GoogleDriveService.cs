@@ -21,11 +21,11 @@ namespace DAL
 
     public static class GoogleDriveServiceHelper
     {
-        private static readonly string[] Scopes = { DriveService.Scope.DriveFile };
-        private const string ApplicationName = "MAMS";
-        private static readonly string ClientId = "1077577498265-ghmka0pqb1nhhfs6kucet4d1gp9r960a.apps.googleusercontent.com";
-        private static readonly string ClientSecret = "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";
-        private const string RefreshToken = " 1//04LsB4Se3Ht5MCgYIARAAGAQSNwF-L9Ir-QDcgpm6Njxe6KBrnD3FhMlF513knluf1Nit6gR1PzluQHfwW9fYXgiRjFm6dgXEe5Y";
+        //private static readonly string[] Scopes = { DriveService.Scope.DriveFile };
+        //private const string ApplicationName = "MAMS";
+        //private static readonly string ClientId = "1077577498265-ghmka0pqb1nhhfs6kucet4d1gp9r960a.apps.googleusercontent.com";
+        //private static readonly string ClientSecret = "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";
+        //private const string RefreshToken = " 1//04LsB4Se3Ht5MCgYIARAAGAQSNwF-L9Ir-QDcgpm6Njxe6KBrnD3FhMlF513knluf1Nit6gR1PzluQHfwW9fYXgiRjFm6dgXEe5Y";
 
         public static DriveService GetService()
         {
