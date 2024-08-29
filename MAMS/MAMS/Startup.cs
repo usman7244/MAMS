@@ -38,7 +38,8 @@ namespace MAMS
                 options.Filters.Add(new TokenActionFilter());
             });
 
-            var key = Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]);
+            //var key = Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]);
+            var key = Encoding.UTF8.GetBytes("325af2f6-c6c9-4f4c-8442-0044b6f63e5e");
 
             services.AddAuthentication(options =>
             {
@@ -79,7 +80,7 @@ namespace MAMS
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
