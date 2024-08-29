@@ -82,7 +82,7 @@ namespace MAMS
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseForwardedHeaders();
+            //app.UseForwardedHeaders();
             app.UseRouting();
 
             app.UseAuthentication();
