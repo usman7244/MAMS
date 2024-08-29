@@ -22,15 +22,7 @@ namespace DAL
     public class CommonDAL
     {
 
-        //private GoogleDriveService _ObjDriveDAL;
-
-
-        //public CommonDAL()
-        //{
-
-        //    _ObjDriveDAL = new GoogleDriveService();
-
-        //}
+        
         public string Encrypt(string clearText, string EncryptionKey)
         {
 
