@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace MAMS
 {
@@ -63,7 +64,11 @@ namespace MAMS
                 options.LoginPath = "/Admin/Login";
                 options.LogoutPath = "/Admin/Logout";
             });
-
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                // Set known networks and proxies if necessary
+            });
             services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>();
         }
 
@@ -82,7 +87,7 @@ namespace MAMS
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //app.UseForwardedHeaders();
+            app.UseForwardedHeaders();
             app.UseRouting();
 
             app.UseAuthentication();
