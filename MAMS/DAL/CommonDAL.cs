@@ -235,7 +235,7 @@ namespace DAL
                 {
                     (string FileId, string fileUrl) = await GoogleDriveServiceHelper.UploadFileAsync(document);
                     string sqlQuery = @"
-                                            INSERT INTO [dbo].[Documents] 
+                                            INSERT INTO [dbo].[DocMgt.Documents]
                                             (
                                              ContentType,Fk_Id, CreatedBy, CreatedDate,FK_Type,FileId,fileUrl
                                             ) 
@@ -283,7 +283,7 @@ namespace DAL
                                         SELECT 
                                             FileId,
                                             fileUrl
-                                        FROM [dbo].[Documents]
+                                        FROM [dbo].[DocMgt.Documents]
                                         WHERE Fk_Id = @Fk_Id";
 
                     var parameters = new { Fk_Id = id };
