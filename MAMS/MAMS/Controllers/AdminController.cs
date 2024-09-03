@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using MAMS_Models.Enums;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MAMS.Controllers
 {
@@ -78,7 +79,7 @@ namespace MAMS.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
         }
