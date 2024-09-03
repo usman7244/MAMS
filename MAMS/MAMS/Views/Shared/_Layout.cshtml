@@ -4,6 +4,7 @@
     var RoleId = User.FindFirst(CustomClaimType.RoleId.ToString())?.Value;
 
     var UserName = User.FindFirst(CustomClaimType.Fullname.ToString())?.Value;
+    var BranchName = User.FindFirst(CustomClaimType.BranchName.ToString())?.Value;
 
 
 }
@@ -131,17 +132,7 @@
                                     <p>Customers</p>
                                 </a>
                             </li>
-                        }
-                        @if (RoleId != "1")
-                        {
-                            <li class="nav-item" id="btnImage">
-                                <a class="nav-link" href="~/Image/Index">
-                                    <i class="fas fa-users"></i>
-
-                                    <p>ImageUpload</p>
-                                </a>
-                            </li>
-                        }
+                        } 
                         @if (RoleId != "1")
                         {
                             <li class="nav-item " id="btnStock">
@@ -235,13 +226,7 @@
                                             <i class="far fa-bank"></i>
                                             <p>Branch</p>
                                         </a>
-                                    </li>
-                                    <li class="nav-item" id="Roles">
-                                        <a class="nav-link" href="~/Admin/RoleList">
-                                            <i class="material-icons">admin_panel_settings</i>
-                                            <p>Roles</p>
-                                        </a>
-                                    </li>
+                                    </li> 
                                     <li class="nav-item" id="users">
                                         <a href="~/User/Index" class="nav-link">
                                             <i class="material-icons">people_alt</i>
@@ -271,6 +256,7 @@
                 <div class="container-fluid contentNav" style="margin-top:-13px;margin-bottom:-8px;">
                     <div class="navbar-wrapper">
                         <a class="navbar-brand" href="javascript:;"></a>
+                        <h6>Branch Name : @BranchName</h6>
                     </div>
                     <button class="navbar-toggler @*order-first*@" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="true" aria-label="Toggle navigation">
                         <span class="sr-only">Toggle navigation</span>

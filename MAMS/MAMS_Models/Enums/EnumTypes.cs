@@ -57,9 +57,11 @@ namespace MAMS_Models.Enums
         Fullname = 3,
         [Display(Name = "Userid")]
         Userid = 4, 
-       [Display(Name = "RoleId")]
+        [Display(Name = "RoleId")]
         RoleId = 5,
         [Display(Name = "BranchId")]
         BranchId = 6,
+        [Display(Name = "BranchName")]
+        BranchName = 7,
     }
 }

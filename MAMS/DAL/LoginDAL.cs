@@ -53,7 +53,8 @@ namespace DAL
                     Name = login.Name,
                     UID = login.UID,
                     RoleID = login.RoleID,
-                    BranchUID = login.BranchUID
+                    BranchUID = login.BranchUID,
+                    BranchName= login.BranchName,
                 };
             }
             else

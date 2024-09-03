@@ -1,6 +1,6 @@
 ﻿using BOL;
 using DAL.Sql;
- 
+
 using MAMS_Models.Model;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
@@ -20,7 +20,7 @@ using MAMS_Models.Enums;
 
 namespace MAMS.Controllers
 {
- 
+
     public class AdminController : BaseController
     {
         private readonly ISqlConnectionFactory _connectionFactory;
@@ -28,15 +28,14 @@ namespace MAMS.Controllers
         private CommonBOL _objCommonBOL;
         public AdminController(ISqlConnectionFactory connectionFactory)
         {
-            _objCommonBOL= new CommonBOL();
+            _objCommonBOL = new CommonBOL();
             _objLoginBOL = new LoginBOL();
             _connectionFactory = connectionFactory;
       
         }
         [HttpGet]
-        public IActionResult Login()
-        {
-             
+        public async Task<IActionResult> Login()
+        { 
             return View();
         }
 
@@ -49,7 +48,7 @@ namespace MAMS.Controllers
 
                 if (Credential.Status == "Success")
                 {
- 
+
                     var UserClaims = new[]
                     {
 
@@ -57,7 +56,8 @@ namespace MAMS.Controllers
                          new Claim(CustomClaimType.Fullname.ToString(),Credential.Name),
                          new Claim(CustomClaimType.Userid.ToString(), Credential.UID.ToString()),
                          new Claim(CustomClaimType.RoleId.ToString(), Credential.RoleID.ToString()),
-                         new Claim(CustomClaimType.BranchId.ToString(), Credential.BranchUID.ToString())
+                         new Claim(CustomClaimType.BranchId.ToString(), Credential.BranchUID.ToString()),
+                         new Claim(CustomClaimType.BranchName.ToString(), Credential.BranchName.ToString()),
 
                     };
                     ClaimsIdentity userIdentity = new ClaimsIdentity(UserClaims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -96,8 +96,8 @@ namespace MAMS.Controllers
             }
             ModelState.Clear();
             return RedirectToAction("Login", "Admin");
-             
+
         }
-         
+
     }
 }
