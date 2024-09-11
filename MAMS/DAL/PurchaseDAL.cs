@@ -153,24 +153,22 @@ namespace DAL
 
 
         
-        public async Task<string> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        public async Task<(int? PurchaseUID, string AffectedRows)> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
             string _purchase = JsonConvert.SerializeObject(purchase);
             string _expenses = JsonConvert.SerializeObject(expenses);
-            string response = "";
+            
 
             await using var connection = connectionFactory.CreateConnection();
 
             string SQLQuery = "EXEC [dbo].[spCreatePurchaseCrop] @JsonStringPurchase, @JsonStringExpense";
+            var parameters = new { JsonStringPurchase = _purchase };
+            var result = await connection.QueryFirstOrDefaultAsync<(int? PurchaseUID, string AffectedRows)>(SQLQuery, parameters);
 
-            var result = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringPurchase = _purchase, JsonStringExpense = _expenses });
+            var purchaseUID = result.PurchaseUID;
 
-            if (result != null)
-            {
-                response = result;
-            }
-
-            return response;
+            return (purchaseUID, result.AffectedRows);
+             
         }
 
 

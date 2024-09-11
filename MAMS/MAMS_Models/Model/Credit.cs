@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,6 +22,9 @@ namespace MAMS_Models.Model
         public DateTimeOffset DeletedDate { get; set; }
         public Guid ModifiedBy { get; set; }
         public DateTimeOffset ModifiedDate { get; set; }
-        
+        public List<IFormFile> UserFiles { get; set; }
+        public List<string> UserFilesUrl { get; set; }
+        public List<Documents> Documents { get; set; }
+
     }
 }

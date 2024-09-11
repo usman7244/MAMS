@@ -2,6 +2,7 @@
 using DAL.Sql;
 using MAMS_Models.Extenions;
 using MAMS_Models.Model;
+using Microsoft.AspNetCore.Connections;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -81,11 +82,46 @@ namespace BOL
             return res;
         }
 
-        public async Task<string> Insert(Expense model, ISqlConnectionFactory sqlConnectionFactory)
+        public async Task<(int? ExpenseUID, int AffectedRows)> Insert(Expense model, ISqlConnectionFactory sqlConnectionFactory)
         {
-            string Status = "";
-             Status = await _objExpenseDAL.Insert(model, sqlConnectionFactory);
-            return Status;
+            if (model == null)
+            {
+                return (null, 0);
+            }
+
+
+            var result = await _objExpenseDAL.Insert(model, sqlConnectionFactory);
+
+            if (result.ExpenseUID == null)
+            {
+                return (null, 0);
+            }
+
+            int affectedRows = result.AffectedRows;
+            var documents = new List<Documents>();
+
+            foreach (var file in model.UserFiles)
+            {
+                var document = new Documents
+                {
+                    File = file,
+                    CreatedBy = model.CreatedBy,
+                    Fk_Id = result.ExpenseUID.ToString(),
+                    CreatedDate = DateTime.Now,
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    BranchId = model.BranchId
+                };
+
+                // Add each document and accumulate affected rows
+                affectedRows += await _objCommonDAL.DocumentsAdd(document, sqlConnectionFactory);
+            }
+
+            // Return the credit UID and the total affected rows
+            return (result.ExpenseUID, affectedRows);
+
+
+
+
         }
 
 

@@ -237,17 +237,17 @@ namespace DAL
                     string sqlQuery = @"
                                             INSERT INTO [dbo].[DocMgt.Documents]
                                             (
-                                             ContentType,Fk_Id, CreatedBy, CreatedDate,FK_Type,FileId,fileUrl
+                                            Fk_Id, CreatedBy, CreatedDate,FK_Type,FileId,fileUrl
                                             ) 
                                             VALUES 
                                             (
-                                             @ContentType, @Fk_Id, @CreatedBy, @CreatedDate, @FK_Type,@FileId,@fileUrl
+                                             @Fk_Id, @CreatedBy, @CreatedDate, @FK_Type,@FileId,@fileUrl
                                              )";
 
                     var parameters = new
                     {
                         DocumentId = document,
-                        ContentType = document.ContentType,
+                    
                         Fk_Id = document.Fk_Id,
                         CreatedBy = document.CreatedBy,
                         CreatedDate = document.CreatedDate,

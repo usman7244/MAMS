@@ -4,7 +4,9 @@ using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static MAMS_Models.Enums.EnumTypes;
@@ -16,6 +18,7 @@ namespace BOL
         private PurchaseDAL _objPurchaseDAL;
         private List<CropAndBag> _bags;
         private DAL.CommonDAL _objCommonDAL;
+
         public PurchaseBOL()
         {
             _objPurchaseDAL = new PurchaseDAL();
@@ -42,19 +45,95 @@ namespace BOL
 
         public async Task<Purchase> GetPurchasedCropById(int purchCropId, ISqlConnectionFactory connectionFactory)
         {
-           var resul =await _objPurchaseDAL.GetPurchasedCropById(purchCropId, connectionFactory);
-            return resul;
+           var result =await _objPurchaseDAL.GetPurchasedCropById(purchCropId, connectionFactory);
+            if (result != null)
+            {
+                result.UserFilesUrl ??= new List<string>();
+                Guid purchaseId = Guid.Parse(purchCropId.ToString());
+                List<string> fileInfo = await _objCommonDAL.GetDocumentsInfo(purchaseId, connectionFactory);
+
+                if (fileInfo != null && fileInfo.Any())
+                {
+                    foreach (var fileEntry in fileInfo)
+                    {
+                        try
+                        {
+                            var match = Regex.Match(fileEntry, @"^([^:]+):(.+)$");
+
+                            if (match.Success)
+                            {
+                                var fileId = match.Groups[1].Value;
+                                var fileUrl = match.Groups[2].Value;
+                                result.UserFilesUrl.Add(fileUrl);
+
+                            }
+                            else
+                            {
+
+                                throw new FormatException($"Invalid file entry format: {fileEntry}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw new InvalidOperationException("Failed to process file entry.", ex);
+                        }
+                    }
+                }
+            }
+            return result;
         }
         public async Task<List<Expense>> GetPurchasedExpenseById(int purchCropId, ISqlConnectionFactory connectionFactory)
         {
             var re=await _objPurchaseDAL.GetPurchasedExpenseById(purchCropId, connectionFactory);
             return re;
         }
-        public async Task<string> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+
+
+
+        public async Task<(int? CreditUID, string AffectedRows)> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
-            var result=await _objPurchaseDAL.AddPurchaseCrop(purchase, expenses, connectionFactory);
-            return result;
+            if (purchase == null)
+            {
+                return (null, null);
+            }
+
+
+            var result = await _objPurchaseDAL.AddPurchaseCrop(purchase, expenses, connectionFactory);
+
+            if (result.PurchaseUID == null)
+            {
+                return (null, null);
+            }
+
+            string affectedRows = result.AffectedRows;
+            var documents = new List<Documents>();
+
+
+            foreach (var file in purchase.UserFiles)
+            {
+                var document = new Documents
+                {
+                    File = file,
+                    CreatedBy = purchase.CreatedBy ?? Guid.Empty,
+                    Fk_Id = result.PurchaseUID.ToString(),
+                    CreatedDate = DateTime.Now,
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    BranchId = purchase.BranchId ?? Guid.Empty,
+
+                };
+
+                // Add each document and accumulate affected rows
+                affectedRows += await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+            }
+
+            // Return the credit UID and the total affected rows
+            return (result.PurchaseUID, affectedRows);
+
         }
+
+
+
         public async Task<string> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
             string result = await _objPurchaseDAL.DeletePurchaseCrop(purchase, connectionFactory);

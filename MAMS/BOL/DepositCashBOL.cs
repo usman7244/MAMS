@@ -24,10 +24,41 @@ namespace BOL
             var result = await _objCashDAL.GetAllDepositInfo(deposit, connectionFactory);
             return result;
         }
-        public async Task<string> DepositAdd(Deposit deposit, ISqlConnectionFactory connectionFactory)
+        public async Task<(int? DepositUID, int AffectedRows)> DepositAdd(Deposit deposit, ISqlConnectionFactory connectionFactory)
         {
-            var result = await _objCashDAL.DepositAdd(deposit,  connectionFactory);
-            return result;
+            if (deposit == null)
+            {
+                return (null, 0);
+            }
+            var result = await _objCashDAL.DepositAdd(deposit, connectionFactory);
+
+            if (result.DepositUID == null)
+            {
+                return (null, 0);
+            }
+
+            int affectedRows = result.AffectedRows;
+            var documents = new List<Documents>();
+            foreach (var file in deposit.UserFiles)
+            {
+                var document = new Documents
+                {
+                    File = file,
+                    CreatedBy = deposit.CreatedBy,
+                    Fk_Id = result.DepositUID.ToString(),
+                    CreatedDate = DateTime.Now,
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    BranchId = deposit.BranchId
+                };
+
+          
+                affectedRows += await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+            }
+
+            // Return the credit UID and the total affected rows
+            return (result.DepositUID, affectedRows);
+
+
         }
         public async Task<Deposit> EditDeposit(int Id, ISqlConnectionFactory connectionFactory)
         {

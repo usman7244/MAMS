@@ -116,33 +116,24 @@ namespace DAL
         }
 
 
-        public async Task<string> SaleCropAdd(Sale sale, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        public async Task<(int? SaleUID, string AffectedRows)> SaleCropAdd(Sale sale, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
             string _sale = JsonConvert.SerializeObject(sale);
             string _expenses = JsonConvert.SerializeObject(expenses);
-            string response = "";
+           
 
-            try
-            {
+            
                 await using var connection = connectionFactory.CreateConnection();
 
                 string SQLQuery = "EXEC [dbo].[spCreateSaleCrop] @JsonStringSale, @JsonStringExpense";
+                var parameters = new { JsonStringSale = _sale };
+                var result = await connection.QueryFirstOrDefaultAsync<(int? SaleUID, string AffectedRows)>(SQLQuery, parameters);
+                var SaleUID = result.SaleUID;
 
-                var result = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringSale = _sale, JsonStringExpense = _expenses });
+                return (SaleUID, result.AffectedRows);
+                 
+              
 
-                if (result != null)
-                {
-                    response = result;
-                }
-            }
-            catch (Exception ex)
-            {
-               
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            
-            }
-
-            return response;
         }
         public async Task<string> DeleteSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
         {

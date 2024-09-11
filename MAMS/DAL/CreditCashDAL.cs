@@ -32,28 +32,30 @@ namespace DAL
 
             return creditList;
         }
-        public async Task<string> CreditAdd(Credit credit, ISqlConnectionFactory connectionFactory)
+        public async Task<(int CreditUID, int AffectedRows)> CreditAdd(Credit credit, ISqlConnectionFactory connectionFactory)
         {
-            string _credit = JsonConvert.SerializeObject(credit);
+            string _credit = JsonConvert.SerializeObject(credit);  
 
-            string response = "";
-
-            await using var connection = connectionFactory.CreateConnection();
-
+            await using var connection = connectionFactory.CreateConnection();  
+             
             string SQLQuery = "EXEC [dbo].[spCreateCredit] @JsonStringCredit";
 
-            var result = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringCredit = _credit });
+             
+            var parameters = new { JsonStringCredit = _credit };
 
-            if (result != null)
-            {
-                response = result;
-            }
+         
+            var result = await connection.QueryFirstOrDefaultAsync<(int? CreditUID, int AffectedRows)>(SQLQuery, parameters);
 
-            return response;
+          
+            int creditUID = result.CreditUID ?? 0;
+
+            return (creditUID, result.AffectedRows);
         }
 
 
-   
+
+
+
 
         public async Task<Credit> EditCredit(int Id, ISqlConnectionFactory connectionFactory)
         {

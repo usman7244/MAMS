@@ -14,6 +14,44 @@
 
 
 <script src="~/js/jquery-191-min.js"></script>
+<style>
+    #imagePreview img {
+        max-width: 150px;
+        margin: 10px;
+    }
+
+    .document-area {
+        border: 1px solid #d2d2d2;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+    .image-container:hover .delete-button {
+        display: block;
+    }
+
+    .image-container {
+        display: inline-block;
+        position: relative;
+        margin: 10px;
+    }
+
+    .remove-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        line-height: 22px;
+        font-size: 14px;
+    }
+</style>
 <form id="creditform"  asp-controller="Credit" asp-action="UpdateCredit" method="PUT" >
     <!-- #region Purchase detail form -->
     <div class="card">
@@ -82,6 +120,45 @@
 
         </div>
     </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <label>Documents Area</label>
+                <div class="form-group document-area">
+                    <!-- Display Uploaded Images -->
+                    <div class="form-group">
+                        <div id="imagePreview" class="mb-3">
+                            @if (Model.UserFilesUrl != null && Model.UserFilesUrl.Any())
+                            {
+                                foreach (var fileUrl in Model.UserFilesUrl)
+                                {
+                                    var directUrl = fileUrl.Replace("/view?usp=drivesdk", "/preview");
+                                    <div class="image-container">
+                                        <iframe src="@directUrl" class="image-preview"></iframe>
+                                        <button class="delete-button" type="button" onclick="deleteImage(this)">&#x2716;</button>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No files to display</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <!-- File input for uploading images -->
+                            <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                            <label class="custom-file-label" for="UserFiles">Choose files</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- #endregion -->
     <!-- #region Expense form -->
     <!-- #endregion -->
@@ -246,7 +323,43 @@
 
 
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("UserFiles");
+        const imagePreviewContainer = document.getElementById("imagePreview");
 
+        // Add new images to the preview
+        fileInput.addEventListener("change", function (event) {
+            const files = event.target.files;
+
+            for (const file of files) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const imageUrl = e.target.result;
+                    const imageContainer = document.createElement("div");
+                    imageContainer.className = "image-container";
+
+                    const iframe = document.createElement("iframe");
+                    iframe.src = imageUrl;
+                    iframe.className = "image-preview";
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "delete-button";
+                    deleteButton.type = "button";
+                    deleteButton.innerHTML = "&#x2716;";
+                    deleteButton.onclick = function () {
+                        imageContainer.remove();
+                    };
+
+                    imageContainer.appendChild(iframe);
+                    imageContainer.appendChild(deleteButton);
+                    imagePreviewContainer.appendChild(imageContainer);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    });
 
 
 

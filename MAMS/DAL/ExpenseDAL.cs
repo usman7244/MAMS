@@ -2,6 +2,7 @@
 using Dapper;
 using MAMS_Models.Extenions;
 using MAMS_Models.Model;
+using Microsoft.AspNetCore.Connections;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -84,17 +85,19 @@ namespace DAL
             return 1;
         }
 
-        public async Task<string> Insert(Expense param, ISqlConnectionFactory sqlConnectionFactory)
+        public async Task<(int ExpenseUID, int AffectedRows)> Insert(Expense param, ISqlConnectionFactory sqlConnectionFactory)
         {
             string Status = "";
             string _expense = JsonConvert.SerializeObject(param);
            
                 await using var connection = sqlConnectionFactory.CreateConnection();
                 string SQLQuery = "EXEC [dbo].[spCreateExpense] @JsonStringExpense";
+            var parameters = new { JsonStringExpense = _expense };
+            var result = await connection.QueryFirstOrDefaultAsync<(int? ExpenseUID, int AffectedRows)>(SQLQuery, parameters);
+            int expenseUID = result.ExpenseUID ?? 0;
 
-                Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringExpense = _expense });
-                return Status;
-            
+            return (expenseUID, result.AffectedRows);
+             
         }
         public async Task<Expense> GetSpecificExpenseInfo(int Id, ISqlConnectionFactory connectionFactory)
         {

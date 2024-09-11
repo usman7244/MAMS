@@ -24,10 +24,43 @@ namespace BOL
             var result = await _objCashDAL.GetAllCreditInfo(credit, connectionFactory);
             return result;
         }
-        public async Task<string> CreditAdd(Credit credit, ISqlConnectionFactory connectionFactory)
+        public async Task<(int? CreditUID, int AffectedRows)> CreditAdd(Credit credit, ISqlConnectionFactory connectionFactory)
         {
+            if (credit == null)
+            {
+                return (null, 0); 
+            }
+
+         
             var result = await _objCashDAL.CreditAdd(credit, connectionFactory);
-            return result;
+
+            if (result.CreditUID == null)
+            {
+                return (null, 0);  
+            }
+
+            int affectedRows = result.AffectedRows;  
+            var documents = new List<Documents>();  
+
+            
+            foreach (var file in credit.UserFiles)
+            {
+                var document = new Documents
+                {
+                    File = file,
+                    CreatedBy = credit.CreatedBy,
+                    Fk_Id = result.CreditUID.ToString(),
+                    CreatedDate = DateTime.Now,
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    BranchId = credit.BranchId
+                };
+
+                // Add each document and accumulate affected rows
+                affectedRows += await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+            }
+
+            // Return the credit UID and the total affected rows
+            return (result.CreditUID, affectedRows);
         }
         public async Task<Credit> EditCredit(int Id, ISqlConnectionFactory connectionFactory)
         {

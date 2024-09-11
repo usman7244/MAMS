@@ -79,20 +79,33 @@ namespace MAMS.Controllers
         [HttpPost]
         public async Task<IActionResult> CustomerEdit(Customer customer)
         {
-            int affectedRows = 0;
-            customer.ModifiedBy=Guid.Empty;
-
-            if (customer != null)
+            if (customer == null)
             {
-                affectedRows =await _objCustomerBOL.CustomerEdit(customer, _connectionFactory);
-                if (affectedRows > 0)
-                {
-                    return RedirectToAction("Index");
-                }
+
+                ViewBag.CusAddStatus = 0;
+                return RedirectToAction("Index");
             }
-            ViewBag.CusAddStatus = affectedRows;
+            customer.BranchId = GetBranchId();
+            customer.CreatedBy = Guid.Empty;
+            var result = await _objCustomerBOL.CustomerEdit(customer, _connectionFactory);
+            var affectedRows = result.AffectedRows;
+            if (affectedRows > 0)
+            {
+
+                ModelState.Clear();
+                ViewBag.CusAddStatus = affectedRows;
+                return RedirectToAction("Index");
+             
+
+            }
+            else
+            {
+                ViewBag.CusEditStatus = 0;
+            }
+
             return View();
         }
+ 
         [HttpPost]
         public async Task<IActionResult> DeleteCustomer(Guid cusId)
         {

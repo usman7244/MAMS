@@ -107,9 +107,10 @@ namespace MAMS.Controllers
                 expenseList.Add(item);
             }
 
-            string response = await _objPurchaseBOL.AddPurchaseCrop(purchase, expenseList, _connectionFactory);
-            response = JsonConvert.SerializeObject(response);
-            return Json(new { success = "true", data = new { response, Error = "false" } });
+            var responce = await _objPurchaseBOL.AddPurchaseCrop(purchase, expenseList, _connectionFactory);
+            var affectedRows = responce.AffectedRows;
+            affectedRows = JsonConvert.SerializeObject(affectedRows);
+            return Json(new { success = "true", data = new { affectedRows, Error = "false" } });
         }
 
         [HttpPost]

@@ -62,16 +62,28 @@ namespace MAMS.Controllers
         {
             deposit.BranchId = GetBranchId();
             deposit.CreatedBy = Guid.Empty;
-            string affectedRows = "";
+           
+            //if (deposit != null)
+            //{
+            //    affectedRows = await _objCashBOL.DepositAdd(deposit, _connectionFactory);
+            //    if (affectedRows== "Success")
+            //    {
+            //        ViewBag.DepositAddStatus = affectedRows;
+            //    }
+            //}
             if (deposit != null)
             {
-                affectedRows = await _objCashBOL.DepositAdd(deposit, _connectionFactory);
-                if (affectedRows== "Success")
+                var Result = await _objCashBOL.DepositAdd(deposit, _connectionFactory);
+                var affectedRows = Result.AffectedRows;
+                if (affectedRows > 0)
                 {
                     ViewBag.DepositAddStatus = affectedRows;
+
+
                 }
+
             }
-          
+
             return View();
         }
         public async Task<IActionResult> EditDeposit(int Id)

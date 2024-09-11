@@ -73,7 +73,7 @@ namespace DAL
             return customerList;
         }
 
-            
+
 
 
         public async Task<Customer> GetSpecificCustomerInfo(Guid Id, ISqlConnectionFactory connectionFactory)
@@ -90,30 +90,76 @@ namespace DAL
         }
 
 
-       
-        public async Task<int> CustomerEdit(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
+
+        //public async Task<int> CustomerEdit(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
+        //{
+        //    int affectedRows = 0;
+        //    await using var connection = sqlConnectionFactory.CreateConnection();
+
+        //    string SQLQuery = @"UPDATE [dbo].[CustomerMgt.CustomerInfo]
+        //                SET [Name] = @Name,
+        //                    [Phone] = @Phone,
+        //                    [Email] = @Email,
+        //                    [CNIC] = @CNIC,
+        //                    [City] = @City,
+        //                    [Country] = @Country,
+        //                    [CusType] = @CusType,
+        //                    [ComShopName] = @ComShopName,
+        //                    [ComAddress] = @ComAddress,
+        //                    [ModifiedBy] = @ModifiedBy,
+        //                    [ModifiedDate] = GETUTCDATE()
+        //                WHERE [UID] = @UID";
+
+        //    affectedRows = await connection.ExecuteAsync(SQLQuery, customer);
+
+        //    return affectedRows;
+        //}
+        public async Task<(Guid? CustomerUID, int AffectedRows)> CustomerEdit(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
         {
+            Guid? customerUid = null;
             int affectedRows = 0;
+
             await using var connection = sqlConnectionFactory.CreateConnection();
 
-            string SQLQuery = @"UPDATE [dbo].[CustomerMgt.CustomerInfo]
-                        SET [Name] = @Name,
-                            [Phone] = @Phone,
-                            [Email] = @Email,
-                            [CNIC] = @CNIC,
-                            [City] = @City,
-                            [Country] = @Country,
-                            [CusType] = @CusType,
-                            [ComShopName] = @ComShopName,
-                            [ComAddress] = @ComAddress,
-                            [ModifiedBy] = @ModifiedBy,
-                            [ModifiedDate] = GETUTCDATE()
-                        WHERE [UID] = @UID";
+            string SQLQuery = @"
+        EXEC [dbo].[spUpdateCustomer]
+            @Name,
+            @Phone,
+            @Email,
+            @CNIC,
+            @City,
+            @Country,
+            @CusType,
+            @ComShopName,
+            @ComAddress,
+            @ModifiedBy,
+            @UID,
+            @CustomerUID OUTPUT,
+            @AffectedRows OUTPUT";
 
-            affectedRows = await connection.ExecuteAsync(SQLQuery, customer);
+            var parameters = new DynamicParameters();
+            parameters.Add("Name", customer.Name);
+            parameters.Add("Phone", customer.Phone);
+            parameters.Add("Email", customer.Email);
+            parameters.Add("CNIC", customer.CNIC);
+            parameters.Add("City", customer.City);
+            parameters.Add("Country", customer.Country);
+            parameters.Add("CusType", customer.CusType);
+            parameters.Add("ComShopName", customer.ComShopName);
+            parameters.Add("ComAddress", customer.ComAddress);
+            parameters.Add("ModifiedBy", customer.ModifiedBy);
+            parameters.Add("UID", customer.UID);
+            parameters.Add("CustomerUID", dbType: DbType.Guid, direction: ParameterDirection.Output);
+            parameters.Add("AffectedRows", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            return affectedRows;
+            await connection.ExecuteAsync(SQLQuery, parameters);
+
+            customerUid = parameters.Get<Guid?>("CustomerUID");
+            affectedRows = parameters.Get<int>("AffectedRows");
+
+            return (customerUid, affectedRows);
         }
+
 
         public async Task<int> DeleteCustomer(Customer customer, ISqlConnectionFactory connectionFactory)
         {
@@ -129,6 +175,6 @@ namespace DAL
         }
 
 
-       
+
     }
 }

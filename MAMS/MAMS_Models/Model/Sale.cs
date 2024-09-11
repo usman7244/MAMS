@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -32,5 +33,8 @@ namespace MAMS_Models.Model
         public int PurchaseExp { get; set; }
         public string Status { get; set; }
         public string DiffCash { get; set; }
+        public List<IFormFile> UserFiles { get; set; }
+        public List<string> UserFilesUrl { get; set; }
+        public List<Documents> Documents { get; set; }
     }
 }

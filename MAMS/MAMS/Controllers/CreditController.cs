@@ -69,11 +69,12 @@ namespace MAMS.Controllers
             credit.BranchId = GetBranchId();
             credit.CreatedBy = Guid.Empty;
           
-            string affectedRows = "";
+         
             if (credit != null)
             {
-                affectedRows = await _objCashBOL.CreditAdd(credit, _connectionFactory);
-                if (affectedRows == "Success")
+               var Result = await _objCashBOL.CreditAdd(credit, _connectionFactory);
+                var affectedRows = Result.AffectedRows;
+                if (affectedRows > 0)
                 {
                     ViewBag.CreditAddStatus = affectedRows;
 
@@ -88,7 +89,7 @@ namespace MAMS.Controllers
     
        
         
-        public async Task<IActionResult> EditCredit(int Id)
+       public async Task<IActionResult> EditCredit(int Id)
        {
             
             _custTypeList = new List<CustomerType>();

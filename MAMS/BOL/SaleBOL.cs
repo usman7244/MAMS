@@ -4,7 +4,9 @@ using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static MAMS_Models.Enums.EnumTypes;
 
@@ -49,10 +51,45 @@ namespace BOL
         {
             return await _objSaleDAL.GetAllSaleCrop(sale, sqlConnectionFactory);
         }
-        public async Task<string> SaleCropAdd(Sale sale, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        public async Task<(int? SaleUID, string AffectedRows)> SaleCropAdd(Sale sale, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
+            if (sale == null)
+            {
+                return (null, null);
+            }
+
+
             var result = await _objSaleDAL.SaleCropAdd(sale, expenses, connectionFactory);
-            return result;
+
+            if (result.SaleUID == null)
+            {
+                return (null, null);
+            }
+
+            string affectedRows = result.AffectedRows;
+            var documents = new List<Documents>();
+
+
+            foreach (var file in sale.UserFiles)
+            {
+                var document = new Documents
+                {
+                    File = file,
+                    CreatedBy = sale.CreatedBy ?? Guid.Empty,
+                    Fk_Id = result.SaleUID.ToString(),
+                    CreatedDate = DateTime.Now,
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    BranchId = sale.BranchId ?? Guid.Empty,
+
+                };
+
+                // Add each document and accumulate affected rows
+                affectedRows += await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+            }
+
+            
+            return (result.SaleUID, affectedRows);
+              
         }
         public async Task<string> DeleteSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
         {
@@ -61,8 +98,44 @@ namespace BOL
         }
         public async Task<Sale> GetSaleCropById(int Id, ISqlConnectionFactory connectionFactory)
         {
-            var resul = await _objSaleDAL.GetSaleCropById(Id, connectionFactory);
-            return resul;
+            var result = await _objSaleDAL.GetSaleCropById(Id, connectionFactory);
+            if (result != null)
+            {
+                result.UserFilesUrl ??= new List<string>();
+                Guid SaleId = Guid.Parse(Id.ToString());
+
+                List<string> fileInfo = await _objCommonDAL.GetDocumentsInfo(SaleId, connectionFactory);
+
+                if (fileInfo != null && fileInfo.Any())
+                {
+                    foreach (var fileEntry in fileInfo)
+                    {
+                        try
+                        {
+                            var match = Regex.Match(fileEntry, @"^([^:]+):(.+)$");
+
+                            if (match.Success)
+                            {
+                                var fileId = match.Groups[1].Value;
+                                var fileUrl = match.Groups[2].Value;
+                                result.UserFilesUrl.Add(fileUrl);
+
+                            }
+                            else
+                            {
+
+                                throw new FormatException($"Invalid file entry format: {fileEntry}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw new InvalidOperationException("Failed to process file entry.", ex);
+                        }
+                    }
+                }
+            }
+            return result;
         }
         public async Task<List<Expense>> GetSaleExpenseById(int Id, ISqlConnectionFactory connectionFactory)
         {

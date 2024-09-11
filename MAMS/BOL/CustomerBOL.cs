@@ -50,11 +50,12 @@ namespace BOL
 
             int affectedRows = 0;
             var documents = new List<Documents>();
-
+           
             foreach (var file in customer.UserFiles)
             {
                 var document = new Documents
                 {
+                   
                     File = file,
                     CreatedBy = customer.CreatedBy,
                     Fk_Id = result.CustomerUID.ToString(),
@@ -119,18 +120,54 @@ namespace BOL
             return customer;
         }
          
-        public async Task<int> CustomerEdit(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
+      //  public async Task<int> CustomerEdit(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
+       public async Task<(Guid? CustomerUID, int AffectedRows)> CustomerEdit(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
         {
+            //int affectedRows = 0;
+            //if (customer != null)
+            //{
+            //    affectedRows = await _objCustomerDAL.CustomerEdit(customer, sqlConnectionFactory);
+            //    return affectedRows;
+            //}
+            //else
+            //{
+            //    return affectedRows;
+            //}
+
+            if (customer == null)
+            {
+                return (null, 0);
+            }
+
+            var result = await _objCustomerDAL.CustomerEdit(customer, sqlConnectionFactory);
+
+            if (result.CustomerUID == null)
+            {
+                return (null, 0);
+            }
+
             int affectedRows = 0;
-            if (customer != null)
+            var documents = new List<Documents>();
+
+            foreach (var file in customer.UserFiles)
             {
-                affectedRows = await _objCustomerDAL.CustomerEdit(customer, sqlConnectionFactory);
-                return affectedRows;
+                var document = new Documents
+                {
+                    File = file,
+                    CreatedBy = customer.CreatedBy,
+                    Fk_Id = result.CustomerUID.ToString(),
+                    CreatedDate = DateTime.Now,
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    BranchId = customer.BranchId
+                };
+
+                affectedRows += await _ObjCommonDAL.DocumentsAdd(document, sqlConnectionFactory);
             }
-            else
-            {
-                return affectedRows;
-            }
+
+            return (result.CustomerUID, affectedRows);
+
+
+
         }
         public async Task<int> DeleteCustomer(Customer customer, ISqlConnectionFactory sqlConnectionFactory)
         {

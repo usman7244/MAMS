@@ -4,12 +4,14 @@ using MAMS_Models.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DAL
 {
-    public  class DepositCashDAL
+    public class DepositCashDAL
     {
 
         public async Task<List<Deposit>> GetAllDepositInfo(Deposit deposit, ISqlConnectionFactory connectionFactory)
@@ -27,24 +29,67 @@ namespace DAL
             return depositList;
         }
 
-        public async Task<string> DepositAdd(Deposit deposit, ISqlConnectionFactory connectionFactory)
-        {
-            string _deposit = JsonConvert.SerializeObject(deposit);
+        //public async Task<(int DepositUID, int AffectedRows)> DepositAdd(Deposit deposit, ISqlConnectionFactory connectionFactory)
+        //{
 
-            string response = "";
+        //    string _deposit = JsonConvert.SerializeObject(deposit);
+
+
+        //    await using var connection = connectionFactory.CreateConnection();
+
+        //    string SQLQuery = "EXEC [dbo].[spCreateDeposit] @JsonStringDeposit";
+
+        //    var parameters = new { JsonStringDeposit = _deposit };
+
+        //    var result = await connection.QueryFirstOrDefaultAsync<(int? DepositUID, int AffectedRows)>(SQLQuery, parameters);
+
+        //    int depositUID = result.DepositUID ?? 0;
+
+        //    return (depositUID, result.AffectedRows);
+        //}
+        public async Task<(int DepositUID, int AffectedRows)> DepositAdd(Deposit deposit, ISqlConnectionFactory connectionFactory)
+        {
+            string depositJson = JsonConvert.SerializeObject(deposit);
 
             await using var connection = connectionFactory.CreateConnection();
+            await connection.OpenAsync();
 
-            string SQLQuery = "EXEC [dbo].[spCreateDeposit] @JsonStringDeposit";
+            using var command = connection.CreateCommand();
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "[dbo].[spCreateDeposit]";
 
-            var result = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, new { JsonStringDeposit = _deposit });
-
-            if (result != null)
+            // Input parameter
+            command.Parameters.Add(new SqlParameter("@JsonStringDeposit", SqlDbType.NVarChar)
             {
-                response = result;
-            }
+                Value = depositJson
+            });
 
-            return response;
+            // Output parameters
+            var uidParam = new SqlParameter("@UID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(uidParam);
+
+            var affectedRowsParam = new SqlParameter("@AffectedRows", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(affectedRowsParam);
+
+            var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, -1)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(messageParam);
+
+            await command.ExecuteNonQueryAsync();
+
+            // Retrieve output values
+            int depositUID = (int)(uidParam.Value ?? 0);
+            int affectedRows = (int)(affectedRowsParam.Value ?? 0);
+
+            return (depositUID, affectedRows);
         }
 
 
@@ -101,16 +146,16 @@ namespace DAL
                                             @BranchId
                                                      ";
 
-                 Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
+                Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
 
                 return Status;
             }
             catch (Exception ex)
             {
-          
+
                 Console.WriteLine($"An error occurred: {ex.Message}");
 
-               
+
                 throw;
             }
         }

@@ -10,7 +10,40 @@
 
 
 <script src="~/js/jquery-191-min.js"></script>
+<style>
+    #imagePreview img {
+        max-width: 150px;
+        margin: 10px;
+    }
 
+    .document-area {
+        border: 1px solid #d2d2d2;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+    .image-container {
+        display: inline-block;
+        position: relative;
+        margin: 10px;
+    }
+
+    .remove-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        line-height: 22px;
+        font-size: 14px;
+    }
+</style>
 
 <div class="card">
     <div class="card-header card-header-primary">
@@ -67,6 +100,29 @@
                     </div>
                 </div>
             </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Documents Area</label>
+                        <div class="form-group document-area">
+
+                            <div class="form-group">
+                                <div id="imagePreview" class="mb-3"></div>
+                                <div class="form-group">
+                                    <div class="custom-file">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                                                <label class="custom-file-label" for="UserFiles">Choose files</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row float-right">
                 <div class="form-group">
                     <a type="button" class="btn btn-success btn-round float-right" asp-controller="Credit" asp-action="Index">
@@ -81,6 +137,7 @@
                 </div>
 
             </div>
+
         </form>
 
     </div>
@@ -148,7 +205,7 @@
     $("#alertDanger").hide();
     
     var status = ('@status');
-    if (status == "Success") {
+    if (status == "2") {
         $('#alertSuccess').show();
         setTimeout(function () {
             window.location.href = '/Credit/Index';
@@ -178,65 +235,37 @@
             totalPriceInput.setCustomValidity('');
         }
     });
-    // $(document).ready(function () {
+    document.getElementById('UserFiles').addEventListener('change', function (event) {
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = '';
+        const files = event.target.files;
 
-    //     $(document).ready(function () {
-    //         $('#btnSave').click(function (e) {
-    //             e.preventDefault();
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
 
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
 
-    //             if ($('#slctType').val() === '' || $('#slctName').val() === '' || $('#TotalPrc').val() === '' || $('#Detail').val() === '' || $('#slctstatus').val() === '') {
-    //                 alert('Please fill out all required fields.');
-    //                 return;
-    //             }
+                reader.onload = function (e) {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-container';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    const removeButton = document.createElement('button');
+                    removeButton.className = 'remove-button';
+                    removeButton.innerHTML = '&times;';
+                    removeButton.onclick = function () {
+                        imageContainer.remove();
+                    };
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(removeButton);
+                    imagePreview.appendChild(imageContainer);
+                }
 
-
-    //             var formData = {
-    //                 'CustomerType': $('#slctType').val(),
-    //                 'FKCustomer': $('#slctName').val(),
-    //                 'TotalCash': $('#TotalPrc').val(),
-    //                 'Detail': $('#Detail').val(),
-    //                 'Status': $('#slctstatus').val(),
-    //             };
-
-
-    //             $.ajax({
-    //                 type: 'POST',
-    //                 url: '/Credit/CreditAdd',
-    //                 data: formData,
-    //                 success: function (data) {
-
-    //                     console.log(data);
-
-    //                     $('#alertSuccess').show();
-    //                     setTimeout(function () {
-    //                         window.location.href = '/Credit/Index';
-    //                     }, 2000);
-    //                 },
-    //                 error: function (xhr, status, error) {
-
-    //                     console.log(xhr.responseText);
-    //                     $('#alertDanger').show();
-    //                 }
-    //             });
-    //         });
-    //     });
-    // });
-
-
-
-
-
-    // $('input[type=number]').on('mousewheel', function (e) {
-    //     $(e.target).blur();
-    // });
-
-    // function showLoader() {
-    //     $(".overlay").show();
-    // }
-    // function hideLoader() {
-    //     $(".overlay").hide();
-    // }
+                reader.readAsDataURL(file);
+            }
+        }
+    });
 </script>
 <!-- #endregion -->
 <!-- #region   Style/CSS -->
@@ -261,6 +290,16 @@
         margin-top: -36px;
     }
 
+    #imagePreview img {
+        max-width: 150px;
+        margin: 10px;
+    }
+
+    .image-container {
+        display: inline-block;
+        position: relative;
+        margin: 10px;
+    }
     label#idLblPrcWithExp {
         margin-top: 35px;
     }

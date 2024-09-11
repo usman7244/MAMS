@@ -123,9 +123,12 @@ namespace MAMS.Controllers
                 expenseList.Add(item);
             }
 
-            string response = await _objSALEBOL.SaleCropAdd(sale, expenseList, _connectionFactory);
-            response = JsonConvert.SerializeObject(response);
-            return Json(new { success = "true", data = new { response, Error = "false" } });
+            var response = await _objSALEBOL.SaleCropAdd(sale, expenseList, _connectionFactory);
+            var affectedRows = response.AffectedRows;
+            affectedRows = JsonConvert.SerializeObject(affectedRows);
+            
+            affectedRows = JsonConvert.SerializeObject(affectedRows);
+            return Json(new { success = "true", data = new { affectedRows, Error = "false" } });
         }
         [HttpPost]
         public IActionResult DeleteSaleCrop(int saleCropId)

@@ -1,4 +1,8 @@
 ﻿@model MAMS_Models.Model.Customer
+@{
+    var status = ViewBag.CusAddStatus;
+}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -124,18 +128,17 @@
                             <div class="col-md-12">
                                 <label>Documents Area</label>
                                 <div class="form-group document-area">
-
                                     <!-- Display Uploaded Images -->
                                     <div class="form-group">
                                         <div id="imagePreview" class="mb-3">
                                             @if (Model.UserFilesUrl != null && Model.UserFilesUrl.Any())
                                             {
-                                                @foreach (var fileUrl in Model.UserFilesUrl)
+                                                foreach (var fileUrl in Model.UserFilesUrl)
                                                 {
                                                     var directUrl = fileUrl.Replace("/view?usp=drivesdk", "/preview");
-                                                    <div class="image-container" style="position: relative; display: inline-block;">
-                                                        <iframe src="@directUrl" width="300" height="200" frameborder="0"></iframe>
-                                                        <button class="delete-button" type="button" onclick="deleteImage(this)" style="position: absolute; top: 10px; right: 10px; background-color: red; color: white; border: none; padding: 5px; cursor: pointer; display: none;">&#x2716;</button>
+                                                    <div class="image-container">
+                                                        <iframe src="@directUrl" class="image-preview"></iframe>
+                                                        <button class="delete-button" type="button" onclick="deleteImage(this)">&#x2716;</button>
                                                     </div>
                                                 }
                                             }
@@ -154,7 +157,6 @@
                                             <label class="custom-file-label" for="UserFiles">Choose files</label>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -179,51 +181,117 @@
         </div>
     </div>
 </div>
-
+<!-- #region  alert -->
+<div id="alertSuccess" data-notify="container" class="col-11 col-md-4 alert alert-success alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
+    <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 50%; margin-top: -9px; z-index: 1033;">
+        <i class="material-icons">close</i>
+    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Customer</b> <br>New customer Edit successfully!</span>
+    <a href="#" target="_blank" data-notify="url"></a>
+</div>
+<div id="alertDanger" data-notify="container" class="col-11 col-md-4 alert alert-danger alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
+    <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 50%; margin-top: -9px; z-index: 1033;">
+        <i class="material-icons">close</i>
+    </button><i data-notify="icon" class="material-icons">add_alert</i><span data-notify="title"></span> <span data-notify="message"><b>Customer</b> <br>New customer Edit not successful!</span>
+    <a href="#" target="_blank" data-notify="url"></a>
+</div>
 <!-- #endregion -->
 <!-- #region  javascript-->
 <script type="text/javascript">
-    function deleteImage(button) {
-        if (confirm("Are you sure you want to delete this image?")) {
-            var imageContainer = button.parentElement;
-            imageContainer.remove();
-            // Optionally, send a request to the server to delete the image from the database or storage
-        }
+    $("#alertSuccess").hide();
+    $("#alertDanger").hide();
+
+    var status = ('@status');
+    if (status == "1") {
+        $('#alertSuccess').show();
+        setTimeout(function () {
+            window.location.href = '/Customer/Index';
+        }, 2000);
     }
-    function getval(sel) {
-
-        var CheckCust = $('#cusSlct').val();
-        if (CheckCust != null && CheckCust == "Merchant") {
-            $("#idShopName").removeAttr("disabled");
-        }
-        else {
-            $("#idShopName").val("");
-            $("#idShopName").prop("disabled", true);
-        }
+    if (status == "0") {
+        $("#alertDanger").show();
+        setTimeout(function () {
+            $("#alertDanger").hide();
+        }, 5000);
     }
-    document.getElementById('UserFiles').addEventListener('change', function (event) {
-        const files = event.target.files;
-        const imagePreview = document.getElementById('imagePreview');
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("UserFiles");
+        const imagePreviewContainer = document.getElementById("imagePreview");
 
-        imagePreview.innerHTML = ''; // Clear existing previews
+        // Add new images to the preview
+        fileInput.addEventListener("change", function (event) {
+            const files = event.target.files;
 
-        for (const file of files) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.classList.add('img-thumbnail');
-                imagePreview.appendChild(img);
-            };
-            reader.readAsDataURL(file);
-        }
+            for (const file of files) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const imageUrl = e.target.result;
+                    const imageContainer = document.createElement("div");
+                    imageContainer.className = "image-container";
+
+                    const iframe = document.createElement("iframe");
+                    iframe.src = imageUrl;
+                    iframe.className = "image-preview";
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "delete-button";
+                    deleteButton.type = "button";
+                    deleteButton.innerHTML = "&#x2716;";
+                    deleteButton.onclick = function () {
+                        imageContainer.remove();
+                    };
+
+                    imageContainer.appendChild(iframe);
+                    imageContainer.appendChild(deleteButton);
+                    imagePreviewContainer.appendChild(imageContainer);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
     });
-    document.getElementById('UserFiles').addEventListener('change', function (event) {
-        var input = event.target;
-        var label = input.nextElementSibling;
-        var fileName = input.files.length > 0 ? Array.from(input.files).map(file => file.name).join(', ') : 'Choose files';
-        label.textContent = fileName;
-    });
+
+    // function deleteImage(button) {
+    //     if (confirm("Are you sure you want to delete this image?")) {
+    //         var imageContainer = button.parentElement;
+    //         imageContainer.remove();
+    //         // Optionally, send a request to the server to delete the image from the database or storage
+    //     }
+    // }
+    // function getval(sel) {
+
+    //     var CheckCust = $('#cusSlct').val();
+    //     if (CheckCust != null && CheckCust == "Merchant") {
+    //         $("#idShopName").removeAttr("disabled");
+    //     }
+    //     else {
+    //         $("#idShopName").val("");
+    //         $("#idShopName").prop("disabled", true);
+    //     }
+    // }
+    // document.getElementById('UserFiles').addEventListener('change', function (event) {
+    //     const files = event.target.files;
+    //     const imagePreview = document.getElementById('imagePreview');
+
+    //     imagePreview.innerHTML = ''; // Clear existing previews
+
+    //     for (const file of files) {
+    //         const reader = new FileReader();
+    //         reader.onload = function (e) {
+    //             const img = document.createElement('img');
+    //             img.src = e.target.result;
+    //             img.classList.add('img-thumbnail');
+    //             imagePreview.appendChild(img);
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // });
+    // document.getElementById('UserFiles').addEventListener('change', function (event) {
+    //     var input = event.target;
+    //     var label = input.nextElementSibling;
+    //     var fileName = input.files.length > 0 ? Array.from(input.files).map(file => file.name).join(', ') : 'Choose files';
+    //     label.textContent = fileName;
+    // });
 
 </script>
 <!-- #endregion -->
@@ -261,5 +329,35 @@
     i.fa.fa-arrow-left {
         font-size: 15px !important;
     }
+
+
+    .image-container {
+        position: relative;
+        display: inline-block;
+        width: 300px; /* Fixed width for all images */
+        height: 200px; /* Fixed height for all images */
+        overflow: hidden;
+        margin: 5px; /* Space between images */
+    }
+
+    .image-preview {
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: cover;
+    }
+
+    .delete-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
 </style>
 <!-- #endregion -->
