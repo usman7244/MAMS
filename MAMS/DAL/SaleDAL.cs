@@ -116,25 +116,37 @@ namespace DAL
         }
 
 
-        public async Task<(int? SaleUID, string AffectedRows)> SaleCropAdd(Sale sale, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        public async Task<(int? SaleUID, string Message)> SaleCropAdd(Sale sale, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
             string _sale = JsonConvert.SerializeObject(sale);
             string _expenses = JsonConvert.SerializeObject(expenses);
-           
 
-            
+            try
+            {
                 await using var connection = connectionFactory.CreateConnection();
 
+                // Define SQL query for executing the stored procedure
                 string SQLQuery = "EXEC [dbo].[spCreateSaleCrop] @JsonStringSale, @JsonStringExpense";
-                var parameters = new { JsonStringSale = _sale };
-                var result = await connection.QueryFirstOrDefaultAsync<(int? SaleUID, string AffectedRows)>(SQLQuery, parameters);
-                var SaleUID = result.SaleUID;
 
-                return (SaleUID, result.AffectedRows);
-                 
-              
+                // Parameters for the stored procedure
+                var parameters = new { JsonStringSale = _sale, JsonStringExpense = _expenses };
 
+                // Execute the query and get the result
+                var result = await connection.QueryFirstOrDefaultAsync<(int? SaleUID, string Message)>(SQLQuery, parameters);
+
+                // Return the SaleUID and the message (Success or failure)
+                return (result.SaleUID, result.Message);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for troubleshooting
+                Console.WriteLine($"Error occurred: {ex.Message}");
+
+                // Return null for SaleUID and an error message
+                return (null, "Error occurred while adding the sale.");
+            }
         }
+
         public async Task<string> DeleteSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
         {
 
@@ -184,40 +196,75 @@ namespace DAL
 
             return expenseList;
         }
-        public async Task<string> UpdateSaleCrop(Sale param, ISqlConnectionFactory connectionFactory)
+        //public async Task<string> UpdateSaleCrop(Sale param, ISqlConnectionFactory connectionFactory)
+        //{
+        //    string Status = "";
+        //    try
+        //    {
+        //        await using var connection = connectionFactory.CreateConnection();
+        //        string SQLQuery = @" EXEC [dbo].[UpdateSaleCrop]
+        //                                                        @UID,
+        //                                                        @Fk_Customer,
+        //                                                        @Fk_Crop,
+        //                                                        @WeightInMaun,
+        //                                                        @WeightInkg,
+        //                                                        @TotalCropWeight,
+        //                                                        @PriceInMaun,
+        //                                                        @PriceInKg,
+        //                                                        @TotalCropPrice,
+        //                                                        @TotalExp,
+        //                                                        @TotalAmountwithExp,
+        //                                                        @FK_BagType,
+        //                                                        @BagWeight,
+        //                                                        @BagTotal,
+        //                                                        @ModifiedBy";
+
+
+        //         Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param);
+        //        return Status;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception (logging logic would be here)
+        //        Console.WriteLine(ex.Message); // Replace with actual logging
+        //        throw; 
+        //    }
+        //}
+        public async Task<(string Message, int SaleUID)> UpdateSaleCrop(Sale param, ISqlConnectionFactory connectionFactory)
         {
-            string Status = "";
             try
             {
                 await using var connection = connectionFactory.CreateConnection();
-                string SQLQuery = @" EXEC [dbo].[UpdateSaleCrop]
-                                                                @UID,
-                                                                @Fk_Customer,
-                                                                @Fk_Crop,
-                                                                @WeightInMaun,
-                                                                @WeightInkg,
-                                                                @TotalCropWeight,
-                                                                @PriceInMaun,
-                                                                @PriceInKg,
-                                                                @TotalCropPrice,
-                                                                @TotalExp,
-                                                                @TotalAmountwithExp,
-                                                                @FK_BagType,
-                                                                @BagWeight,
-                                                                @BagTotal,
-                                                                @ModifiedBy";
-                
+                string SQLQuery = @" EXEC [dbo].[spUpdateSaleCrop]
+                                                         @UID,
+                                                          @Fk_Customer,
+                                                         @Fk_Crop,
+                                                         @WeightInMaun,
+                                                         @WeightInkg,
+                                                         @TotalCropWeight,
+                                                         @PriceInMaun,
+                                                         @PriceInKg,
+                                                         @TotalCropPrice,
+                                                         @TotalExp,
+                                                         @TotalAmountwithExp,
+                                                         @FK_BagType,
+                                                         @BagWeight,
+                                                         @BagTotal,
+                                                         @PurchaseExp,
+                                                         @PurchasePrice,
+                                                         @ModifiedBy";
 
-                 Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param);
-                return Status;
+                var result = await connection.QueryFirstOrDefaultAsync<(string Message, int SaleUID)>(SQLQuery, param);
+                return result;
             }
             catch (Exception ex)
             {
                 // Log the exception (logging logic would be here)
                 Console.WriteLine(ex.Message); // Replace with actual logging
-                throw; 
+                throw;
             }
         }
+
         public async Task<string> StockSaleAdd(Sale model, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
             model.Status = EnumExtension.GetDisplayName(StatusEnum.Status);

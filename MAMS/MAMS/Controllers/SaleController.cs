@@ -176,11 +176,12 @@ namespace MAMS.Controllers
             return View(_sale);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateSaleCrop(Sale model, Expense[] expItems)
+        public async Task<IActionResult> UpdateSaleCrop([FromForm] Sale model, Expense[] expItems)
         {
             try
             {
-                model.ModifiedBy = Guid.Empty;
+                model.ModifiedBy = GetUserId();
+                model.BranchId = GetBranchId();
                 var res = await _objSALEBOL.UpdateSaleCrop(model, _connectionFactory);
 
 

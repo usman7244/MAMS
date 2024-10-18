@@ -49,7 +49,7 @@ namespace BOL
             if (result != null)
             {
                 result.UserFilesUrl ??= new List<string>();
-                Guid purchaseId = Guid.Parse(purchCropId.ToString());
+                string purchaseId =result.UID.ToString();
                 List<string> fileInfo = await _objCommonDAL.GetDocumentsInfo(purchaseId, connectionFactory);
 
                 if (fileInfo != null && fileInfo.Any())
@@ -106,7 +106,7 @@ namespace BOL
                 return (null, null);
             }
 
-            string affectedRows = result.AffectedRows;
+            string affectedRows = result.Message;
             var documents = new List<Documents>();
 
 
@@ -118,7 +118,7 @@ namespace BOL
                     CreatedBy = purchase.CreatedBy ?? Guid.Empty,
                     Fk_Id = result.PurchaseUID.ToString(),
                     CreatedDate = DateTime.Now,
-                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Purchase),
                     BranchId = purchase.BranchId ?? Guid.Empty,
 
                 };
@@ -143,9 +143,9 @@ namespace BOL
 
         public async Task<string> UpdatePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
-            string affectedrow = null;
-             affectedrow = await _objPurchaseDAL.UpdatePurchaseCrop(purchase, connectionFactory);
-            if (affectedrow == "Success")
+           // string affectedrow = null;
+             var affectedrow = await _objPurchaseDAL.UpdatePurchaseCrop(purchase, connectionFactory);
+            if (affectedrow.Message == "successful")
             {
 
                 if (decimal.TryParse(purchase.DiffCash, out decimal diffCash) && decimal.TryParse(purchase.TotalCropPrice.ToString(), out decimal totalCash))
@@ -163,7 +163,25 @@ namespace BOL
 
 
                         var re = await _objCommonDAL.UpdateCashHistorybyLoss(_cashHistory, connectionFactory);
-                        return re;
+                        if (re == "Success")
+                        {
+                            foreach (var file in purchase.UserFiles)
+                            {
+                                var document = new Documents
+                                {
+                                    File = file,
+                                    CreatedBy = purchase.CreatedBy ?? Guid.Empty,
+                                    Fk_Id = affectedrow.PurchaseUID.ToString(),
+                                    CreatedDate = DateTime.Now,
+                                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Sale),
+                                    BranchId = purchase.BranchId ?? Guid.Empty,
+                                };
+                                var affectedRows = await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+                                // Add each document and accumulate affected rows
+
+
+                            }
+                        }
                     }
                     else if (diff > 0)
                     {
@@ -177,10 +195,29 @@ namespace BOL
 
 
                         var re = await _objCommonDAL.UpdateCashHistorybyProfit(_cashHistory, connectionFactory);
-                        return re;
+                        if (re == "Success")
+                        {
+                            foreach (var file in purchase.UserFiles)
+                            {
+                                var document = new Documents
+                                {
+                                    File = file,
+                                    CreatedBy = purchase.CreatedBy ?? Guid.Empty,
+                                    Fk_Id = affectedrow.PurchaseUID.ToString(),
+                                    CreatedDate = DateTime.Now,
+                                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Sale),
+                                    BranchId = purchase.BranchId ?? Guid.Empty,
+                                };
+                                var affectedRows = await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+                                // Add each document and accumulate affected rows
+
+
+                            }
+                        }
                     }
 
                 }
+
                 else
                 {
 
@@ -192,7 +229,8 @@ namespace BOL
             {
                 throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
             }
-            return affectedrow;
+           
+            return affectedrow.Message;
         }
 
     }

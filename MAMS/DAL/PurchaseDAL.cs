@@ -152,24 +152,68 @@ namespace DAL
 
 
 
-        
-        public async Task<(int? PurchaseUID, string AffectedRows)> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+
+        //public async Task<(int? PurchaseUID, string AffectedRows)> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
+        //{
+        //    string _purchase = JsonConvert.SerializeObject(purchase);
+        //    string _expenses = JsonConvert.SerializeObject(expenses);
+
+
+        //    await using var connection = connectionFactory.CreateConnection();
+
+        //    string SQLQuery = "EXEC [dbo].[spCreatePurchaseCrop] @JsonStringPurchase, @JsonStringExpense";
+        //    var parameters = new { JsonStringPurchase = _purchase };
+        //    var result = await connection.QueryFirstOrDefaultAsync<(int? PurchaseUID, string AffectedRows)>(SQLQuery, parameters);
+
+        //    var purchaseUID = result.PurchaseUID;
+
+        //    return (purchaseUID, result.AffectedRows);
+
+        //}
+        public async Task<(int? PurchaseUID, string Message)> AddPurchaseCrop(Purchase purchase, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {
-            string _purchase = JsonConvert.SerializeObject(purchase);
-            string _expenses = JsonConvert.SerializeObject(expenses);
+            // Initialize result variables
+            int? purchaseUID = null;
+            string message = string.Empty;
+
+            try
+            {
             
+                string _purchase = JsonConvert.SerializeObject(purchase);
+                string _expenses = JsonConvert.SerializeObject(expenses);
 
-            await using var connection = connectionFactory.CreateConnection();
+               
+                await using var connection = connectionFactory.CreateConnection();
 
-            string SQLQuery = "EXEC [dbo].[spCreatePurchaseCrop] @JsonStringPurchase, @JsonStringExpense";
-            var parameters = new { JsonStringPurchase = _purchase };
-            var result = await connection.QueryFirstOrDefaultAsync<(int? PurchaseUID, string AffectedRows)>(SQLQuery, parameters);
+               
+                string SQLQuery = "EXEC [dbo].[spCreatePurchaseCrop] @JsonStringPurchase, @JsonStringExpense";
 
-            var purchaseUID = result.PurchaseUID;
+              
+                var parameters = new { JsonStringPurchase = _purchase, JsonStringExpense = _expenses };
 
-            return (purchaseUID, result.AffectedRows);
-             
+     
+                var result = await connection.QueryFirstOrDefaultAsync<(string Message, int? PurchaseUID)>(SQLQuery, parameters);
+
+    
+                message = result.Message;
+                purchaseUID = result.PurchaseUID;
+            }
+            catch (SqlException sqlEx)
+            {
+              
+                message = $"SQL Error: {sqlEx.Message}";
+   
+            }
+            catch (Exception ex)
+            {
+                // Handle any other exceptions
+                message = $"An error occurred: {ex.Message}";
+                // Optionally log ex or handle it further
+            }
+
+             return (purchaseUID, message);
         }
+
 
 
         public async Task<string> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
@@ -185,9 +229,9 @@ namespace DAL
             return effectedRows;
         }
 
-        public async Task<string> UpdatePurchaseCrop(Purchase param, ISqlConnectionFactory connectionFactory)
+        public async Task<(string Message, int PurchaseUID)> UpdatePurchaseCrop(Purchase param, ISqlConnectionFactory connectionFactory)
         {
-            string Status = "";
+            
             try
             {
                 await using var connection = connectionFactory.CreateConnection();
@@ -209,8 +253,8 @@ namespace DAL
                                  @BagTotal ,
                                  @ModifiedBy";
 
-                 Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
-                return Status;
+                var result = await connection.QueryFirstOrDefaultAsync<(string Message, int PurchaseUID)>(SQLQuery, param, null);
+                return result;
             }
             catch (SqlException sqlEx)
             {

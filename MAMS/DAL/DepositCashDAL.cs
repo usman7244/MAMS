@@ -130,35 +130,64 @@ namespace DAL
 
             return Status;
         }
-        public async Task<string> UpdateDeposit(Deposit param, ISqlConnectionFactory connectionFactory)
+        //public async Task<string> UpdateDeposit(Deposit param, ISqlConnectionFactory connectionFactory)
+        //{
+        //    string Status = "";
+        //    try
+        //    {
+        //        await using var connection = connectionFactory.CreateConnection();
+        //        string SQLQuery = @"
+        //                             EXEC [dbo].[UpdateDeposit]
+        //                                    @UID,
+        //                                    @TotalCash,
+        //                                    @Status,
+        //                                    @Detail,
+        //                                    @ModifiedBy,
+        //                                    @BranchId
+        //                                             ";
+
+        //        Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
+
+        //        return Status;
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        Console.WriteLine($"An error occurred: {ex.Message}");
+
+
+        //        throw;
+        //    }
+        //}
+        public async Task<(string Message, int? UpdatedUID)> UpdateDeposit(Deposit param, ISqlConnectionFactory connectionFactory)
         {
-            string Status = "";
             try
             {
                 await using var connection = connectionFactory.CreateConnection();
                 string SQLQuery = @"
-                                     EXEC [dbo].[UpdateDeposit]
-                                            @UID,
-                                            @TotalCash,
-                                            @Status,
-                                            @Detail,
-                                            @ModifiedBy,
-                                            @BranchId
-                                                     ";
+            EXEC [dbo].[UpdateDeposit]
+                @UID,
+                @TotalCash,
+                @Status,
+                @Detail,
+                @ModifiedBy,
+                @BranchId
+        ";
 
-                Status = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
+                // Use dynamic to capture both the message and UpdatedUID from the output
+                var result = await connection.QueryFirstOrDefaultAsync<dynamic>(SQLQuery, param);
 
-                return Status;
+                // Return the message and updated UID
+                return (result?.Message, result?.UpdatedUID != null ? (int?)result.UpdatedUID : null);
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine($"An error occurred: {ex.Message}");
-
-
                 throw;
             }
         }
+
+
 
     }
 }

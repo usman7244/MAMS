@@ -229,6 +229,7 @@ namespace DAL
         public async Task<int> DocumentsAdd(Documents document, ISqlConnectionFactory connectionFactory)
         {
             int affectedRows = 0;
+            
             try
             {
                 using (var connection = connectionFactory.CreateConnection())
@@ -271,7 +272,16 @@ namespace DAL
             return affectedRows;
 
         }
-        public async Task<List<string>> GetDocumentsInfo(Guid id, ISqlConnectionFactory connectionFactory)
+        public Guid IntToGuid(int intValue)
+        {
+            // Convert the integer to a byte array
+            byte[] bytes = new byte[16];
+            BitConverter.GetBytes(intValue).CopyTo(bytes, 0);
+
+            // Create a Guid from the byte array
+            return new Guid(bytes);
+        }
+        public async Task<List<string>> GetDocumentsInfo(string id, ISqlConnectionFactory connectionFactory)
         {
             List<string> result = new List<string>();
 

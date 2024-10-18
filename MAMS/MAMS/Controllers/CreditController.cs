@@ -47,7 +47,8 @@ namespace MAMS.Controllers
         public async Task<IActionResult> Index()
         {
             _credit = new Credit();
-            _credit.BranchId = GetBranchId();
+            //_credit.BranchId = GetBranchId();
+            _credit.BranchId = Guid.Empty;
             _credit.CreatedBy = Guid.Empty;
 
 
@@ -109,7 +110,7 @@ namespace MAMS.Controllers
             return View(_credit);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateCredit(Credit model)
+        public async Task<IActionResult> UpdateCredit([FromForm]  Credit model)
         {
 
             try
@@ -118,7 +119,7 @@ namespace MAMS.Controllers
                 model.ModifiedBy = Guid.Empty;
                 var res = await _objCashBOL.UpdateCredit(model, _connectionFactory);
 
-                var successResponse = JsonConvert.SerializeObject("Success");
+                var successResponse = res;
                 return Json(new { success = "true", data = new { res, Error = "false" } });
             }
             catch (Exception ex)

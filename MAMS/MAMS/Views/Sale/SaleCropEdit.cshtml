@@ -17,24 +17,20 @@
 }
 <script src="~/js/jquery-191-min.js"></script>
 <style>
-    #imagePreview img {
-        max-width: 150px;
-        margin: 10px;
+    .image-container {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
     }
 
-    .document-area {
-        border: 1px solid #d2d2d2;
-        padding: 15px;
+    .image-preview {
+        width: 200px;
+        height: 150px;
+        border: 1px solid #ddd;
         border-radius: 4px;
     }
 
-    .image-container {
-        display: inline-block;
-        position: relative;
-        margin: 10px;
-    }
-
-    .remove-button {
+    .delete-button {
         position: absolute;
         top: 5px;
         right: 5px;
@@ -43,12 +39,14 @@
         border: none;
         border-radius: 50%;
         cursor: pointer;
-        width: 25px;
-        height: 25px;
-        text-align: center;
-        line-height: 22px;
-        font-size: 14px;
+        font-size: 18px;
+        padding: 0 6px;
     }
+
+        .delete-button:hover {
+            background-color: darkred;
+        }
+
 </style>
 <form id="BasicForm">
     <!-- #region Purchase detail form -->
@@ -246,18 +244,33 @@
             <div class="col-md-12">
                 <label>Documents Area</label>
                 <div class="form-group document-area">
-
+                    <!-- Display Uploaded Images -->
                     <div class="form-group">
-                        <div id="imagePreview" class="mb-3"></div>
-                        <div class="form-group">
-                            <div class="custom-file">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
-                                        <label class="custom-file-label" for="UserFiles">Choose files</label>
+                        <div id="imagePreview" class="mb-3">
+                            @if (Model.UserFilesUrl != null && Model.UserFilesUrl.Any())
+                            {
+                                foreach (var fileUrl in Model.UserFilesUrl)
+                                {
+                                    var directUrl = fileUrl.Replace("/view?usp=drivesdk", "/preview");
+                                    <div class="image-container">
+                                        <iframe src="@directUrl" class="image-preview"></iframe>
+                                        <button class="delete-button" type="button" onclick="deleteImage(this)">&#x2716;</button>
                                     </div>
-                                </div>
-                            </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No files to display</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <!-- File input for uploading images -->
+                            <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                            <label class="custom-file-label" for="UserFiles">Choose files</label>
                         </div>
                     </div>
                 </div>
@@ -725,6 +738,7 @@
         var priceWithExpense = parseInt($('#idPriceWithExpense').val());
         var totalExpense = parseInt($('#idTotalExpense').val());
         var DiffCash = parseInt($('#Diffprice').val());
+        var Userdocuments = $('#UserFiles')[0].files[0]; // Get the file object
         if (isNaN(priceWithExpense)) {
             priceWithExpense = parseInt(totallPrice);
         }
@@ -738,28 +752,27 @@
         if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense) && bagType.length > 0) {
             totallPrice = parseInt(totallPrice);
             e.preventDefault();
-            var model =
-            {
-                UID: UID,
-                FK_CustomerType: fKCustomerType,
-                Fk_Customer: fkCustomer,
-                Fk_Crop: parseInt(fkCrop),
-                WeightInMaun: parseInt(weightInMaun),
-                WeightInkg: parseFloat(weightInkg),
-                TotalCropWeight: parseFloat(totalCropWeight),
 
-                PriceInMaun: pricePerMaun,
-                PriceInKg: parseFloat(pricePerKG),
-                TotalCropPrice: totallPrice,
-                TotalAmountwithExp: priceWithExpense,
-                TotalExp: totalExpense,
+            var formData = new FormData();
 
-                FK_BagType: parseInt(bagType),
-                BagWeight: parseInt(bagWeight),
-                BagTotal: parseInt(totallBags),
-                DiffCash:'@Model.DiffCash'
 
-            };
+            formData.append('UID', UID);
+            formData.append('DiffCash', DiffCash);
+            formData.append('CustomerType', fKCustomerType);
+            formData.append('Fk_Customer', fkCustomer);
+            formData.append('Fk_Crop', parseInt(fkCrop));
+            formData.append('WeightInMaun', parseInt(weightInMaun));
+            formData.append('WeightInkg', parseFloat(weightInkg));
+            formData.append('TotalCropWeight', parseFloat(totalCropWeight));
+            formData.append('PriceInMaun', pricePerMaun);
+            formData.append('PriceInKg', pricePerKG);
+            formData.append('TotalCropPrice', totallPrice);
+            formData.append('TotalAmountwithExp', priceWithExpense);
+            formData.append('TotalExp', totalExpense);
+            formData.append('FK_BagType', parseInt(bagType));
+            formData.append('BagWeight', parseInt(bagWeight));
+            formData.append('BagTotal', parseInt(totallBags));
+            formData.append('UserFiles', Userdocuments); // Append the file
 
             var expItems = new Array();
             $("#expnsTable tbody").find('tr').each(function (i) {
@@ -768,13 +781,16 @@
                 itemDetails = { ExpDescription: description, Amount: parseInt(amount), UID: parseInt(expuid) };
                 expItems.push(itemDetails);
             });
+
+            formData.append('expItems', JSON.stringify(expItems)); // Append expenses as JSON string
+
+            // AJAX call for form submission
             $.ajax({
                 type: "PUT",
                 url: "/Sale/UpdateSaleCrop",
-                data: {
-                    'model': model,
-                    'expItems': expItems
-                },
+                data: formData,
+                processData: false, // Prevent jQuery from transforming data into query string
+                contentType: false, // Prevent jQuery from setting content type
                 success: function (data) {
 
                     var dataObj1 = JSON.parse(data.data.response);
@@ -925,37 +941,44 @@
     function hideLoader() {
         $(".overlay").hide();
     }
-    document.getElementById('UserFiles').addEventListener('change', function (event) {
-        const imagePreview = document.getElementById('imagePreview');
-        imagePreview.innerHTML = '';
-        const files = event.target.files;
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("UserFiles");
+        const imagePreviewContainer = document.getElementById("imagePreview");
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+        // Add new images to the preview
+        fileInput.addEventListener("change", function (event) {
+            const files = event.target.files;
 
-            if (file.type.startsWith('image/')) {
+            for (const file of files) {
                 const reader = new FileReader();
 
                 reader.onload = function (e) {
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'image-container';
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    const removeButton = document.createElement('button');
-                    removeButton.className = 'remove-button';
-                    removeButton.innerHTML = '&times;';
-                    removeButton.onclick = function () {
+                    const imageUrl = e.target.result;
+                    const imageContainer = document.createElement("div");
+                    imageContainer.className = "image-container";
+
+                    const iframe = document.createElement("iframe");
+                    iframe.src = imageUrl;
+                    iframe.className = "image-preview";
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "delete-button";
+                    deleteButton.type = "button";
+                    deleteButton.innerHTML = "&#x2716;";
+                    deleteButton.onclick = function () {
                         imageContainer.remove();
                     };
-                    imageContainer.appendChild(img);
-                    imageContainer.appendChild(removeButton);
-                    imagePreview.appendChild(imageContainer);
-                }
+
+                    imageContainer.appendChild(iframe);
+                    imageContainer.appendChild(deleteButton);
+                    imagePreviewContainer.appendChild(imageContainer);
+                };
 
                 reader.readAsDataURL(file);
             }
-        }
+        });
     });
+
 </script>
 <!-- #endregion -->
 <!-- #region   Style/CSS -->

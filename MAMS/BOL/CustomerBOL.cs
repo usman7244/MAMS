@@ -84,8 +84,8 @@ namespace BOL
             if (customer != null)
             {
                 customer.UserFilesUrl ??= new List<string>();
-
-                List<string> fileInfo = await _ObjCommonDAL.GetDocumentsInfo(id, sqlConnectionFactory);
+                var CustomerID = id.ToString();
+                List<string> fileInfo = await _ObjCommonDAL.GetDocumentsInfo(CustomerID, sqlConnectionFactory);
 
                 if (fileInfo != null && fileInfo.Any())
                 {

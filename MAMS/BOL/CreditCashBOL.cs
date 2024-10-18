@@ -3,7 +3,9 @@ using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static MAMS_Models.Enums.EnumTypes;
 
@@ -51,7 +53,7 @@ namespace BOL
                     CreatedBy = credit.CreatedBy,
                     Fk_Id = result.CreditUID.ToString(),
                     CreatedDate = DateTime.Now,
-                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Credit),
                     BranchId = credit.BranchId
                 };
 
@@ -80,16 +82,50 @@ namespace BOL
         {
 
             var result = await _objCashDAL.GetAllCreditById(Id, connectionFactory);
+            if (result != null)
+            {
+                result.UserFilesUrl ??= new List<string>();
+                string CreditId = result.UID.ToString();
+                List<string> fileInfo = await _objCommonDAL.GetDocumentsInfo(CreditId, connectionFactory);
 
+                if (fileInfo != null && fileInfo.Any())
+                {
+                    foreach (var fileEntry in fileInfo)
+                    {
+                        try
+                        {
+                            var match = Regex.Match(fileEntry, @"^([^:]+):(.+)$");
+
+                            if (match.Success)
+                            {
+                                var fileId = match.Groups[1].Value;
+                                var fileUrl = match.Groups[2].Value;
+                                result.UserFilesUrl.Add(fileUrl);
+
+                            }
+                            else
+                            {
+
+                                throw new FormatException($"Invalid file entry format: {fileEntry}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw new InvalidOperationException("Failed to process file entry.", ex);
+                        }
+                    }
+                }
+            }
             return result;
         }
         public async Task<string> UpdateCredit(Credit credit, ISqlConnectionFactory connectionFactory)
         {
-            string affectedrow="";
-            affectedrow = await _objCashDAL.UpdateCredit(credit, connectionFactory);
+             
+            var affectedrow = await _objCashDAL.UpdateCredit(credit, connectionFactory);
             if (credit.Status == "Recevied")
             {
-                if (affectedrow == "Success")
+                if (affectedrow.Message == "Success")
                 {
 
                     if (decimal.TryParse(credit.DiffCash, out decimal diffCash) && decimal.TryParse(credit.TotalCash, out decimal totalCash))
@@ -107,7 +143,26 @@ namespace BOL
 
 
                             var re = await _objCommonDAL.UpdateCashHistorybyLoss(_cashHistory, connectionFactory);
-                            return re;
+                            if (re == "Success")
+                            {
+                                foreach (var file in credit.UserFiles)
+                                {
+                                    var document = new Documents
+                                    {
+                                        File = file,
+                                        CreatedBy = credit.CreatedBy,
+                                        Fk_Id = affectedrow.UpdatedUID.ToString(),
+                                        CreatedDate = DateTime.Now,
+                                        FK_Type = EnumExtension.GetDisplayName(ExpenseType.Credit),
+                                        BranchId = credit.BranchId
+                                    };
+
+                                    // Add each document and accumulate affected rows
+                                    var affectedRows = await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+
+                                }
+                            }
+                            
                         }
                         else if (diff > 0)
                         {
@@ -121,7 +176,27 @@ namespace BOL
 
 
                             var re = await _objCommonDAL.UpdateCashHistorybyProfit(_cashHistory, connectionFactory);
-                            return re;
+                            if (re == "Success")
+                            {
+                                foreach (var file in credit.UserFiles)
+                                {
+                                    var document = new Documents
+                                    {
+                                        File = file,
+                                        CreatedBy = credit.CreatedBy,
+                                        Fk_Id = affectedrow.UpdatedUID.ToString(),
+                                        CreatedDate = DateTime.Now,
+                                        FK_Type = EnumExtension.GetDisplayName(ExpenseType.Credit),
+                                        BranchId = credit.BranchId
+                                    };
+
+                                    // Add each document and accumulate affected rows
+                                    var affectedRows = await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+                                     
+                                }
+                            }
+
+                            
                         }
 
                     }
@@ -130,7 +205,7 @@ namespace BOL
                 }
                
             }
-            return affectedrow;
+            return affectedrow.Message;
         }
 
 

@@ -5,6 +5,7 @@ using MAMS_Models.Extenions;
 using MAMS_Models.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -92,7 +93,7 @@ namespace MAMS.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AddPurchaseCrop(Purchase purchase, Expense[] expItems)
+        public async Task<IActionResult> AddPurchaseCrop(Purchase purchase, Expense[] expItems, List<IFormFile> UserFiles)
         {
             purchase.CreatedBy = Guid.Empty;
             purchase.BranchId = GetBranchId();
@@ -109,8 +110,8 @@ namespace MAMS.Controllers
 
             var responce = await _objPurchaseBOL.AddPurchaseCrop(purchase, expenseList, _connectionFactory);
             var affectedRows = responce.AffectedRows;
-            affectedRows = JsonConvert.SerializeObject(affectedRows);
-            return Json(new { success = "true", data = new { affectedRows, Error = "false" } });
+            affectedRows = affectedRows;
+            return Json(new { Success1 = "true", data = new { affectedRows, Error = "false" } });
         }
 
         [HttpPost]
@@ -161,11 +162,11 @@ namespace MAMS.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdatePurchaseCrop(Purchase model, Expense[] expItems)
+        public async Task<IActionResult> UpdatePurchaseCrop([FromForm] Purchase model, Expense[] expItems)
          {
             try
             {
-                model.ModifiedBy = Guid.Empty;
+                model.ModifiedBy =Guid.Empty;
                 var res = await _objPurchaseBOL.UpdatePurchaseCrop(model, _connectionFactory);
 
 
@@ -189,14 +190,14 @@ namespace MAMS.Controllers
                     }
                 }
 
-                var response = JsonConvert.SerializeObject("Success");
-                return Json(new { success = "true", data = new { response, Error = "false" } });
+                var response = res;
+                return Json(new { successful = "true", data = new { response, Error = "false" } });
             }
             catch (Exception ex)
             {
 
                 var response = JsonConvert.SerializeObject(ex.Message);
-                return Json(new { success = "false", data = new { response, Error = "true" } });
+                return Json(new { successful = "false", data = new { response, Error = "true" } });
             }
         }
 

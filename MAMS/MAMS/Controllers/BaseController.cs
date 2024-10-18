@@ -5,33 +5,34 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System;
+using MAMS_Models.Model;
 
 
 namespace MAMS.Controllers
 {
     public class BaseController : Controller
     {
-      
+
 
         public IActionResult Index()
         {
             return View();
         }
 
-        protected string GetUserId(ActionExecutingContext context)
+        protected Guid GetUserId()
         {
-            if (context.HttpContext.User.Identity.IsAuthenticated)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                var userId = context.HttpContext.User.FindFirst(CustomClaimType.Userid.ToString())?.Value;
-                return userId;
+                var userId = HttpContext.User.FindFirst(CustomClaimType.Userid.ToString())?.Value;
+                return userId.ToGuid();
             }
-            return null;
+            return Guid.Empty;
         }
-        protected string GetRoleId( )
+        protected string GetRoleId()
         {
-            if ( HttpContext.User.Identity.IsAuthenticated)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                var RoleId =  HttpContext.User.FindFirst(CustomClaimType.RoleId.ToString())?.Value;
+                var RoleId = HttpContext.User.FindFirst(CustomClaimType.RoleId.ToString())?.Value;
                 return RoleId;
             }
             return null;
@@ -67,11 +68,11 @@ namespace MAMS.Controllers
 
         protected Guid GetBranchId()
         {
-             
+
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 var branchId = HttpContext.User.FindFirst(CustomClaimType.BranchId.ToString())?.Value;
-                return  branchId.ToGuid();
+                return branchId.ToGuid();
 
             }
             return Guid.Empty;

@@ -539,11 +539,7 @@
         $(e.target).blur();
     });
 
-    $("#btnSave").click(function ()
-
-           /*  $('form').on('submit', function(e) */ {
-
-        
+    $("#btnSave").click(function () {
         var fKCustomerType = $('#slctCusType').val();
         var fkCustomer = $('#slctCusName').val();
         var fkCrop = $('#slctCrop').val();
@@ -556,59 +552,56 @@
         var bagType = $('#slctBagType').val();
         var bagWeight = $('#idBagWeight').val();
         var totallBags = $('#idTotallBags').val();
-
         var priceWithExpense = parseInt($('#idPriceWithExpense').val());
         var totalExpense = parseInt($('#idTotalExpense').val());
-
+        var Userdocuments = $('#UserFiles')[0].files[0]; // Get the file object
 
         var cashInHand = parseInt('@ViewBag.CashHistory');
 
         if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense) && bagType.length > 0) {
-            totallPrice = parseInt(totallPrice);
-            /*e.preventDefault();*/
-            var model =
-            {
-               
-                FK_CustomerType: fKCustomerType,
-                Fk_Customer: fkCustomer,
-                Fk_Crop: parseInt(fkCrop),
-                WeightInMaun: parseInt(weightInMaun),
-                WeightInkg: parseFloat(weightInkg),
-                TotalCropWeight: parseFloat(totalCropWeight),
+            var formData = new FormData();
+ 
+            formData.append('CustomerType', fKCustomerType);
+            formData.append('Fk_Customer', fkCustomer);
+            formData.append('Fk_Crop', parseInt(fkCrop));
+            formData.append('WeightInMaun', parseInt(weightInMaun));
+            formData.append('WeightInkg', parseFloat(weightInkg));
+            formData.append('TotalCropWeight', parseFloat(totalCropWeight));
+            formData.append('PriceInMaun', pricePerMaun);
+            formData.append('PriceInKg', pricePerKG);
+            formData.append('TotalCropPrice', totallPrice);
+            formData.append('TotalAmountwithExp', priceWithExpense);
+            formData.append('TotalExp', totalExpense);
+            formData.append('FK_BagType', parseInt(bagType));
+            formData.append('BagWeight', parseInt(bagWeight));
+            formData.append('BagTotal', parseInt(totallBags));
+            formData.append('UserFiles', Userdocuments); // Append the file
 
-                PriceInMaun: pricePerMaun,
-                PriceInKg: parseFloat(pricePerKG),
-                TotalCropPrice: totallPrice,
-                TotalAmountwithExp: priceWithExpense,
-                TotalExp: totalExpense,
-
-                FK_BagType: parseInt(bagType),
-                BagWeight: parseInt(bagWeight),
-                BagTotal: parseInt(totallBags)
-
-            };
-
-            var expItems = new Array();
+            // Append expenses
+            var expItems = [];
             $("#expnsTable tbody").find('tr').each(function (i) {
                 var $tds = $(this).find('td'), description = $tds.eq(0).text(), amount = $tds.eq(1).text();
-                itemDetails = { ExpDescription: description, Amount: parseInt(amount) };
+                var itemDetails = { ExpDescription: description, Amount: parseInt(amount) };
                 expItems.push(itemDetails);
             });
+            formData.append('expItems', JSON.stringify(expItems)); 
+
+            // AJAX call for form submission
             $.ajax({
                 type: "POST",
                 url: "/Sale/SaleCropAdd",
-                data: {
-                    'sale': model,
-                    'expItems': expItems
-                },
+                data: formData,
+                processData: false, // Prevent jQuery from transforming data into query string
+                contentType: false, // Prevent jQuery from setting content type
                 success: function (data) {
-
                     var dataObj1 = JSON.parse(data.data.response);
                     if (dataObj1 == "Success") {
                         $("#alertSuccess").show();
                         setTimeout(function () {
                             window.location.href = '/Sale/Index';
                         }, 2000);
+
+                        // Clear form fields
                         $('#slctCusType').val("");
                         $('#slctCusName').val("");
                         $('#slctCrop').val("");
@@ -627,34 +620,27 @@
                         $("#totallWeight").parent().next(".validation").remove();
                         $("#totallPrice").parent().next(".validation").remove();
                         $("#idPriceWithExpense").parent().next(".validation").remove();
-                    }
-                    else {
+                    } else {
                         $("#alertDanger").show();
                         setTimeout(function () {
                             $("#alertDanger").hide();
                         }, 5000);
-
                     }
-
-
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    alert('error Successfull');
                     alert('Error: ' + textStatus + ' - ' + errorThrown);
                 }
             });
 
             return false;
-        }
-        else {
-
+        } else {
+            // Validation and error messages
             $("#totallWeight").parent().next(".validation").remove();
             $("#totallPrice").parent().next(".validation").remove();
             $("#idPriceWithExpense").parent().next(".validation").remove();
 
-
             if (cashInHand < parseInt(priceWithExpense)) {
-                $("#idPriceWithExpense").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Cash in hand is less then Purchase</div>");
+                $("#idPriceWithExpense").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Cash in hand is less than the Sale</div>");
             }
             if (totalCropWeight == "") {
                 $("#totallWeight").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter weight</div>");
@@ -663,7 +649,7 @@
                 $("#totallPrice").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter price</div>");
             }
             if (bagType == "") {
-                $("#slctBagType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select bag</div>");
+                $("#slctBagType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Bag</div>");
             }
             if (fKCustomerType == "") {
                 $("#slctCusType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Customer</div>");
@@ -673,9 +659,8 @@
             }
             return false;
         }
-
-
     });
+
 
 
 

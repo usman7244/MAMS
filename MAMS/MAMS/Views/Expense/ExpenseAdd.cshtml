@@ -37,7 +37,7 @@
         font-size: 14px;
     }
 </style>
-  <form id="BasicForm" enctype="multipart/form-data">
+<form id="BasicForm" enctype="multipart/form-data">
     <!-- #region Expense form -->
     <div class="card">
         <div class="card-header card-header-primary">
@@ -265,37 +265,43 @@
     $(document).ready(function () {
        
         $('#btnSave').on('click', function () {
+            debugger;
+
             var expItems = [];
-         
+            var files = $('#UserFiles')[0].files;  // Get all selected files
+
             $("#expnsTable tbody").find('tr').each(function (i) {
-                debugger;
                 var $tds = $(this).find('td'),
                     description = $tds.eq(0).text(),
                     amount = $tds.eq(1).text(),
-                    UID = $tds.eq(2).text(),
-                    UserFile = $tds.eq(3).text();
-                var itemDetails = { ExpDescription: description, Amount: parseInt(amount), UID: UID, UserFiles: UserFile };
+                    UID = 0;
+
+                var itemDetails = { ExpDescription: description, Amount: parseInt(amount), UID: UID };
                 expItems.push(itemDetails);
             });
+
+            var formData = new FormData();  // Create a FormData object
+            formData.append('expItems', JSON.stringify(expItems));   
+
+            // Append each file to FormData
+            for (var i = 0; i < files.length; i++) {
+                formData.append('UserFiles', files[i]);
+            }
 
             $.ajax({
                 type: "POST",
                 url: "/Expense/ExpenseAdd",
-                data: {
-                    'expItems': expItems
-                },
-                
+                data: formData,
+                contentType: false,  // Important: tells jQuery not to process the data
+                processData: false,  // Important: tells jQuery not to convert the FormData into a query string
                 success: function (data) {
-                   
                     console.log(data);
-
                     $('#alertSuccess').show();
                     setTimeout(function () {
                         window.location.href = '/Expense/Index';
                     }, 2000);
                 },
                 error: function (xhr, status, error) {
-
                     console.log(xhr.responseText);
                     $("#alertDanger").show();
                 }

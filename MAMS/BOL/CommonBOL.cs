@@ -64,5 +64,9 @@ namespace BOL
             var result = _ObjCommonDAL.Encrypt(clearText, EncryptionKey);
             return result;
         }
+        public async Task<int> DocumentsAdd(Documents document, ISqlConnectionFactory connectionFactory)
+        {
+            return await _ObjCommonDAL.DocumentsAdd(document, connectionFactory);
+        }
     }
 }

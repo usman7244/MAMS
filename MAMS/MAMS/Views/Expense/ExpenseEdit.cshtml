@@ -3,8 +3,40 @@
 @{
     ViewData["Title"] = "Expense";
 }
+<style>
+    .image-container {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .image-preview {
+        width: 200px;
+        height: 150px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .delete-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0 6px;
+    }
+
+        .delete-button:hover {
+            background-color: darkred;
+        }
+
+</style>
 <script src="~/js/jquery-191-min.js"></script>
-  <form id="BasicForm" enctype="multipart/form-data" action="/Expense/ExpenseAdd" method="post">
+<form id="BasicForm" enctype="multipart/form-data" action="/Expense/ExpenseAdd" method="post">
     <!-- #region Expense form -->
     <div class="card">
         <div class="card-header card-header-primary">
@@ -31,24 +63,57 @@
                         <input type="number" class="form-control" id="amount" min="0" asp-for="@Model.Amount">
                     </div>
                 </div>
-                
-                <div class="col-sm-2 col-md-2">
-                    <div class="form-group">
-                        <!-- Back button -->
-                        <a href="@Url.Action("Index", "Expense")" id="btnBack" class="btn btn-primary">Back</a>
-                        <a class="btn btn-primary" id="btnAdd">
-                            Update
-                        </a>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Documents Area</label>
+                            <div class="form-group document-area">
+                                <!-- Display Uploaded Images -->
+                                <div class="form-group">
+                                    <div id="imagePreview" class="mb-3">
+                                        @if (Model.UserFilesUrl != null && Model.UserFilesUrl.Any())
+                                        {
+                                            foreach (var fileUrl in Model.UserFilesUrl)
+                                            {
+                                                var directUrl = fileUrl.Replace("/view?usp=drivesdk", "/preview");
+                                                <div class="image-container">
+                                                    <iframe src="@directUrl" class="image-preview"></iframe>
+                                                    <button class="delete-button" type="button" onclick="deleteImage(this)">&#x2716;</button>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p>No files to display</p>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- File Upload -->
+                                <div class="form-group">
+                                    <div class="custom-file">
+                                        <!-- File input for uploading images -->
+                                        <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                                        <label class="custom-file-label" for="UserFiles">Choose files</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-               
-                   
-
             </div>
 
-            
-    <!-- #endregion -->
-   
+
+            <!-- #endregion -->
+            <div class="row float-right">
+                <div class="form-group">
+                    <a type="button" class="btn btn-success btn-round" id="btnBack" asp-controller="Expense" asp-action="Index">Back</a>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success btn-round" id="btnAdd">Save</button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
 </form>
 <!-- #region alert -->
 <div id="alertSuccess" data-notify="container" class="col-11 col-md-4 alert alert-success alert-with-icon animated fadeInDown" role="alert" data-notify-position="top-center" style="display: inline-block; margin: 15px auto; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; top: 20px; left: 0px; right: 0px;">
@@ -77,39 +142,49 @@
 <script type="text/javascript">
     $("#alertSuccess").hide();
     $("#alertDanger").hide();
-   
 
 
-    
+
+
     $(document).ready(function () {
         $("#btnAdd").click(function (event) {
             event.preventDefault();
-           
+
             // Get the values from the input fields
             var expDes = $("#expDes").val();
             var amount = $("#amount").val();
             var UID = $("#idUID").val();
             var DiffPrice = '@Model.DiffCash';
             var Type = '@Model.Type';
+            var Userdocuments = $('#UserFiles')[0].files[0]; // Get the file object
+
+
+            var formData = new FormData();
+
+            formData.append('UID', UID);
+            formData.append('Amount', amount);
+            formData.append('ExpDescription', expDes);
+            formData.append('DiffCash', DiffPrice);
+            formData.append('Type', Type);
+            formData.append('UserFiles', Userdocuments); // Append the file
             // Construct the model object
-            var model = {
-                ExpDescription: expDes,
-                Amount: amount,
-                UID: UID,
-                DiffCash: DiffPrice,
-                Type: Type
-            };
-       
+            // var model = {
+            //     ExpDescription: expDes,
+            //     Amount: amount,
+            //     UID: UID,
+            //     DiffCash: DiffPrice,
+            //     Type: Type
+            // };
+
 
             $.ajax({
                 type: 'POST',
                 url: '/Expense/ExpenseEdit',
-                data: {
-                    'model': model
-                },
-                 
+                data: formData,
+                processData: false, // Prevent jQuery from transforming data into query string
+                contentType: false, // Prevent jQuery from setting content type
                 success: function (data) {
-               
+
                     console.log(data);
 
                     $('#alertSuccess').show();
@@ -127,7 +202,43 @@
     });
 
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("UserFiles");
+        const imagePreviewContainer = document.getElementById("imagePreview");
 
+        // Add new images to the preview
+        fileInput.addEventListener("change", function (event) {
+            const files = event.target.files;
+
+            for (const file of files) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const imageUrl = e.target.result;
+                    const imageContainer = document.createElement("div");
+                    imageContainer.className = "image-container";
+
+                    const iframe = document.createElement("iframe");
+                    iframe.src = imageUrl;
+                    iframe.className = "image-preview";
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "delete-button";
+                    deleteButton.type = "button";
+                    deleteButton.innerHTML = "&#x2716;";
+                    deleteButton.onclick = function () {
+                        imageContainer.remove();
+                    };
+
+                    imageContainer.appendChild(iframe);
+                    imageContainer.appendChild(deleteButton);
+                    imagePreviewContainer.appendChild(imageContainer);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    });
 </script>
 <!-- #endregion -->
 <!-- #region Style/CSS -->
@@ -135,80 +246,106 @@
     input#idPricePerKG {
         padding-left: 0px;
     }
+
     input {
         text-align: center;
     }
+
     .validation {
         color: red;
         margin-bottom: 20px;
     }
+
     input#idTotalExpense {
         min-width: 60px;
         max-width: 120px;
         margin-top: -36px;
     }
+
+    #imagePreview img {
+        max-width: 150px;
+        margin: 10px;
+    }
+
+    .image-container {
+        display: inline-block;
+        position: relative;
+        margin: 10px;
+    }
+
     label#idLblPrcWithExp {
         margin-top: 35px;
     }
+
     input#idPriceWithExpense {
         font-weight: 600;
     }
+
     #idLblPriceWithExpense {
         margin-top: -20px;
     }
+
     input#totallWeight {
         font-weight: 600;
     }
+
     input#totallPrice {
         font-weight: 600;
     }
+
     i.fa.fa-plus {
         font-size: 15px !important;
     }
+
     #btnSave {
-        background-color: #35663b;
-    }
-    #btnBack {
         background-color: #35663b;
     }
 
     #btnBack {
-        background-color: #2e9ead;
-        border-color: #0cb9cf;
-        color: white;
+        background-color: #35663b;
     }
+
     #btnAdd {
         background-color: #2e9ead;
         border-color: #0cb9cf;
         color: white;
     }
+
     i.material-icons {
         float: left;
     }
+
     input.form-control {
         border: 0px;
     }
+
     label {
         font-size: 16px;
     }
+
     option {
         color: #fff;
         background-color: #363945;
     }
+
     select {
         border: 0px !important;
     }
+
     div#inputsRow {
         margin-top: 1%;
     }
+
     input#totallWeight {
         border-bottom: 1px dotted #d2d2d2;
     }
+
     #loading-img {
         z-index: 100;
         background: url("../images/ajax-loading.gif") center center no-repeat;
         height: 100%;
     }
+
     .overlay {
         background: #e9e9e9;
         display: none;

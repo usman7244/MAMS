@@ -66,7 +66,7 @@ namespace BOL
                 return (null, null);
             }
 
-            string affectedRows = result.AffectedRows;
+            string affectedRows = result.Message;
             var documents = new List<Documents>();
 
 
@@ -78,7 +78,7 @@ namespace BOL
                     CreatedBy = sale.CreatedBy ?? Guid.Empty,
                     Fk_Id = result.SaleUID.ToString(),
                     CreatedDate = DateTime.Now,
-                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Customer),
+                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Sale),
                     BranchId = sale.BranchId ?? Guid.Empty,
 
                 };
@@ -102,7 +102,7 @@ namespace BOL
             if (result != null)
             {
                 result.UserFilesUrl ??= new List<string>();
-                Guid SaleId = Guid.Parse(Id.ToString());
+                string SaleId = Id.ToString();
 
                 List<string> fileInfo = await _objCommonDAL.GetDocumentsInfo(SaleId, connectionFactory);
 
@@ -144,9 +144,9 @@ namespace BOL
         }
         public async Task<string> UpdateSaleCrop(Sale sale, ISqlConnectionFactory connectionFactory)
         {
-            String affectedrow = "";
-            affectedrow = await _objSaleDAL.UpdateSaleCrop(sale, connectionFactory);
-            if (affectedrow == "Success")
+            
+            var affectedrow = await _objSaleDAL.UpdateSaleCrop(sale, connectionFactory);
+            if (affectedrow.Message == "successful")
             {
 
                 if (decimal.TryParse(sale.DiffCash, out decimal diffCash) && decimal.TryParse(sale.TotalCropPrice.ToString(), out decimal totalCash))
@@ -164,7 +164,25 @@ namespace BOL
 
 
                         var re = await _objCommonDAL.UpdateCashHistorybyLoss(_cashHistory, connectionFactory);
-                        return re;
+                        if (re == "Success")
+                        {
+                            foreach (var file in sale.UserFiles)
+                            {
+                                var document = new Documents
+                                {
+                                    File = file,
+                                    CreatedBy = sale.CreatedBy ?? Guid.Empty,
+                                    Fk_Id = affectedrow.SaleUID.ToString(),
+                                    CreatedDate = DateTime.Now,
+                                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Sale),
+                                    BranchId = sale.BranchId ?? Guid.Empty,
+                                };
+                                var affectedRows = await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+                                // Add each document and accumulate affected rows
+
+
+                            }
+                        }
                     }
                     else if (diff > 0)
                     {
@@ -178,7 +196,25 @@ namespace BOL
 
 
                         var re = await _objCommonDAL.UpdateCashHistorybyProfit(_cashHistory, connectionFactory);
-                        return re;
+                        if (re == "Success")
+                        {
+                            foreach (var file in sale.UserFiles)
+                            {
+                                var document = new Documents
+                                {
+                                    File = file,
+                                    CreatedBy = sale.CreatedBy ?? Guid.Empty,
+                                    Fk_Id = affectedrow.SaleUID.ToString(),
+                                    CreatedDate = DateTime.Now,
+                                    FK_Type = EnumExtension.GetDisplayName(ExpenseType.Credit),
+                                    BranchId =  sale.BranchId ?? Guid.Empty,
+                                };
+
+                                // Add each document and accumulate affected rows
+                                var affectedRows = await _objCommonDAL.DocumentsAdd(document, connectionFactory);
+
+                            }
+                        }
                     }
 
                 }
@@ -193,7 +229,7 @@ namespace BOL
             {
                 throw new ArgumentException("Invalid numeric value for DiffCash or TotalCash.");
             }
-            return affectedrow;
+            return affectedrow.Message;
         }
         public async Task<string> StockSaleAdd(Sale model, List<Expense> expenses, ISqlConnectionFactory connectionFactory)
         {

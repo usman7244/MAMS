@@ -15,28 +15,20 @@
 
 <script src="~/js/jquery-191-min.js"></script>
 <style>
-    #imagePreview img {
-        max-width: 150px;
-        margin: 10px;
+    .image-container {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
     }
 
-    .document-area {
-        border: 1px solid #d2d2d2;
-        padding: 15px;
+    .image-preview {
+        width: 200px;
+        height: 150px;
+        border: 1px solid #ddd;
         border-radius: 4px;
     }
 
-    .image-container:hover .delete-button {
-        display: block;
-    }
-
-    .image-container {
-        display: inline-block;
-        position: relative;
-        margin: 10px;
-    }
-
-    .remove-button {
+    .delete-button {
         position: absolute;
         top: 5px;
         right: 5px;
@@ -45,12 +37,14 @@
         border: none;
         border-radius: 50%;
         cursor: pointer;
-        width: 25px;
-        height: 25px;
-        text-align: center;
-        line-height: 22px;
-        font-size: 14px;
+        font-size: 18px;
+        padding: 0 6px;
     }
+
+        .delete-button:hover {
+            background-color: darkred;
+        }
+
 </style>
 <form id="creditform"  asp-controller="Credit" asp-action="UpdateCredit" method="PUT" >
     <!-- #region Purchase detail form -->
@@ -247,47 +241,46 @@
 
     }
     $(document).ready(function () {
+        $('#btnSave').click(function (e) {
+            e.preventDefault();
 
-        $(document).ready(function () {
-            $('#btnSave').click(function (e) {
-                e.preventDefault();
+            var formData = new FormData();
+            formData.append('CustomerType', $('#slctType').val());
+            formData.append('FKCustomer', $('#slctName').val());
+            formData.append('TotalCash', $('#TotalPrc').val());
+            formData.append('Detail', $('#Detail').val());
+            formData.append('DiffCash', '@Model.DiffCash');
+            formData.append('UID', $('#idUID').val());
+            formData.append('status', $('#slctstatus').val());
+            formData.append('CreatedBy', 'YourCreatedByValue');
 
-                var formData = {
-                    'CustomerType': $('#slctType').val(),
-                     'FKCustomer': $('#slctName').val(),
-                    'TotalCash': $('#TotalPrc').val(),
-                    'Detail': $('#Detail').val(),
-                    'DiffCash': '@Model.DiffCash',
-                   
-                     'UID' :$('#idUID').val(),
-                    'status': $('#slctstatus').val(),
-                    
-                    'CreatedBy': 'YourCreatedByValue' 
-                };
+            var files = $('#UserFiles')[0].files;
+            for (var i = 0; i < files.length; i++) {
+                formData.append('UserFiles', files[i]);
+            }
 
-              
-                $.ajax({
-                    type: 'PUT',
-                    url: '/Credit/UpdateCredit',
-                    data: formData,
-                    success: function (data) {
-                       
-                        console.log(data);
-                      
-                        $('#alertSuccess').show(); 
-                        setTimeout(function () {
-                            window.location.href = '/Credit/Index'; 
-                        }, 2000);
-                    },
-                    error: function (xhr, status, error) {
-                        
-                        console.log(xhr.responseText);
-                        $('#alertDanger').show();
-                    }
-                });
+            $.ajax({
+                type: 'PUT',
+                url: '/Credit/UpdateCredit',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data);
+                    $('#alertSuccess').show();
+                    setTimeout(function () {
+                        window.location.href = '/Credit/Index';
+                    }, 2000);
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText);
+                    $('#alertDanger').show();
+                }
             });
         });
     });
+
+
 
 
    
@@ -474,6 +467,17 @@
         bottom: 0;
         left: 0;
         opacity: 0.5;
+    }
+
+    #imagePreview img {
+        max-width: 150px;
+        margin: 10px;
+    }
+
+    .image-container {
+        display: inline-block;
+        position: relative;
+        margin: 10px;
     }
 </style>
 <!-- #endregion -->

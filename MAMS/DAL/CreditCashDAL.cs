@@ -70,36 +70,67 @@ namespace DAL
 
             return credit;
         }
-        public async Task<string> UpdateCredit(Credit param, ISqlConnectionFactory connectionFactory)
+        //public async Task<string> UpdateCredit(Credit param, ISqlConnectionFactory connectionFactory)
+        //{
+        //    String affectedRows = null;
+        //    try
+        //    {
+        //        await using var connection = connectionFactory.CreateConnection();
+        //        string SQLQuery = @"
+        //                             EXEC [dbo].[UpdateCredit]
+        //                                    @UID,
+        //                                    @TotalCash,
+        //                                    @Status,
+        //                                    @Detail,
+        //                                    @ModifiedBy,
+        //                                    @BranchId
+        //                                             ";
+
+        //        affectedRows = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param);
+
+        //        return affectedRows;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exception here, you can log it or throw a custom exception
+        //        // Log the exception
+        //        Console.WriteLine($"An error occurred: {ex.Message}");
+
+        //        // Optionally, rethrow the exception or throw a custom exception
+        //        throw; // rethrowing the exception
+        //    }
+        //}
+        public async Task<(string Message, int? UpdatedUID)> UpdateCredit(Credit param, ISqlConnectionFactory connectionFactory)
         {
-            String affectedRows = null;
             try
             {
                 await using var connection = connectionFactory.CreateConnection();
                 string SQLQuery = @"
-                                     EXEC [dbo].[UpdateCredit]
-                                            @UID,
-                                            @TotalCash,
-                                            @Status,
-                                            @Detail,
-                                            @ModifiedBy,
-                                            @BranchId
-                                                     ";
+            EXEC [dbo].[UpdateCredit]
+                @UID,
+                @TotalCash,
+                @Status,
+                @Detail,
+                @ModifiedBy,
+                @BranchId
+                 ";
 
-                affectedRows = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param);
+                // Execute the stored procedure and get the result as a dynamic object
+                var result = await connection.QueryFirstOrDefaultAsync<dynamic>(SQLQuery, param);
 
-                return affectedRows;
+                // Return a tuple with the message and UpdatedUID
+                return (result.Message, result.UpdatedUID);
             }
             catch (Exception ex)
             {
                 // Handle exception here, you can log it or throw a custom exception
-                // Log the exception
                 Console.WriteLine($"An error occurred: {ex.Message}");
 
                 // Optionally, rethrow the exception or throw a custom exception
                 throw; // rethrowing the exception
             }
         }
+
 
 
         public async Task<string> DeleteCredit(Credit credit, ISqlConnectionFactory connectionFactory)

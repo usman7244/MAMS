@@ -41,7 +41,7 @@ namespace DAL
         }
 
 
-        public async Task<string> Update(Expense param, ISqlConnectionFactory sqlConnectionFactory)
+        public async Task<(string Message, int ExpenseUID)> Update(Expense param, ISqlConnectionFactory sqlConnectionFactory)
         {
             string resultMessage = string.Empty;
             try
@@ -53,8 +53,8 @@ namespace DAL
                                                         @ExpDescription = @ExpDescription,
                                                         @ModifiedBy = @ModifiedBy;";
 
-                 resultMessage = await connection.QueryFirstOrDefaultAsync<string>(SQLQuery, param, null);
-                return resultMessage;
+                var result = await connection.QueryFirstOrDefaultAsync<(string Message, int ExpenseUID)>(SQLQuery, param, null);
+                return result;
             }
             catch (SqlException sqlEx)
             {

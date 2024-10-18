@@ -41,7 +41,8 @@ namespace MAMS.Controllers
         public async Task<IActionResult> Index()
         {
             _deposit = new Deposit();
-            _deposit.BranchId = GetBranchId();
+            //_deposit.BranchId = GetBranchId();
+            _deposit.BranchId = Guid.Empty;
             _deposit.CreatedBy = Guid.Empty;
 
             
@@ -101,7 +102,7 @@ namespace MAMS.Controllers
             return View(_deposit);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateDeposit(Deposit model)
+        public async Task<IActionResult> UpdateDeposit([FromForm]  Deposit model)
         {
             try
             {
@@ -109,7 +110,7 @@ namespace MAMS.Controllers
                 model.ModifiedBy = Guid.Empty;
                 var res = await _objCashBOL.UpdateDeposit(model, _connectionFactory);
 
-                var successResponse = JsonConvert.SerializeObject("Success");
+                var successResponse = JsonConvert.SerializeObject("\"Success\"");
                 return Json(new { success = "true", data = new { res, Error = "false" } });
             }
             catch (Exception ex)

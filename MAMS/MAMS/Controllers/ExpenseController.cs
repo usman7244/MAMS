@@ -11,10 +11,12 @@ using static MAMS_Models.Enums.EnumTypes;
 using Newtonsoft.Json;
 using MAMS.CustomFilters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace MAMS.Controllers
 {
-    
+
     [IdentityUser]
     public class ExpenseController : BaseController
     {
@@ -39,7 +41,7 @@ namespace MAMS.Controllers
             _expense = new Expense();
             _expense.CreatedBy = Guid.Empty;
             _expense.BranchId = GetBranchId();
-            _expense.Type= EnumExtension.GetDisplayName(ExpenseType.DailyExpense);
+            _expense.Type = EnumExtension.GetDisplayName(ExpenseType.DailyExpense);
             List<Expense> customers = await _objExpenseBOL.GetExpenseInfo(_expense, _connectionFactory);
             return View(customers);
         }
@@ -49,12 +51,15 @@ namespace MAMS.Controllers
             _crop.CreatedBy = Guid.Empty;
             _cashHistory = await _objCommonBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
             ViewBag.CashHistory = _cashHistory?.TotalCash ?? "00";
-            return View();
+            var expenseModel = new Expense();
+            return View(expenseModel);
         }
         [HttpPost]
-        public async Task<IActionResult> ExpenseAdd(Expense[] expItems)
+        public async Task<IActionResult> ExpenseAdd(IFormFile[] UserFiles, string expItems)
         {
-            foreach (var item in expItems)
+            var expItemList = JsonConvert.DeserializeObject<List<Expense>>(expItems);
+            
+            foreach (var item in expItemList)
             {
                 try
                 {
@@ -64,26 +69,29 @@ namespace MAMS.Controllers
 
                     Console.WriteLine($"Inserting item: {item.UID}, {item.Type}, {item.CreatedBy}, {item.BranchId}");
 
-                    await _objExpenseBOL.Insert(item, _connectionFactory);
+                    await _objExpenseBOL.Inserts(item, UserFiles, _connectionFactory);
 
-                   
+
                     Console.WriteLine($"Successfully inserted item: {item.UID}");
                 }
                 catch (Exception ex)
                 {
-           
+
                     Console.WriteLine($"Error inserting item: {item.UID}, Exception: {ex.Message}");
                 }
             }
+
+            
+
             var response = JsonConvert.SerializeObject("Success");
-            return Json(new { success = "true", data = new { response } });
+            //return Json(new { success = "true", data = new { response } });
             return RedirectToAction("Index");
         }
-       public async Task<IActionResult> ExpenseEdit(int Id)
+        public async Task<IActionResult> ExpenseEdit(int Id)
         {
             var expense = await _objExpenseBOL.GetSpecificExpenseInfo(Id, _connectionFactory);
             expense.DiffCash = expense.Amount;
-            
+
             return View(expense);
         }
 
@@ -92,7 +100,7 @@ namespace MAMS.Controllers
         [HttpPost]
         public async Task<IActionResult> ExpenseEdit(Expense model)
         {
-            
+
             model.ModifiedBy = Guid.Empty;
 
 

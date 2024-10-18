@@ -12,7 +12,38 @@
 
 }
 
+<style>
+    .image-container {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+    }
 
+    .image-preview {
+        width: 200px;
+        height: 150px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .delete-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0 6px;
+    }
+
+        .delete-button:hover {
+            background-color: darkred;
+        }
+
+</style>
 <script src="~/js/jquery-191-min.js"></script>
 <form id="depositform" asp-controller="Deposit" asp-action="UpdateDeposit" method="PUT">
     <!-- #region Purchase detail form -->
@@ -80,6 +111,44 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <label>Documents Area</label>
+                <div class="form-group document-area">
+                    <!-- Display Uploaded Images -->
+                    <div class="form-group">
+                        <div id="imagePreview" class="mb-3">
+                            @if (Model.UserFilesUrl != null && Model.UserFilesUrl.Any())
+                            {
+                                foreach (var fileUrl in Model.UserFilesUrl)
+                                {
+                                    var directUrl = fileUrl.Replace("/view?usp=drivesdk", "/preview");
+                                    <div class="image-container">
+                                        <iframe src="@directUrl" class="image-preview"></iframe>
+                                        <button class="delete-button" type="button" onclick="deleteImage(this)">&#x2716;</button>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No files to display</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <!-- File input for uploading images -->
+                            <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                            <label class="custom-file-label" for="UserFiles">Choose files</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- #endregion -->
@@ -169,46 +238,46 @@
 
     }
     $(document).ready(function () {
+        $('#btnSave').click(function (e) {
+            e.preventDefault();
 
-        $(document).ready(function () {
-            $('#btnSave').click(function (e) {
-                e.preventDefault();
-                 
-                var formData = {
-                    'CustomerType': $('#slctType').val(),
-                    'FKCustomer': $('#slctName').val(),
-                    'TotalCash': $('#TotalPrc').val(),
-                    'Detail': $('#Detail').val(),
-                    'DiffCash': '@Model.DiffCash',
-                    'UID': $('#idUID').val(),
-                    'status': $('#slctstatus').val(),
+            var formData = new FormData();
+            formData.append('CustomerType', $('#slctType').val());
+            formData.append('FKCustomer', $('#slctName').val());
+            formData.append('TotalCash', $('#TotalPrc').val());
+            formData.append('Detail', $('#Detail').val());
+            formData.append('DiffCash', '@Model.DiffCash');
+            formData.append('UID', $('#idUID').val());
+            formData.append('status', $('#slctstatus').val());
+            formData.append('CreatedBy', 'YourCreatedByValue');
 
-                    'CreatedBy': 'YourCreatedByValue'
-                };
+            // If you have file uploads for deposits, uncomment the following lines:
+            var files = $('#UserFiles')[0].files; // Replace '#UserFiles' with the actual ID for your deposit files input if applicable
+            for (var i = 0; i < files.length; i++) {
+                formData.append('UserFiles', files[i]);
+            }
 
-
-                $.ajax({
-                    type: 'PUT',
-                    url: '/Deposit/UpdateDeposit',
-                    data: formData,
-                    success: function (data) {
-
-                        console.log(data);
-
-                        $('#alertSuccess').show();
-                        setTimeout(function () {
-                            window.location.href = '/Deposit/Index';
-                        }, 2000);
-                    },
-                    error: function (xhr, status, error) {
-
-                        console.log(xhr.responseText);
-                        $('#alertDanger').show();
-                    }
-                });
+            $.ajax({
+                type: 'PUT',
+                url: '/Deposit/UpdateDeposit',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data);
+                    $('#alertSuccess').show();
+                    setTimeout(function () {
+                        window.location.href = '/Deposit/Index';
+                    }, 2000);
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText);
+                    $('#alertDanger').show();
+                }
             });
         });
     });
+
 
 
 
@@ -232,7 +301,43 @@
 
 
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("UserFiles");
+        const imagePreviewContainer = document.getElementById("imagePreview");
 
+        // Add new images to the preview
+        fileInput.addEventListener("change", function (event) {
+            const files = event.target.files;
+
+            for (const file of files) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const imageUrl = e.target.result;
+                    const imageContainer = document.createElement("div");
+                    imageContainer.className = "image-container";
+
+                    const iframe = document.createElement("iframe");
+                    iframe.src = imageUrl;
+                    iframe.className = "image-preview";
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "delete-button";
+                    deleteButton.type = "button";
+                    deleteButton.innerHTML = "&#x2716;";
+                    deleteButton.onclick = function () {
+                        imageContainer.remove();
+                    };
+
+                    imageContainer.appendChild(iframe);
+                    imageContainer.appendChild(deleteButton);
+                    imagePreviewContainer.appendChild(imageContainer);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    });
 
 
 
@@ -348,6 +453,17 @@
         bottom: 0;
         left: 0;
         opacity: 0.5;
+    }
+
+    #imagePreview img {
+        max-width: 150px;
+        margin: 10px;
+    }
+
+    .image-container {
+        display: inline-block;
+        position: relative;
+        margin: 10px;
     }
 </style>
 <!-- #endregion -->

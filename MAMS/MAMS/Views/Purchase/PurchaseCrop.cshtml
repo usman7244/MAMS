@@ -575,129 +575,113 @@
         $('input[type=number]').on('mousewheel', function(e) {
             $(e.target).blur();
         });
-
-        $("#btnSave").click(function () 
+    $("#btnSave").click(function () {
+        var fKCustomerType = $('#slctCusType').val();
+        var fkCustomer = $('#slctCusName').val();
+        var fkCrop = $('#slctCrop').val();
+        var weightInMaun = $('#idWeightInMaun').val();
+        var weightInkg = $('#idWeightInKG').val();
+        var totalCropWeight = $('#totallWeight').val();
         
-       /*  $('form').on('submit', function(e) */ {
+        var pricePerMaun = parseInt($('#idPricePerMaun').val());
+        var pricePerKG = $('#idPricePerKG').val();
+        var totallPrice = $('#totallPrice').val();
+        var bagType = $('#slctBagType').val();
+        var bagWeight = $('#idBagWeight').val();
+        var totallBags = $('#idTotallBags').val();
+        var priceWithExpense = parseInt($('#idPriceWithExpense').val());
+        var totalExpense = parseInt($('#idTotalExpense').val());
+        var Userdocuments = $('#UserFiles')[0].files[0]; // Get the file object
 
+        var cashInHand = parseInt('@ViewBag.CashHistory');
 
-            var fKCustomerType = $('#slctCusType').val();
-            var fkCustomer = $('#slctCusName').val();
-            var fkCrop = $('#slctCrop').val();
-            var weightInMaun = $('#idWeightInMaun').val();
-            var weightInkg = $('#idWeightInKG').val();
-            var totalCropWeight = $('#totallWeight').val();
-            var pricePerMaun = parseInt($('#idPricePerMaun').val());
-            var pricePerKG = $('#idPricePerKG').val();
-            var totallPrice = $('#totallPrice').val();
-            var bagType = $('#slctBagType').val();
-            var bagWeight = $('#idBagWeight').val();
-            var totallBags = $('#idTotallBags').val();
-
-            var priceWithExpense = parseInt($('#idPriceWithExpense').val());
-            var totalExpense = parseInt($('#idTotalExpense').val());
-
-            
-            var cashInHand = parseInt('@ViewBag.CashHistory');
-          
         if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense) && bagType.length > 0) {
-                totallPrice = parseInt(totallPrice);
-                /*e.preventDefault();*/
-                var model =
-                {
-                    CustomerType: fKCustomerType,
-                    Fk_CustomerId: fkCustomer,
-                    Fk_Crop: parseInt(fkCrop),
-                    WeightInMaun: parseInt(weightInMaun),
-                    WeightInkg: parseFloat(weightInkg),
-                    TotalCropWeight: parseFloat(totalCropWeight),
+            var formData = new FormData();
 
-                     PriceInMaun: pricePerMaun,
-                    PriceInKg: pricePerKG,
-                    TotalCropPrice: totallPrice,
-                    TotalAmountwithExp: priceWithExpense,
-                    TotalExp: totalExpense,
+            formData.append('CustomerType', fKCustomerType);
+            formData.append('Fk_CustomerId', fkCustomer);
+            formData.append('Fk_Crop', parseInt(fkCrop));
+            formData.append('WeightInMaun', parseInt(weightInMaun));
+            formData.append('WeightInkg', parseFloat(weightInkg));
+            formData.append('TotalCropWeight', parseFloat(totalCropWeight));
+            formData.append('PriceInMaun', pricePerMaun);
+            formData.append('PriceInKg', pricePerKG);
+            formData.append('TotalCropPrice', priceWithExpense);
+            formData.append('TotalAmountwithExp', priceWithExpense);
+            formData.append('TotalExp', totalExpense);
+            formData.append('FK_BagType', parseInt(bagType));
+            formData.append('BagWeight', parseInt(bagWeight));
+            formData.append('BagTotal', parseInt(totallBags));
+            formData.append('UserFiles', Userdocuments); // Append the file
 
-                    FK_BagType: parseInt(bagType),
-                    BagWeight: parseInt(bagWeight),
-                    BagTotal: parseInt(totallBags)
+            var expItems = [];
+            $("#expnsTable tbody").find('tr').each(function (i) {
+                var $tds = $(this).find('td'), description = $tds.eq(0).text(), amount = $tds.eq(1).text();
+                var itemDetails = { ExpDescription: description, Amount: parseInt(amount) };
+                expItems.push(itemDetails);
+            });
+            formData.append('expItems', JSON.stringify(expItems)); // Append expenses as JSON string
 
-                };
-                
-                var expItems = new Array();
-                $("#expnsTable tbody").find('tr').each(function(i) {
-                    var $tds = $(this).find('td'), description = $tds.eq(0).text(), amount = $tds.eq(1).text();
-                    itemDetails = { ExpDescription: description, Amount: parseInt(amount) };
-                    expItems.push(itemDetails);
-                });
-                $.ajax({
-                    type: "POST",
-                    url: "/Purchase/AddPurchaseCrop",
-                    data: {
-                    'purchase': model,
-                        'expItems': expItems
-                    },
-                    success: function(data) {
-                        
-                        var dataObj1 = JSON.parse(data.data.response);
+            $.ajax({
+                type: "POST",
+                url: "/Purchase/AddPurchaseCrop",
+                data: formData,
+                processData: false, // Prevent jQuery from automatically transforming the data into a query string
+                contentType: false, // Prevent jQuery from automatically setting the content type
+                success: function (data) {
+                    var dataObj1 = JSON.parse(data.data.response);
                     if (dataObj1 == "Success") {
                         $("#alertSuccess").show();
                         setTimeout(function () {
                             window.location.href = '/Purchase/Index';
                         }, 2000);
-                            $('#slctCusType').val("");
-                            $('#slctCusName').val("");
-                            $('#slctCrop').val("");
-                            $('#idWeightInMaun').val("");
-                            $('#idWeightInKG').val("");
-                            $('#totallWeight').val("");
-                            $('#idPricePerMaun').val("");
-                            $('#idPricePerKG').val("");
-                            $('#totallPrice').val("");
-                            $('#slctBagType').val("");
-                            $('#idBagWeight').val("");
-                            $('#idTotallBags').val("");
-                            $('#idPriceWithExpense').val("");
-                            $('#idTotalExpense').val("");
-                            $('#expnsTable tbody').empty();
-                            $("#totallWeight").parent().next(".validation").remove();
-                            $("#totallPrice").parent().next(".validation").remove();
-                            $("#idPriceWithExpense").parent().next(".validation").remove();
-                        }
-                        else {
-                            $("#alertDanger").show();
-                            setTimeout(function() {
-                                $("#alertDanger").hide();
-                            }, 5000);
-
-                        }
-
-
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('error Successfull');
-                        alert('Error: ' + textStatus + ' - ' + errorThrown);
+                        $('#slctCusType').val("");
+                        $('#slctCusName').val("");
+                        $('#slctCrop').val("");
+                        $('#idWeightInMaun').val("");
+                        $('#idWeightInKG').val("");
+                        $('#totallWeight').val("");
+                        $('#idPricePerMaun').val("");
+                        $('#idPricePerKG').val("");
+                        $('#totallPrice').val("");
+                        $('#slctBagType').val("");
+                        $('#idBagWeight').val("");
+                        $('#idTotallBags').val("");
+                        $('#idPriceWithExpense').val("");
+                        $('#idTotalExpense').val("");
+                        $('#expnsTable tbody').empty();
+                        $("#totallWeight").parent().next(".validation").remove();
+                        $("#totallPrice").parent().next(".validation").remove();
+                        $("#idPriceWithExpense").parent().next(".validation").remove();
+                    } else {
+                        $("#alertDanger").show();
+                        setTimeout(function () {
+                            $("#alertDanger").hide();
+                        }, 5000);
                     }
-                });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('error Successfull');
+                    alert('Error: ' + textStatus + ' - ' + errorThrown);
+                }
+            });
 
-                return false;
-            }
-            else {
+            return false;
+        }
+        else {
+            $("#totallWeight").parent().next(".validation").remove();
+            $("#totallPrice").parent().next(".validation").remove();
+            $("#idPriceWithExpense").parent().next(".validation").remove();
 
-                $("#totallWeight").parent().next(".validation").remove();
-                $("#totallPrice").parent().next(".validation").remove();
-                $("#idPriceWithExpense").parent().next(".validation").remove();
-
-            
             if (cashInHand < parseInt(priceWithExpense)) {
-                    $("#idPriceWithExpense").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Cash in hand is less then Purchase</div>");
-                }
-                if (totalCropWeight == "") {
-                    $("#totallWeight").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter weight</div>");
-                }
-                if (totallPrice == "") {
-                    $("#totallPrice").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter price</div>");
-                }
+                $("#idPriceWithExpense").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Cash in hand is less than Purchase</div>");
+            }
+            if (totalCropWeight == "") {
+                $("#totallWeight").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter weight</div>");
+            }
+            if (totallPrice == "") {
+                $("#totallPrice").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter price</div>");
+            }
             if (bagType == "") {
                 $("#slctBagType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Bag</div>");
             }
@@ -708,10 +692,152 @@
                 $("#slctCusName").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Name</div>");
             }
             return false;
-            }
+        }
+    });
+
+       //  $("#btnSave").click(function () 
+        
+       // /*  $('form').on('submit', function(e) */ {
+
+    
+       //      var fKCustomerType = $('#slctCusType').val();
+       //      var fkCustomer = $('#slctCusName').val();
+       //      var fkCrop = $('#slctCrop').val();
+       //      var weightInMaun = $('#idWeightInMaun').val();
+       //      var weightInkg = $('#idWeightInKG').val();
+       //      var totalCropWeight = $('#totallWeight').val();
+       //      var pricePerMaun = parseInt($('#idPricePerMaun').val());
+       //      var pricePerKG = $('#idPricePerKG').val();
+       //      var totallPrice = $('#totallPrice').val();
+       //      var bagType = $('#slctBagType').val();
+       //      var bagWeight = $('#idBagWeight').val();
+       //      var totallBags = $('#idTotallBags').val();
+
+       //      var priceWithExpense = parseInt($('#idPriceWithExpense').val());
+       //      var totalExpense = parseInt($('#idTotalExpense').val());
+       //  var Userdocuments = $('#UserFiles').val();   
+       
 
 
-        });
+       //  var cashInHand = parseInt('@ViewBag.CashHistory');
+          
+       //  if (fKCustomerType.length > 0 && fkCustomer.length > 0 && fkCrop.length > 0 && totalCropWeight.length > 0 && totallPrice.length > 0 && cashInHand >= parseInt(priceWithExpense) && bagType.length > 0) {
+       //      totallPrice = parseInt(totallPrice && Userdocuments.length > 0);
+       //          /*e.preventDefault();*/
+       //      debugger;
+       //          var model =
+       //          {
+
+       //              CustomerType: fKCustomerType,
+       //              Fk_CustomerId: fkCustomer,
+       //              Fk_Crop: parseInt(fkCrop),
+       //              WeightInMaun: parseInt(weightInMaun),
+       //              WeightInkg: parseFloat(weightInkg),
+       //              TotalCropWeight: parseFloat(totalCropWeight),
+
+       //               PriceInMaun: pricePerMaun,
+       //              PriceInKg: pricePerKG,
+       //              TotalCropPrice: totallPrice,
+       //              TotalAmountwithExp: priceWithExpense,
+       //              TotalExp: totalExpense,
+
+       //              FK_BagType: parseInt(bagType),
+       //              BagWeight: parseInt(bagWeight),
+       //              BagTotal: parseInt(totallBags),
+       //          Userfile: Userdocuments
+               
+
+       //          };
+                
+       //          var expItems = new Array();
+       //          $("#expnsTable tbody").find('tr').each(function(i) {
+       //              var $tds = $(this).find('td'), description = $tds.eq(0).text(), amount = $tds.eq(1).text();
+       //              itemDetails = { ExpDescription: description, Amount: parseInt(amount) };
+       //              expItems.push(itemDetails);
+       //          });
+       //          $.ajax({
+       //              type: "POST",
+       //              url: "/Purchase/AddPurchaseCrop",
+       //              data: {
+       //              'purchase': model,
+       //                  'expItems': expItems
+                    
+       //              },
+       //              success: function(data) {
+                        
+       //                  var dataObj1 = JSON.parse(data.data.response);
+       //              if (dataObj1 == "Success") {
+       //                  $("#alertSuccess").show();
+       //                  setTimeout(function () {
+       //                      window.location.href = '/Purchase/Index';
+       //                  }, 2000);
+       //                      $('#slctCusType').val("");
+       //                      $('#slctCusName').val("");
+       //                      $('#slctCrop').val("");
+       //                      $('#idWeightInMaun').val("");
+       //                      $('#idWeightInKG').val("");
+       //                      $('#totallWeight').val("");
+       //                      $('#idPricePerMaun').val("");
+       //                      $('#idPricePerKG').val("");
+       //                      $('#totallPrice').val("");
+       //                      $('#slctBagType').val("");
+       //                      $('#idBagWeight').val("");
+       //                      $('#idTotallBags').val("");
+       //                      $('#idPriceWithExpense').val("");
+       //                      $('#idTotalExpense').val("");
+       //                      $('#expnsTable tbody').empty();
+       //                      $("#totallWeight").parent().next(".validation").remove();
+       //                      $("#totallPrice").parent().next(".validation").remove();
+       //                      $("#idPriceWithExpense").parent().next(".validation").remove();
+       //                  }
+       //                  else {
+       //                      $("#alertDanger").show();
+       //                      setTimeout(function() {
+       //                          $("#alertDanger").hide();
+       //                      }, 5000);
+
+       //                  }
+
+
+       //              },
+       //              error: function(jqXHR, textStatus, errorThrown) {
+       //                  alert('error Successfull');
+       //                  alert('Error: ' + textStatus + ' - ' + errorThrown);
+       //              }
+       //          });
+
+       //          return false;
+       //      }
+       //      else {
+
+       //          $("#totallWeight").parent().next(".validation").remove();
+       //          $("#totallPrice").parent().next(".validation").remove();
+       //          $("#idPriceWithExpense").parent().next(".validation").remove();
+
+            
+       //      if (cashInHand < parseInt(priceWithExpense)) {
+       //              $("#idPriceWithExpense").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Cash in hand is less then Purchase</div>");
+       //          }
+       //          if (totalCropWeight == "") {
+       //              $("#totallWeight").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter weight</div>");
+       //          }
+       //          if (totallPrice == "") {
+       //              $("#totallPrice").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please enter price</div>");
+       //          }
+       //      if (bagType == "") {
+       //          $("#slctBagType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Bag</div>");
+       //      }
+       //      if (fKCustomerType == "") {
+       //          $("#slctCusType").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Customer</div>");
+       //      }
+       //      if (fkCustomer == "") {
+       //          $("#slctCusName").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Please select Name</div>");
+       //      }
+       //      return false;
+       //      }
+
+
+       //  });
 
     
 
@@ -722,37 +848,48 @@
         function hideLoader() {
             $(".overlay").hide();
         }
+    // Attach the event listener to handle file input change
     document.getElementById('UserFiles').addEventListener('change', function (event) {
+        const files = event.target.files;  // Access the selected files using the files property
         const imagePreview = document.getElementById('imagePreview');
-        imagePreview.innerHTML = '';
-        const files = event.target.files;
+        imagePreview.innerHTML = '';  // Clear the preview area
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+        // Check if any files are selected
+        if (files.length > 0) {
+            // Loop through each selected file
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
 
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
+                // Check if the file type is an image
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
 
-                reader.onload = function (e) {
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'image-container';
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    const removeButton = document.createElement('button');
-                    removeButton.className = 'remove-button';
-                    removeButton.innerHTML = '&times;';
-                    removeButton.onclick = function () {
-                        imageContainer.remove();
+                    // Load the file and create an image preview
+                    reader.onload = function (e) {
+                        const imageContainer = document.createElement('div');
+                        imageContainer.className = 'image-container';
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        const removeButton = document.createElement('button');
+                        removeButton.className = 'remove-button';
+                        removeButton.innerHTML = '&times;';
+                        removeButton.onclick = function () {
+                            imageContainer.remove();  // Remove the image preview when the button is clicked
+                        };
+                        imageContainer.appendChild(img);
+                        imageContainer.appendChild(removeButton);
+                        imagePreview.appendChild(imageContainer);
                     };
-                    imageContainer.appendChild(img);
-                    imageContainer.appendChild(removeButton);
-                    imagePreview.appendChild(imageContainer);
-                }
 
-                reader.readAsDataURL(file);
+                    reader.readAsDataURL(file);  // Read the file as a Data URL
+                }
             }
+
+            // Access the file count or perform any action based on the number of selected files
+            console.log("Number of files selected: " + files.length);
         }
     });
+
     </script>
  
     <style>
