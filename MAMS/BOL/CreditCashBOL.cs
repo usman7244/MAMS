@@ -73,10 +73,10 @@ namespace BOL
         }
         public async Task<string> DeleteCredit(Credit credit, ISqlConnectionFactory connectionFactory)
         {
-            string result = "";
-             result = await _objCashDAL.DeleteCredit(credit, connectionFactory);
+            
+            var res = await _objCashDAL.DeleteCredit(credit, connectionFactory);
 
-            return result;
+            return res;
         }
         public async Task<Credit> GetAllCreditById(int Id, ISqlConnectionFactory connectionFactory)
         {

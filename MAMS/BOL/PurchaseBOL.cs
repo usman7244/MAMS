@@ -136,8 +136,8 @@ namespace BOL
 
         public async Task<string> DeletePurchaseCrop(Purchase purchase, ISqlConnectionFactory connectionFactory)
         {
-            string result = await _objPurchaseDAL.DeletePurchaseCrop(purchase, connectionFactory);
-            return result;
+             return await _objPurchaseDAL.DeletePurchaseCrop(purchase, connectionFactory);
+             
         }
 
 

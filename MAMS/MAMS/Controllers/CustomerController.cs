@@ -112,7 +112,7 @@ namespace MAMS.Controllers
         public async Task<IActionResult> DeleteCustomer(Guid cusId)
         {
             _customer = new Customer();
-            _customer.ModifiedBy = Guid.Empty;
+            _customer.ModifiedBy = GetUserId();
             _customer.UID = cusId;
 
             int affectedRows =await _objCustomerBOL.DeleteCustomer(_customer, _connectionFactory); 

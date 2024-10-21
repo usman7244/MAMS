@@ -131,10 +131,10 @@ namespace MAMS.Controllers
             _deposit = new Deposit();
             _deposit.UID = ID;
             _deposit.ModifiedBy = Guid.Empty;
-            var affectedRows = _objCashBOL.DeleteDeposit(_deposit, _connectionFactory);
+            var affectedRows =await _objCashBOL.DeleteDeposit(_deposit, _connectionFactory);
 
-            //return Ok(affectedRows);
-            return RedirectToAction("Index");
+             return Ok(affectedRows);
+           // return RedirectToAction("Index");
         }
 
 

@@ -139,10 +139,9 @@ namespace MAMS.Controllers
             _credit = new Credit();
             _credit.UID = ID;
             _credit.ModifiedBy = Guid.Empty;
-            var affectedRows = _objCashBOL.DeleteCredit(_credit, _connectionFactory);
+            var affectedRows = await _objCashBOL.DeleteCredit(_credit, _connectionFactory);
+            return Ok(affectedRows);
 
-            //return Ok(affectedRows);
-            return RedirectToAction("Index");
         }
     }
 }

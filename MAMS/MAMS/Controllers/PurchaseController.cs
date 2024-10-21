@@ -126,14 +126,14 @@ namespace MAMS.Controllers
             return Json(new { success = "true", data = new { customers = customers, Error = "false" } });
         }
         [HttpPost]
-        public IActionResult DeletePurchaseCrop(int purchCropId)
+        public async Task<IActionResult> DeletePurchaseCrop(int purchCropId)
         {
             _purchase = new Purchase();
             _purchase.UID = purchCropId;
             _purchase.ModifiedBy = Guid.Empty;
-            var affectedRows = _objPurchaseBOL.DeletePurchaseCrop(_purchase, _connectionFactory);
-            //return Ok(affectedRows);
-            return RedirectToAction("Index");
+            var affectedRows =await _objPurchaseBOL.DeletePurchaseCrop(_purchase, _connectionFactory);
+            return Ok(affectedRows);
+            //return RedirectToAction("Index");
         }
         public async Task<IActionResult> PurchaseCropEdit(int Id)
         {
