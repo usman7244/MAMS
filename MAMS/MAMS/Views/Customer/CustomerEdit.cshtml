@@ -1,6 +1,6 @@
 ﻿@model MAMS_Models.Model.Customer
 @{
-    var status = ViewBag.CusAddStatus;
+    var status = ViewBag.CusEditStatus;
 }
 
 <head>
@@ -151,12 +151,17 @@
 
                                     <!-- File Upload -->
                                     <div class="form-group">
-                                        <div class="custom-file">
-                                            <!-- File input for uploading images -->
-                                            <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
-                                            <label class="custom-file-label" for="UserFiles">Choose files</label>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="custom-file">
+                                                    <!-- File input for uploading images -->
+                                                    <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                                                    <label class="custom-file-label" for="UserFiles">Choose files</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>

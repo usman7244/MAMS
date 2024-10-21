@@ -42,7 +42,7 @@ namespace MAMS.Controllers
         {
             _deposit = new Deposit();
             //_deposit.BranchId = GetBranchId();
-            _deposit.BranchId = Guid.Empty;
+            _deposit.BranchId = GetBranchId();
             _deposit.CreatedBy = Guid.Empty;
 
             
@@ -52,8 +52,8 @@ namespace MAMS.Controllers
         }
         public async Task<IActionResult> DepositAdd()
         {
-            _crop.BranchId = Guid.Empty;
-            _crop.CreatedBy = Guid.Empty;
+            _crop.BranchId = GetBranchId();
+            _crop.CreatedBy = GetUserId();
             _cashHistory = await _objCommonBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
             ViewBag.CashHistory = _cashHistory?.TotalCash ?? "00";
             return View();
@@ -62,7 +62,7 @@ namespace MAMS.Controllers
         public async Task<IActionResult> DepositAdd(Deposit deposit)
         {
             deposit.BranchId = GetBranchId();
-            deposit.CreatedBy = Guid.Empty;
+            deposit.CreatedBy = GetUserId();
            
             //if (deposit != null)
             //{
@@ -92,8 +92,8 @@ namespace MAMS.Controllers
 
             _custTypeList = new List<CustomerType>();
 
-            _crop.BranchId = Guid.Empty;
-            _crop.CreatedBy = Guid.Empty;
+            _crop.BranchId = GetBranchId();
+            _crop.CreatedBy = GetUserId();
             _deposit = await _objCashBOL.GetAllDepositById(Id, _connectionFactory);
             _custTypeList = await _objCommonBOL.GetCustomerType(_deposit.CustomerType, _crop.BranchId, _crop.CreatedBy, _connectionFactory);
             _deposit.DiffCash = _deposit.TotalCash;
@@ -107,7 +107,11 @@ namespace MAMS.Controllers
             try
             {
 
-                model.ModifiedBy = Guid.Empty;
+                model.ModifiedDate = DateTime.Now;
+                model.ModifiedBy = GetUserId();
+                model.BranchId = GetBranchId();
+                model.CreatedBy = GetUserId();
+
                 var res = await _objCashBOL.UpdateDeposit(model, _connectionFactory);
 
                 var successResponse = JsonConvert.SerializeObject("\"Success\"");

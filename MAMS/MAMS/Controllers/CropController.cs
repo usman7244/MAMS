@@ -58,6 +58,8 @@ namespace MAMS.Controllers
         public async Task<IActionResult> CropAdd(CropAndBag crop)
         {
             int affectedRows = 0;
+            crop.CreatedBy = GetUserId();
+            crop.BranchId = GetBranchId();
             if (crop != null)
             {
                 affectedRows =await _objCropBOL.CropAdd(crop, _connectionFactory);

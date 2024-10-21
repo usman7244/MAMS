@@ -594,40 +594,14 @@
                 processData: false, // Prevent jQuery from transforming data into query string
                 contentType: false, // Prevent jQuery from setting content type
                 success: function (data) {
-                    var dataObj1 = JSON.parse(data.data.response);
-                    if (dataObj1 == "Success") {
-                        $("#alertSuccess").show();
+                      console.log(data);
+                        $('#alertSuccess').show();
                         setTimeout(function () {
                             window.location.href = '/Sale/Index';
                         }, 2000);
+                    },
 
-                        // Clear form fields
-                        $('#slctCusType').val("");
-                        $('#slctCusName').val("");
-                        $('#slctCrop').val("");
-                        $('#idWeightInMaun').val("");
-                        $('#idWeightInKG').val("");
-                        $('#totallWeight').val("");
-                        $('#idPricePerMaun').val("");
-                        $('#idPricePerKG').val("");
-                        $('#totallPrice').val("");
-                        $('#slctBagType').val("");
-                        $('#idBagWeight').val("");
-                        $('#idTotallBags').val("");
-                        $('#idPriceWithExpense').val("");
-                        $('#idTotalExpense').val("");
-                        $('#expnsTable tbody').empty();
-                        $("#totallWeight").parent().next(".validation").remove();
-                        $("#totallPrice").parent().next(".validation").remove();
-                        $("#idPriceWithExpense").parent().next(".validation").remove();
-                    } else {
-                        $("#alertDanger").show();
-                        setTimeout(function () {
-                            $("#alertDanger").hide();
-                        }, 5000);
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                     alert('Error: ' + textStatus + ' - ' + errorThrown);
                 }
             });

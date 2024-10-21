@@ -53,7 +53,8 @@ namespace MAMS.Controllers
                 return RedirectToAction("Index");
             }
             customer.BranchId = GetBranchId();
-            customer.CreatedBy = Guid.Empty;
+            customer.CreatedBy =GetUserId();
+             
             var result = await _objCustomerBOL.InsertCustomerInfo(customer, _connectionFactory);
             var affectedRows = result.AffectedRows;
             if (affectedRows > 0)
@@ -86,24 +87,25 @@ namespace MAMS.Controllers
                 return RedirectToAction("Index");
             }
             customer.BranchId = GetBranchId();
-            customer.CreatedBy = Guid.Empty;
+            customer.CreatedBy = GetUserId();
+            customer.ModifiedBy = GetUserId();
+            customer.ModifiedDate = DateTime.Now;
             var result = await _objCustomerBOL.CustomerEdit(customer, _connectionFactory);
             var affectedRows = result.AffectedRows;
             if (affectedRows > 0)
             {
 
                 ModelState.Clear();
-                ViewBag.CusAddStatus = affectedRows;
-                return RedirectToAction("Index");
+                ViewBag.CusEditStatus = affectedRows;
+                 
              
-
             }
             else
             {
                 ViewBag.CusEditStatus = 0;
             }
 
-            return View();
+            return View(customer);
         }
  
         [HttpPost]

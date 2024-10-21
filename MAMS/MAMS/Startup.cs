@@ -81,7 +81,7 @@ namespace MAMS
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
@@ -99,6 +99,7 @@ namespace MAMS
                     name: "default",
                     pattern: "{controller=Admin}/{action=Login}/{id?}");
             });
+           
         }
     }
 

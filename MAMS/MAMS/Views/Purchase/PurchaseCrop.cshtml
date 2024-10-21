@@ -1,4 +1,8 @@
 ﻿@{
+    var status = ViewBag.PurchaseAddStatus;
+
+}
+@{
     ViewData["Title"] = "Purchase Crop";
     List<MAMS_Models.Model.CropAndBag> Crops = new List<MAMS_Models.Model.CropAndBag>();
     List<MAMS_Models.Model.CropAndBag> Bags = new List<MAMS_Models.Model.CropAndBag>();
@@ -624,43 +628,22 @@
 
             $.ajax({
                 type: "POST",
-                url: "/Purchase/AddPurchaseCrop",
+                url: "/Purchase/PurchaseCrop",
                 data: formData,
                 processData: false, // Prevent jQuery from automatically transforming the data into a query string
                 contentType: false, // Prevent jQuery from automatically setting the content type
                 success: function (data) {
-                    var dataObj1 = JSON.parse(data.data.response);
-                    if (dataObj1 == "Success") {
-                        $("#alertSuccess").show();
+                   
+
+
+                        console.log(data);
+                        $('#alertSuccess').show();
                         setTimeout(function () {
                             window.location.href = '/Purchase/Index';
                         }, 2000);
-                        $('#slctCusType').val("");
-                        $('#slctCusName').val("");
-                        $('#slctCrop').val("");
-                        $('#idWeightInMaun').val("");
-                        $('#idWeightInKG').val("");
-                        $('#totallWeight').val("");
-                        $('#idPricePerMaun').val("");
-                        $('#idPricePerKG').val("");
-                        $('#totallPrice').val("");
-                        $('#slctBagType').val("");
-                        $('#idBagWeight').val("");
-                        $('#idTotallBags').val("");
-                        $('#idPriceWithExpense').val("");
-                        $('#idTotalExpense').val("");
-                        $('#expnsTable tbody').empty();
-                        $("#totallWeight").parent().next(".validation").remove();
-                        $("#totallPrice").parent().next(".validation").remove();
-                        $("#idPriceWithExpense").parent().next(".validation").remove();
-                    } else {
-                        $("#alertDanger").show();
-                        setTimeout(function () {
-                            $("#alertDanger").hide();
-                        }, 5000);
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
+                    },
+
+                    error: function (jqXHR, textStatus, errorThrown) {
                     alert('error Successfull');
                     alert('Error: ' + textStatus + ' - ' + errorThrown);
                 }
@@ -889,7 +872,22 @@
             console.log("Number of files selected: " + files.length);
         }
     });
+    $("#alertSuccess").hide();
+    $("#alertDanger").hide();
 
+    var status = ('@status');
+    if (status == "Success1") {
+        $('#alertSuccess').show();
+        setTimeout(function () {
+            window.location.href = '/Deposit/Index';
+        }, 2000);
+    }
+    if (status == "0") {
+        $("#alertDanger").show();
+        setTimeout(function () {
+            $("#alertDanger").hide();
+        }, 5000);
+    }
     </script>
  
     <style>

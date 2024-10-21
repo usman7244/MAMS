@@ -6,6 +6,7 @@ using MAMS_Models.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -17,7 +18,7 @@ using static MAMS_Models.Enums.EnumTypes;
 
 namespace MAMS.Controllers
 {
-    
+
     [IdentityUser]
     public class PurchaseController : BaseController
     {
@@ -62,8 +63,8 @@ namespace MAMS.Controllers
             _purchase.BranchId = GetBranchId();
             _purchase.CreatedBy = Guid.Empty;
 
-            
-            _purchaseList = await _objPurchaseBOL.GetAllPurchasedCrop(_purchase, _connectionFactory); 
+
+            _purchaseList = await _objPurchaseBOL.GetAllPurchasedCrop(_purchase, _connectionFactory);
             return View(_purchaseList);
         }
 
@@ -74,28 +75,28 @@ namespace MAMS.Controllers
             _cashHistory = new CashHistory();
 
             _crop = new CropAndBag();
-            _crop.BranchId = Guid.Empty;
-            _crop.CreatedBy = Guid.Empty;
+            _crop.BranchId = GetBranchId();
+            _crop.CreatedBy = GetUserId();
 
 
             _crop.Type = EnumExtension.GetDisplayName(ExpenseType.Crop);
-            _crops =await _objCropBOL.GetCropInfo(_crop,_connectionFactory);
+            _crops = await _objCropBOL.GetCropInfo(_crop, _connectionFactory);
 
-             _cashHistory =await _objPurchaseBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
-           
-            
+            _cashHistory = await _objPurchaseBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
+
+
             _crop.Type = EnumExtension.GetDisplayName(ExpenseType.Bag);
-            _bags =await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy,_crop.Type,_connectionFactory);
+            _bags = await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy, _crop.Type, _connectionFactory);
 
             ViewBag.Crops = _crops;
             ViewBag.Bags = _bags;
-            ViewBag.CashHistory = _cashHistory?.TotalCash?? "00";
+            ViewBag.CashHistory = _cashHistory?.TotalCash ?? "00";
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AddPurchaseCrop(Purchase purchase, Expense[] expItems, List<IFormFile> UserFiles)
+        public async Task<IActionResult> PurchaseCrop(Purchase purchase, Expense[] expItems, List<IFormFile> UserFiles)
         {
-            purchase.CreatedBy = Guid.Empty;
+            purchase.CreatedBy = GetUserId();
             purchase.BranchId = GetBranchId();
             purchase.Status = EnumExtension.GetDisplayName(ExpenseType.Purchase);
 
@@ -110,8 +111,10 @@ namespace MAMS.Controllers
 
             var responce = await _objPurchaseBOL.AddPurchaseCrop(purchase, expenseList, _connectionFactory);
             var affectedRows = responce.AffectedRows;
-            affectedRows = affectedRows;
+
             return Json(new { Success1 = "true", data = new { affectedRows, Error = "false" } });
+
+
         }
 
         [HttpPost]
@@ -119,7 +122,7 @@ namespace MAMS.Controllers
         {
             var barnchid = Guid.Empty;
             var userid = Guid.Empty;
-            List<CustomerType> customers =await _objPurchaseBOL.GetCustomerType(cusType, barnchid, userid, _connectionFactory);
+            List<CustomerType> customers = await _objPurchaseBOL.GetCustomerType(cusType, barnchid, userid, _connectionFactory);
             return Json(new { success = "true", data = new { customers = customers, Error = "false" } });
         }
         [HttpPost]
@@ -144,14 +147,14 @@ namespace MAMS.Controllers
             _crop.CreatedBy = Guid.Empty;
             _crop.BranchId = Guid.Empty;
             _crop.Type = EnumExtension.GetDisplayName(ExpenseType.Crop);
-            _crops =await _objCropBOL.GetCropInfo(_crop,_connectionFactory);
-            _cashHistory =await _objPurchaseBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy,_connectionFactory);
+            _crops = await _objCropBOL.GetCropInfo(_crop, _connectionFactory);
+            _cashHistory = await _objPurchaseBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
             _crop.Type = EnumExtension.GetDisplayName(ExpenseType.Bag);
-            _bags =await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy,_crop.Type, _connectionFactory);
-            _purchase =await _objPurchaseBOL.GetPurchasedCropById(Id,_connectionFactory);
+            _bags = await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy, _crop.Type, _connectionFactory);
+            _purchase = await _objPurchaseBOL.GetPurchasedCropById(Id, _connectionFactory);
             _purchase.DiffCash = _purchase.TotalCropPrice.ToString();
-            _expenseList =await _objPurchaseBOL.GetPurchasedExpenseById(Id, _connectionFactory);
-            _custTypeList =await _objPurchaseBOL.GetCustomerType(_purchase.CustomerType, _crop.BranchId, _crop.CreatedBy, _connectionFactory);
+            _expenseList = await _objPurchaseBOL.GetPurchasedExpenseById(Id, _connectionFactory);
+            _custTypeList = await _objPurchaseBOL.GetCustomerType(_purchase.CustomerType, _crop.BranchId, _crop.CreatedBy, _connectionFactory);
             ViewBag.Crops = _crops;
             ViewBag.Bags = _bags;
             ViewBag.CashHistory = _cashHistory.TotalCash;
@@ -163,12 +166,14 @@ namespace MAMS.Controllers
 
         [HttpPut]
         public async Task<IActionResult> UpdatePurchaseCrop([FromForm] Purchase model, Expense[] expItems)
-         {
+        {
             try
             {
-                model.ModifiedBy =Guid.Empty;
+                model.ModifiedBy = GetUserId();
+                model.CreatedBy = GetUserId();
+                model.BranchId = GetBranchId();
+                model.ModifiedDate = DateTime.Now;
                 var res = await _objPurchaseBOL.UpdatePurchaseCrop(model, _connectionFactory);
-
 
                 foreach (var item in expItems)
                 {
@@ -176,8 +181,9 @@ namespace MAMS.Controllers
                     if (item.UID == 0)
                     {
                         item.Fk_Purchase = model.UID;
-                        item.CreatedBy = Guid.Empty;
-                        item.BranchId = Guid.Empty;
+                        item.CreatedBy = GetUserId();
+                        item.BranchId = GetBranchId();
+                        item.ModifiedBy = GetBranchId();
                         item.Type = EnumExtension.GetDisplayName(ExpenseType.Purchase);
                         var insertexp = await _objExpenseBOL.Insert(item, _connectionFactory);
 
@@ -191,6 +197,7 @@ namespace MAMS.Controllers
                 }
 
                 var response = res;
+
                 return Json(new { successful = "true", data = new { response, Error = "false" } });
             }
             catch (Exception ex)
@@ -206,8 +213,10 @@ namespace MAMS.Controllers
         {
             try
             {
-                model.ModifiedBy = Guid.Empty;
-                expItem.ModifiedBy = Guid.Empty;
+                model.ModifiedDate =DateTime.Now;
+                model.CreatedBy = GetUserId();
+                model.BranchId = GetBranchId();
+                expItem.ModifiedBy = GetUserId();
                 var res = await _objPurchaseBOL.UpdatePurchaseCrop(model, _connectionFactory);
                 var delexp = await _objExpenseBOL.Delete(expItem, _connectionFactory);
 

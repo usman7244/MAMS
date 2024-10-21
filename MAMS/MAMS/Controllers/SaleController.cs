@@ -112,6 +112,7 @@ namespace MAMS.Controllers
         {
             sale.CreatedBy = Guid.Empty;
             sale.BranchId = GetBranchId();
+            sale.CreatedBy = GetUserId();
 
 
             List<Expense> expenseList = new List<Expense>();
@@ -125,9 +126,8 @@ namespace MAMS.Controllers
 
             var response = await _objSALEBOL.SaleCropAdd(sale, expenseList, _connectionFactory);
             var affectedRows = response.AffectedRows;
-            affectedRows = JsonConvert.SerializeObject(affectedRows);
-            
-            affectedRows = JsonConvert.SerializeObject(affectedRows);
+            //affectedRows = JsonConvert.SerializeObject(affectedRows);
+          
             return Json(new { success = "true", data = new { affectedRows, Error = "false" } });
         }
         [HttpPost]
@@ -182,6 +182,8 @@ namespace MAMS.Controllers
             {
                 model.ModifiedBy = GetUserId();
                 model.BranchId = GetBranchId();
+                model.CreatedBy = GetUserId();
+                model.ModifiedDate = DateTime.Now;
                 var res = await _objSALEBOL.UpdateSaleCrop(model, _connectionFactory);
 
 
@@ -220,8 +222,8 @@ namespace MAMS.Controllers
         {
             try
             {
-                model.ModifiedBy = Guid.Empty;
-                expItem.ModifiedBy = Guid.Empty;
+                model.ModifiedBy = GetUserId();
+                expItem.ModifiedBy = GetUserId();
                 var res = await _objSALEBOL.UpdateSaleCrop(model, _connectionFactory);
                 var delexp = await _objExpenseBOL.Delete(expItem, _connectionFactory);
 
@@ -303,8 +305,8 @@ namespace MAMS.Controllers
         public async Task<IActionResult> StockSaleAdd(Sale model, Expense[] expItems)
         {
           
-            model.CreatedBy = Guid.Empty;
-            model.BranchId = Guid.Empty;
+            model.CreatedBy = GetUserId();
+            model.BranchId = GetBranchId();
 
            List<Expense> expenseList = new List<Expense>();
             foreach (var item in expItems)

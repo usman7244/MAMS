@@ -18,6 +18,7 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using MAMS_Models.Enums;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Http;
 
 namespace MAMS.Controllers
 {
@@ -35,16 +36,19 @@ namespace MAMS.Controllers
       
         }
         [HttpGet]
+
         public async Task<IActionResult> Login()
         { 
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(User user)
         {
             try
             {
+                 
                 User Credential = await _objLoginBOL.Authenticate(user, _connectionFactory);
 
                 if (Credential.Status == "Success")
@@ -88,7 +92,7 @@ namespace MAMS.Controllers
         public async Task<IActionResult> LogOut()
         {
             // Sign out the user
-            await HttpContext.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // Clear all cookies
             foreach (var cookie in Request.Cookies.Keys)
@@ -99,6 +103,31 @@ namespace MAMS.Controllers
             return RedirectToAction("Login", "Admin");
 
         }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken] // Ensure request validation
+        //public async Task<IActionResult> LogOut()
+        //{
+        //    // Sign out the user
+        //    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        //    // Clear authentication cookies and invalidate the session
+        //    HttpContext.Session.Clear();
+        //    foreach (var cookie in Request.Cookies.Keys)
+        //    {
+        //        Response.Cookies.Delete(cookie);
+        //    }
+
+        //    // Optionally clear the authentication cookie specifically if needed
+        //    Response.Cookies.Append(
+        //        ".AspNetCore.Cookies", "", new CookieOptions
+        //        {
+        //            Expires = DateTimeOffset.UtcNow.AddDays(-1)
+        //        });
+
+        //    ModelState.Clear();
+        //    return RedirectToAction("Login", "Admin");
+        //}
+
 
     }
 }

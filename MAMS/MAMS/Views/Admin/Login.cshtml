@@ -23,6 +23,7 @@
     <div class="mainw3-agileinfo form">
         <div id="login">
             <form action="/Admin/Login" method="post">
+                @Html.AntiForgeryToken() <!-- Add CSRF Token -->
                 <div class="field-wrap">
                     <label> Enter Your Email<span class="req">*</span> </label>
                     <input type="email" name="Email" required autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" />

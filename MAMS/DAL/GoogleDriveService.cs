@@ -6,6 +6,7 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
+using Google.Apis.Util;
 using Google.Apis.Util.Store;
 using MAMS_Models.Model;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -29,7 +30,39 @@ namespace DAL
         private const string ApplicationName = "MAMS";
         private static readonly string ClientId = "1077577498265-ghmka0pqb1nhhfs6kucet4d1gp9r960a.apps.googleusercontent.com";
         private static readonly string ClientSecret = "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";
-        private const string RefreshToken = "1//04IX-4QRoeEJXCgYIARAAGAQSNwF-L9Ir79GSl6a0J5xrDIppiyHaTifTAXqSkUI-WQdCjDItaJ0fHUcv4L0TRg5Dhnb-COYu2lQ";
+        private const string RefreshToken = "1//04H36xiXDDOfsCgYIARAAGAQSNwF-L9IrqKHEF6mlXvKDGDRpPXroTMlQPG5LRyNPFos40BeZjR17vs8pGZF3jYwv-JnSLRD5IrQ";
+
+        //public static async Task<DriveService> GetService()
+        //{
+        //    var tokenResponse = new TokenResponse
+        //    {
+        //        RefreshToken = RefreshToken
+        //    };
+
+        //    Google.Apis.Auth.OAuth2.UserCredential credentials = new UserCredential(
+        //        new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+        //        {
+        //            ClientSecrets = new ClientSecrets
+        //            {
+        //                ClientId = ClientId,
+        //                ClientSecret = ClientSecret
+        //            },
+        //            Scopes = Scopes,
+        //            DataStore = new FileDataStore("token.json", true)
+        //        }),
+        //        "user",
+        //        tokenResponse);
+
+        //    //credentials.RefreshTokenMethod(CancellationToken.None).Wait();
+
+        //    credentials =   RefreshTokenMethodAsync();
+
+        //    return new DriveService(new BaseClientService.Initializer()
+        //    {
+        //        HttpClientInitializer = credentials,
+        //        ApplicationName = ApplicationName,
+        //    });
+        //}
 
         public static async Task<DriveService> GetService()
         {
@@ -52,9 +85,11 @@ namespace DAL
                 "user",
                 tokenResponse);
 
-            //credentials.RefreshTokenMethod(CancellationToken.None).Wait();
-            
-            credentials =   RefreshTokenMethodAsync();
+            // Refresh the token asynchronously if needed
+            if (credentials.Token.IsExpired(SystemClock.Default))
+            {
+                await credentials.RefreshTokenAsync(CancellationToken.None);
+            }
 
             return new DriveService(new BaseClientService.Initializer()
             {
@@ -62,6 +97,15 @@ namespace DAL
                 ApplicationName = ApplicationName,
             });
         }
+
+
+
+
+
+
+
+
+        //Old practice
         //private static async Task<UserCredential> RefreshTokenMethodAsync()
         //{
         //    try

@@ -14,11 +14,11 @@ using static MAMS_Models.Enums.EnumTypes;
 
 namespace MAMS.Controllers
 {
-    
+
     [IdentityUser]
     public class CreditController : BaseController
     {
-        
+
         private readonly ISqlConnectionFactory _connectionFactory;
         private Credit _credit;
         private List<CustomerType> _custTypeList;
@@ -28,19 +28,19 @@ namespace MAMS.Controllers
         private CashHistory _cashHistory;
         private CommonBOL _objCommonBOL;
         private List<Credit> _creditList;
-      
+
         public CreditController(ISqlConnectionFactory connectionFactory)
         {
-            _crop =new CropAndBag();
-            _objCommonBOL =new CommonBOL();
-        
+            _crop = new CropAndBag();
+            _objCommonBOL = new CommonBOL();
+
             _objCashBOL = new CreditCashBOL();
             _credit = new Credit();
             _connectionFactory = connectionFactory;
             _cashHistory = new CashHistory();
             _custType = new CustomerType();
             _custTypeList = new List<CustomerType>();
-           
+
 
         }
         [HttpGet]
@@ -48,7 +48,7 @@ namespace MAMS.Controllers
         {
             _credit = new Credit();
             //_credit.BranchId = GetBranchId();
-            _credit.BranchId = Guid.Empty;
+            _credit.BranchId = GetBranchId();
             _credit.CreatedBy = Guid.Empty;
 
 
@@ -68,12 +68,12 @@ namespace MAMS.Controllers
         public async Task<IActionResult> CreditAdd(Credit credit)
         {
             credit.BranchId = GetBranchId();
-            credit.CreatedBy = Guid.Empty;
-          
-         
+            credit.CreatedBy = GetUserId();
+
+
             if (credit != null)
             {
-               var Result = await _objCashBOL.CreditAdd(credit, _connectionFactory);
+                var Result = await _objCashBOL.CreditAdd(credit, _connectionFactory);
                 var affectedRows = Result.AffectedRows;
                 if (affectedRows > 0)
                 {
@@ -81,24 +81,24 @@ namespace MAMS.Controllers
 
 
                 }
-               
+
             }
 
 
             return View();
         }
-    
-       
-        
-       public async Task<IActionResult> EditCredit(int Id)
-       {
-            
+
+
+
+        public async Task<IActionResult> EditCredit(int Id)
+        {
+
             _custTypeList = new List<CustomerType>();
-            
+
             _crop.BranchId = Guid.Empty;
             _crop.CreatedBy = Guid.Empty;
             _credit = await _objCashBOL.GetAllCreditById(Id, _connectionFactory);
-           
+
             _custTypeList = await _objCommonBOL.GetCustomerType(_credit.CustomerType, _crop.BranchId, _crop.CreatedBy, _connectionFactory);
             _credit.DiffCash = _credit.TotalCash;
 
@@ -110,13 +110,16 @@ namespace MAMS.Controllers
             return View(_credit);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateCredit([FromForm]  Credit model)
+        public async Task<IActionResult> UpdateCredit([FromForm] Credit model)
         {
 
             try
             {
-             
-                model.ModifiedBy = Guid.Empty;
+
+                model.ModifiedDate = DateTime.Now;
+                model.ModifiedBy = GetUserId();
+                model.BranchId = GetBranchId();
+                model.CreatedBy = GetUserId();
                 var res = await _objCashBOL.UpdateCredit(model, _connectionFactory);
 
                 var successResponse = res;

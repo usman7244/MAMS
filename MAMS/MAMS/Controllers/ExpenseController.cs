@@ -47,8 +47,8 @@ namespace MAMS.Controllers
         }
         public async Task<IActionResult> ExpenseAdd()
         {
-            _crop.BranchId = Guid.Empty;
-            _crop.CreatedBy = Guid.Empty;
+            _crop.BranchId = GetBranchId();
+            _crop.CreatedBy = GetUserId();
             _cashHistory = await _objCommonBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
             ViewBag.CashHistory = _cashHistory?.TotalCash ?? "00";
             var expenseModel = new Expense();
@@ -58,34 +58,25 @@ namespace MAMS.Controllers
         public async Task<IActionResult> ExpenseAdd(IFormFile[] UserFiles, string expItems)
         {
             var expItemList = JsonConvert.DeserializeObject<List<Expense>>(expItems);
-            
+            int totalAffectedRows = 0;
             foreach (var item in expItemList)
             {
-                try
-                {
-                    item.CreatedBy = Guid.Empty;
+                
+                    item.CreatedBy = GetUserId();
                     item.BranchId = GetBranchId();
                     item.Type = EnumExtension.GetDisplayName(ExpenseType.DailyExpense);
 
                     Console.WriteLine($"Inserting item: {item.UID}, {item.Type}, {item.CreatedBy}, {item.BranchId}");
 
-                    await _objExpenseBOL.Inserts(item, UserFiles, _connectionFactory);
+                      var result=await _objExpenseBOL.Inserts(item, UserFiles, _connectionFactory);
+                   totalAffectedRows += result.AffectedRows;
 
 
-                    Console.WriteLine($"Successfully inserted item: {item.UID}");
-                }
-                catch (Exception ex)
-                {
-
-                    Console.WriteLine($"Error inserting item: {item.UID}, Exception: {ex.Message}");
-                }
             }
-
-            
-
             var response = JsonConvert.SerializeObject("Success");
-            //return Json(new { success = "true", data = new { response } });
-            return RedirectToAction("Index");
+            return Json(new { success = "true", affectedRows = totalAffectedRows });
+
+
         }
         public async Task<IActionResult> ExpenseEdit(int Id)
         {
@@ -101,7 +92,10 @@ namespace MAMS.Controllers
         public async Task<IActionResult> ExpenseEdit(Expense model)
         {
 
-            model.ModifiedBy = Guid.Empty;
+            model.ModifiedBy = GetUserId();
+            model.CreatedBy = GetUserId();
+            model.BranchId = GetBranchId();
+            model.ModifiedDate = DateTime.Now;
 
 
             await _objExpenseBOL.Update(model, _connectionFactory);

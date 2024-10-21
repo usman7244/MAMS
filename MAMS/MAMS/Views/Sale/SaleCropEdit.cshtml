@@ -267,12 +267,17 @@
 
                     <!-- File Upload -->
                     <div class="form-group">
-                        <div class="custom-file">
-                            <!-- File input for uploading images -->
-                            <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
-                            <label class="custom-file-label" for="UserFiles">Choose files</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="custom-file">
+                                    <!-- File input for uploading images -->
+                                    <input type="file" class="custom-file-input" name="UserFiles" id="UserFiles" multiple>
+                                    <label class="custom-file-label" for="UserFiles">Choose files</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -793,47 +798,16 @@
                 contentType: false, // Prevent jQuery from setting content type
                 success: function (data) {
 
-                    var dataObj1 = JSON.parse(data.data.response);
-                    if (dataObj1 == "Success") {
-                        $("#alertSuccess").show();
+                   
+
+                        console.log(data);
+                        $('#alertSuccess').show();
                         setTimeout(function () {
                             window.location.href = '/Sale/Index';
                         }, 2000);
+                    },
 
-
-                        setTimeout(function () {
-                            $("#alertSuccess").hide();
-                        }, 5000);
-                        $('#slctCusType').val("");
-                        $('#slctCusName').val("");
-                        $('#slctCrop').val("");
-                        $('#idWeightInMaun').val("");
-                        $('#idWeightInKG').val("");
-                        $('#totallWeight').val("");
-                        $('#idPricePerMaun').val("");
-                        $('#idPricePerKG').val("");
-                        $('#totallPrice').val("");
-                        $('#slctBagType').val("");
-                        $('#idBagWeight').val("");
-                        $('#idTotallBags').val("");
-                        $('#idPriceWithExpense').val("");
-                        $('#idTotalExpense').val("");
-                        $('#expnsTable tbody').empty();
-                        $("#totallWeight").parent().next(".validation").remove();
-                        $("#totallPrice").parent().next(".validation").remove();
-                        $("#idPriceWithExpense").parent().next(".validation").remove();
-                    }
-                    else {
-                        $("#alertSuccess").show();
-                        setTimeout(function () {
-                            window.location.href = '/Sale/Index';
-                        }, 2000);
-
-                    }
-
-
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                     alert('error Successfull');
                     alert('Error: ' + textStatus + ' - ' + errorThrown);
                 }

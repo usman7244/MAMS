@@ -262,10 +262,60 @@
         });
     });
     // Button Save data 
-    $(document).ready(function () {
+    // $(document).ready(function () {
        
-        $('#btnSave').on('click', function () {
-            debugger;
+    //     $('#btnSave').on('click', function () {
+    //         debugger;
+
+    //         var expItems = [];
+    //         var files = $('#UserFiles')[0].files;  // Get all selected files
+
+    //         $("#expnsTable tbody").find('tr').each(function (i) {
+    //             var $tds = $(this).find('td'),
+    //                 description = $tds.eq(0).text(),
+    //                 amount = $tds.eq(1).text(),
+    //                 UID = 0;
+
+    //             var itemDetails = { ExpDescription: description, Amount: parseInt(amount), UID: UID };
+    //             expItems.push(itemDetails);
+    //         });
+
+    //         var formData = new FormData();  // Create a FormData object
+    //         formData.append('expItems', JSON.stringify(expItems));   
+
+    //         // Append each file to FormData
+    //         for (var i = 0; i < files.length; i++) {
+    //             formData.append('UserFiles', files[i]);
+    //         }
+
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/Expense/ExpenseAdd",
+    //             data: formData,
+    //             contentType: false,   
+    //             processData: false,   
+    //             success: function (data) {
+    //                 console.log("AJAX call successful:", data);
+    //                 if (data.success === "true") {
+    //                     $('#alertSuccess').show();
+    //                     setTimeout(function () {
+    //                         window.location.href = '/Expense/Index';
+    //                     }, 2000);
+    //                 } else {
+    //                     console.log("Error: Unexpected response format.");
+    //                 }
+    //             },
+
+    //             error: function (xhr, status, error) {
+    //                 console.log(xhr.responseText);
+    //                 $("#alertDanger").show();
+    //             }
+    //         });
+    //     });
+    // });
+    $(document).ready(function () {
+        $('#btnSave').on('click', function (e) {
+            e.preventDefault(); // Prevent the default button behavior
 
             var expItems = [];
             var files = $('#UserFiles')[0].files;  // Get all selected files
@@ -281,26 +331,39 @@
             });
 
             var formData = new FormData();  // Create a FormData object
-            formData.append('expItems', JSON.stringify(expItems));   
+            formData.append('expItems', JSON.stringify(expItems));
 
             // Append each file to FormData
             for (var i = 0; i < files.length; i++) {
+                console.log("Appending file:", files[i]); // Log the file being appended
                 formData.append('UserFiles', files[i]);
+            }
+
+            // Log the form data entries for debugging
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
             }
 
             $.ajax({
                 type: "POST",
                 url: "/Expense/ExpenseAdd",
                 data: formData,
-                contentType: false,  // Important: tells jQuery not to process the data
-                processData: false,  // Important: tells jQuery not to convert the FormData into a query string
+                contentType: false,
+                processData: false,
                 success: function (data) {
-                    console.log(data);
-                    $('#alertSuccess').show();
-                    setTimeout(function () {
-                        window.location.href = '/Expense/Index';
-                    }, 2000);
+                    console.log("AJAX call successful:", data);
+                    if (data.success === "true") {
+                        $('#alertSuccess').show();
+                        $('#expnsTable tbody').empty(); // Clear the expense table
+                        $('#UserFiles').val(''); // Clear the file input if needed
+                        setTimeout(function () {
+                            window.location.href = '/Expense/Index';
+                        }, 2000);
+                    } else {
+                        console.log("Error: Unexpected response format.");
+                    }
                 },
+
                 error: function (xhr, status, error) {
                     console.log(xhr.responseText);
                     $("#alertDanger").show();
@@ -308,6 +371,7 @@
             });
         });
     });
+
       document.getElementById('totalPrice').addEventListener('input', function () {
         var totalPriceInput = document.getElementById('totalPrice');
         var errorMessage = document.getElementById('error-message');
