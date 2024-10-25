@@ -9,7 +9,8 @@ namespace MAMS_Models.Model
     {
         public int UID { get; set; }
         public string CustomerType { get; set; }
-        public string CustomerName { get; set; } 
+        public string CustomerName { get; set; }
+        
         public string Status { get; set; } 
         public Guid Fk_CustomerId { get; set; } 
         public int Fk_Crop { get; set; }

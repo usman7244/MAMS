@@ -13,6 +13,7 @@ namespace MAMS_Models.Model
         public string TotalCash { get; set; }
         public string DiffCash { get; set; }
         public string CustomerName { get; set; }
+        public string UserName { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public Guid FKCustomer { get; set; }
