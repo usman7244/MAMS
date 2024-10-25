@@ -47,6 +47,59 @@
             background-color: darkred;
         }
 
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    /* Background Dark Overlay */
+    .loader-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Dark background with opacity */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Spinner Style */
+    .spinner {
+        width: 80px; /* Adjust size as needed */
+        height: 80px;
+        border: 8px solid rgba(255, 255, 255, 0.3); /* Light border */
+        border-top: 8px solid blue; /* Blue color for the spinner */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 10px; /* Space between spinner and text */
+    }
+
+    /* Spin Animation */
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Loader Text */
+    .loader-background p {
+        font-size: 1.2em; /* Adjust text size */
+        color: white; /* Text color */
+    }
 </style>
 <form id="BasicForm">
     <!-- #region Purchase detail form -->
@@ -55,6 +108,13 @@
             <h5 class="card-title"><i class="fab fa-accusoft"></i> Sale Crop Edit</h5>
         </div>
         <div class="card-body">
+            <!-- Loader HTML -->
+            <div id="loader" style="display:none;">
+                <div class="loader-background">
+                    <div class="spinner"></div>
+                    <p>Please wait...</p>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-4" style="display:none">
                     <div class="form-group">
@@ -125,7 +185,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="bmd-label-floating" id="lblTotallWeight">New Price </label>
-                        <input type="text" class="form-control"  id="totallPrice" value="@Model.TotalCropPrice">
+                        <input type="text" class="form-control" id="totallPrice" value="@Model.TotalCropPrice">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -156,13 +216,13 @@
                         <input type="number" class="form-control" min="0" id="idTotallBags" value="@Model.BagTotal">
                     </div>
                 </div>
-               @*  Add New Field *@
-               @if (Model.Status=="In Stock")
+                @*  Add New Field *@
+                @if (Model.Status == "In Stock")
                 {
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="bmd-label-floating" id="lblTotallWeight">Old Price </label>
-                            <input type="text" class="form-control" disabled  id="totaloldPrice"  value="@Model.PurchasePrice">
+                            <input type="text" class="form-control" disabled id="totaloldPrice" value="@Model.PurchasePrice">
                         </div>
                     </div>
                     <div class="col-sm-4 col-md-4">
@@ -172,7 +232,7 @@
                         </div>
                     </div>
                 }
-                
+
 
 
             </div>
@@ -338,17 +398,17 @@
     window.onload = function () {
         disableDropdowns();
     };
-    
+
     $("#btnAdd").click(function () {
         var itemDetails;
         var description = $.trim($("#expDes").val());
         var amount = $.trim($("#amount").val());
         var uid = 0;
-        
+
         if (description == "" || amount == "" || parseInt(amount) == 0) {
             //doNothing
         } else {
-          
+
             $('#expnsTable tbody').append('<tr class="child">' +
                 '<td><font class="fontsize">' + description + '</font></td>' +
                 '<td><font class="fontsize">' + amount + '</font></td>' +
@@ -433,7 +493,7 @@
             BagTotal: parseInt(totallBags)
 
         };
-        
+
         var expItem = { ExpDescription: '', Amount: parseInt(itmPrice), UID: parseInt(iId) };
         $("#txtExpenseDescription").val("");
         $.confirm({
@@ -476,7 +536,7 @@
                                                 $("#alertSuccess").show();
                                                 setTimeout(function () {
                                                     $("#alertSuccess").hide();
-                                                   
+
                                                 }, 2000);
 
                                             }
@@ -725,7 +785,7 @@
 
     /* $("#btnSave").click(function () {*/
     $('form').on('submit', function (e) {
-        
+
 
         var fKCustomerType = $('#slctCusType').val();
         var fkCustomer = $('#slctCusName').val();
@@ -788,7 +848,7 @@
             });
 
             formData.append('expItems', JSON.stringify(expItems)); // Append expenses as JSON string
-
+            $('#loader').show();
             // AJAX call for form submission
             $.ajax({
                 type: "PUT",
@@ -797,17 +857,15 @@
                 processData: false, // Prevent jQuery from transforming data into query string
                 contentType: false, // Prevent jQuery from setting content type
                 success: function (data) {
+                    console.log(data);
+                    $('#loader').hide();
+                    $('#alertSuccess').show();
+                    setTimeout(function () {
+                        window.location.href = '/Sale/Index';
+                    }, 2000);
+                },
 
-                   
-
-                        console.log(data);
-                        $('#alertSuccess').show();
-                        setTimeout(function () {
-                            window.location.href = '/Sale/Index';
-                        }, 2000);
-                    },
-
-                    error: function (jqXHR, textStatus, errorThrown) {
+                error: function (jqXHR, textStatus, errorThrown) {
                     alert('error Successfull');
                     alert('Error: ' + textStatus + ' - ' + errorThrown);
                 }
@@ -857,7 +915,7 @@
         $("#idTotalExpense").prop("disabled", true);
     }
 
-    
+
     var expenses = @Html.Raw(Json.Serialize(ExpenseList));
     jQuery.each(expenses, (index, item) => {
 
@@ -865,7 +923,7 @@
         var itemDetails;
         var description = item.expDescription;
         var amount = 0;
-        amount=item.amount;
+        amount = item.amount;
         var uid = item.uid;
         var isOld = item.isOld;
 
@@ -883,7 +941,7 @@
         itemDetailList.push(itemDetails);
         $("#expDes").val("");
         $("#amount").val("");
-        
+
         var items = 0;
         $('#expnsTable tbody tr td:nth-child(2)').each(function () {
             items = items + parseInt($(this).text());
@@ -895,9 +953,9 @@
         var priceWithExp = parseInt(price) + parseInt(items);
         $("#idTotalExpense").val(parseInt(items) + '  RS');
         $("#idPriceWithExpense").val(parseInt(priceWithExp) + '  RS');
-        
+
         // New Addition
-        
+
         var item = 0;
         var pricee = $("#totaloldPrice").val();
         if (pricee == "") {

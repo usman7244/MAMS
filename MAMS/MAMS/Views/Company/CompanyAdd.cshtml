@@ -7,7 +7,62 @@
 }
 
 <script src="~/js/jquery-191-min.js"></script>
+<style>
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
 
+    /* Background Dark Overlay */
+    .loader-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Dark background with opacity */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Spinner Style */
+    .spinner {
+        width: 80px; /* Adjust size as needed */
+        height: 80px;
+        border: 8px solid rgba(255, 255, 255, 0.3); /* Light border */
+        border-top: 8px solid blue; /* Blue color for the spinner */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 10px; /* Space between spinner and text */
+    }
+
+    /* Spin Animation */
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Loader Text */
+    .loader-background p {
+        font-size: 1.2em; /* Adjust text size */
+        color: white; /* Text color */
+    }
+
+</style>
 <!-- #region    Add Crop Form -->
 
 <div class="card">
@@ -15,8 +70,15 @@
         <h5 class="card-title"><i class="far fa-building"></i> Add Company</h5>
     </div>
     <div class="card-body">
-        <form enctype="multipart/form-data" asp-action="CompanyAdd" asp-controller="Company" method="post">
+        <form id="companyForm" enctype="multipart/form-data" asp-action="CompanyAdd" asp-controller="Company" method="post">
             <div class="card-body">
+                <!-- Loader HTML -->
+                <div id="loader" style="display:none;">
+                    <div class="loader-background">
+                        <div class="spinner"></div>
+                        <p>Please wait...</p>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-4 col-sm-4">
                         <div class="form-group">
@@ -24,10 +86,7 @@
                             <input type="text" asp-for="Name" class="form-control form-control-inline" required>
                         </div>
                     </div>
-
-
-
-                    <div class="col-md-4  col-sm-4">
+                      <div class="col-md-4  col-sm-4">
                         <div class="form-group" required>
                            
                           <label class="control-label bold">Status</label>
@@ -103,6 +162,16 @@
     }
     document.getElementById('chkStatus').addEventListener('change', function () {
         document.getElementById('hiddenStatus').value = this.checked ? 'Active' : 'InActive';
+    });
+    document.getElementById('companyForm').addEventListener('submit', function (event) {
+        // Show the loader
+        document.getElementById('loader').style.display = 'flex'; // Show loader
+
+        // You can add a timeout to ensure it waits before the form submission if needed
+        // Alternatively, if you need to do some validation or operations before submission,
+        // you can do that here.
+
+        // The form will submit normally after this event handler
     });
 </script>
 <!-- #endregion -->

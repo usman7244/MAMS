@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Expense";
 }
 <script src="~/js/jquery-191-min.js"></script>
@@ -36,6 +35,62 @@
         line-height: 22px;
         font-size: 14px;
     }
+    /* Loader Container */
+     
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    /* Background Dark Overlay */
+    .loader-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Dark background with opacity */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Spinner Style */
+    .spinner {
+        width: 80px; /* Adjust size as needed */
+        height: 80px;
+        border: 8px solid rgba(255, 255, 255, 0.3); /* Light border */
+        border-top: 8px solid blue; /* Blue color for the spinner */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 10px; /* Space between spinner and text */
+    }
+
+    /* Spin Animation */
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Loader Text */
+    .loader-background p {
+        font-size: 1.2em; /* Adjust text size */
+        color: white; /* Text color */
+    }
+
 </style>
 <form id="BasicForm" enctype="multipart/form-data">
     <!-- #region Expense form -->
@@ -44,6 +99,14 @@
             <h5 class="card-title"><i class="far fa-newspaper"></i> Add Expense</h5>
         </div>
         <div class="card-body">
+            <!-- Loader HTML -->
+            <div id="loader" style="display:none;">
+                <div class="loader-background">
+                    <div class="spinner"></div>
+                    <p>Please wait...</p>
+                </div>
+            </div>
+
             <div class="row">
 
                 <div class="col-sm-3 col-md-3">
@@ -55,13 +118,13 @@
                 <div class="col-md-4" style="display:none">
                     <div class="form-group">
                         <label class="bmd-label-floating"> UID</label>
-                        <input type="number" class="form-control" min="0" id="idUID" >
+                        <input type="number" class="form-control" min="0" id="idUID">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="bmd-label-floating">Amount</label>
-                        <input type="text" id="totalPrice"  min="1" max="2147483647"  class="form-control">
+                        <input type="text" id="totalPrice" min="1" max="2147483647" class="form-control">
                         <span id="error-message" style="color: red; display: none;">Total Cash is greate than Cash In Hand.</span>
                         <span id="error-message" style="color: red; display: none;">Please enter a value greater than or equal to 1.</span>
                     </div>
@@ -164,14 +227,14 @@
     $("#alertSuccess").hide();
     $("#alertDanger").hide();
     var itemDetailList = [];
-     var cashInHand = parseInt('@ViewBag.CashHistory');
-   
-    $("#btnAdd").click(function() {
-     
+    var cashInHand = parseInt('@ViewBag.CashHistory');
+
+    $("#btnAdd").click(function () {
+
         var expDes = $("#expDes").val();
         var amount = $("#totalPrice").val();
 
-        if(expDes && amount) {
+        if (expDes && amount) {
 
             $('#expnsTable tbody').append('<tr class="child">' +
                 '<td><font class="fontsize">' + expDes + '</font></td>' +
@@ -199,7 +262,7 @@
             $("#idTotalExpense").val(parseInt(items) + '  RS');
             $("#idPriceWithExpense").val(parseInt(priceWithExp) + '  RS');
 
-           
+
         }
     });
     $("#expnsTable").on('click', "#btnDelExpns", function () {
@@ -216,7 +279,7 @@
             content: ' Delete Confirmation ',
             type: 'orange',
             typeAnimated: true,
-           
+
             buttons: {
                 cancel: {
                     text: 'Cancel',
@@ -261,9 +324,9 @@
             }
         });
     });
-    // Button Save data 
+    // Button Save data
     // $(document).ready(function () {
-       
+
     //     $('#btnSave').on('click', function () {
     //         debugger;
 
@@ -281,7 +344,7 @@
     //         });
 
     //         var formData = new FormData();  // Create a FormData object
-    //         formData.append('expItems', JSON.stringify(expItems));   
+    //         formData.append('expItems', JSON.stringify(expItems));
 
     //         // Append each file to FormData
     //         for (var i = 0; i < files.length; i++) {
@@ -292,8 +355,8 @@
     //             type: "POST",
     //             url: "/Expense/ExpenseAdd",
     //             data: formData,
-    //             contentType: false,   
-    //             processData: false,   
+    //             contentType: false,
+    //             processData: false,
     //             success: function (data) {
     //                 console.log("AJAX call successful:", data);
     //                 if (data.success === "true") {
@@ -343,7 +406,7 @@
             for (var pair of formData.entries()) {
                 console.log(pair[0] + ': ' + pair[1]);
             }
-
+            $('#loader').show();
             $.ajax({
                 type: "POST",
                 url: "/Expense/ExpenseAdd",
@@ -352,6 +415,7 @@
                 processData: false,
                 success: function (data) {
                     console.log("AJAX call successful:", data);
+                    $('#loader').hide();
                     if (data.success === "true") {
                         $('#alertSuccess').show();
                         $('#expnsTable tbody').empty(); // Clear the expense table
@@ -372,7 +436,7 @@
         });
     });
 
-      document.getElementById('totalPrice').addEventListener('input', function () {
+    document.getElementById('totalPrice').addEventListener('input', function () {
         var totalPriceInput = document.getElementById('totalPrice');
         var errorMessage = document.getElementById('error-message');
 
@@ -386,7 +450,7 @@
         //     totalPriceInput.setCustomValidity('Please enter a value greater than or equal to 1.');
 
         // }
-      
+
 
         else {
             errorMessage.style.display = 'none';
@@ -394,14 +458,14 @@
         }
     });
 
-// Update the total expense
-function updateTotalExpense() {
-    var totalExpense = itemDetailList.reduce((sum, item) => sum + item.amount, 0);
-    $("#idTotalExpense").val(totalExpense.toFixed(2));
-}
+    // Update the total expense
+    function updateTotalExpense() {
+        var totalExpense = itemDetailList.reduce((sum, item) => sum + item.amount, 0);
+        $("#idTotalExpense").val(totalExpense.toFixed(2));
+    }
 
-    
-    $(document).on("click", ".delete-btn", function() {
+
+    $(document).on("click", ".delete-btn", function () {
         var rowIndex = $(this).closest('tr').index();
         itemDetailList.splice(rowIndex, 1);
         $(this).closest('tr').remove();
@@ -445,13 +509,16 @@ function updateTotalExpense() {
     input#idPricePerKG {
         padding-left: 0px;
     }
+
     input {
         text-align: center;
     }
+
     .validation {
         color: red;
         margin-bottom: 20px;
     }
+
     input#idTotalExpense {
         min-width: 60px;
         max-width: 120px;
@@ -468,62 +535,80 @@ function updateTotalExpense() {
         position: relative;
         margin: 10px;
     }
+
     label#idLblPrcWithExp {
         margin-top: 35px;
     }
+
     input#idPriceWithExpense {
         font-weight: 600;
     }
+
     #idLblPriceWithExpense {
         margin-top: -20px;
     }
+
     input#totallWeight {
         font-weight: 600;
     }
+
     input#totallPrice {
         font-weight: 600;
     }
+
     i.fa.fa-plus {
         font-size: 15px !important;
     }
+
     #btnSave {
         background-color: #35663b;
     }
+
     #btnBack {
         background-color: #35663b;
     }
+
     #btnAdd {
         background-color: #2e9ead;
         border-color: #0cb9cf;
         color: white;
     }
+
     i.material-icons {
         float: left;
     }
+
     input.form-control {
         border: 0px;
     }
+
     label {
         font-size: 16px;
     }
+
     option {
         color: #fff;
         background-color: #363945;
     }
+
     select {
         border: 0px !important;
     }
+
     div#inputsRow {
         margin-top: 1%;
     }
+
     input#totallWeight {
         border-bottom: 1px dotted #d2d2d2;
     }
+
     #loading-img {
         z-index: 100;
         background: url("../images/ajax-loading.gif") center center no-repeat;
         height: 100%;
     }
+
     .overlay {
         background: #e9e9e9;
         display: none;
