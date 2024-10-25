@@ -131,7 +131,7 @@ namespace MAMS.Controllers
             _deposit = new Deposit();
             _deposit.UID = ID;
             _deposit.ModifiedBy = GetUserId();
-            _deposit.DeletedDate = DateTime.Now;
+ 
             var affectedRows = await _objCashBOL.DeleteDeposit(_deposit, _connectionFactory);
 
             return Ok(affectedRows);

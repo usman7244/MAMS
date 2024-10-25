@@ -131,7 +131,7 @@ namespace MAMS.Controllers
             _purchase = new Purchase();
             _purchase.UID = purchCropId;
             _purchase.ModifiedBy = GetUserId();
-            _purchase.DeletedDate = DateTime.Now;
+          
             var affectedRows =await _objPurchaseBOL.DeletePurchaseCrop(_purchase, _connectionFactory);
             return Ok(affectedRows);
             //return RedirectToAction("Index");

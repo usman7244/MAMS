@@ -23,5 +23,6 @@ namespace MAMS_Models.Model
         public List<IFormFile> UserFiles { get; set; }
         public List<string> UserFilesUrl { get; set; }
         public List<Documents> Documents { get; set; }
+        public string UserName { get; set; }
     }
 }

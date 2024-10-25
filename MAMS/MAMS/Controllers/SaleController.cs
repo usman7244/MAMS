@@ -137,7 +137,7 @@ namespace MAMS.Controllers
             _sale.UID = saleCropId;
             _sale.ModifiedBy = GetUserId();
             _sale.ModifiedBy = GetUserId();
-            _sale.DeletedDate = DateTime.Now;
+         
             var affectedRows = await _objSALEBOL.DeleteSaleCrop(_sale, _connectionFactory);
             return Ok(affectedRows);
             //return RedirectToAction("Index");
