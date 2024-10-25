@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MAMS.Controllers
 {
-     
+
     [IdentityUser]
     public class SaleController : BaseController
     {
@@ -76,7 +76,7 @@ namespace MAMS.Controllers
             _sale.BranchId = GetBranchId();
             _sale.CreatedBy = Guid.Empty;
 
-            _saleList =await _objSALEBOL.GetAllSaleCrop(_sale, _connectionFactory);
+            _saleList = await _objSALEBOL.GetAllSaleCrop(_sale, _connectionFactory);
             //_expenseList = await _objPurchaseBOL.GetPurchasedExpenseById(Id, _connectionFactory);
             //_expenseList = _expenseList.Select(expense =>
             //{
@@ -100,7 +100,7 @@ namespace MAMS.Controllers
             _crops = await _objCropBOL.GetCropInfo(_crop, _connectionFactory);
             _cashHistory = await _objPurchaseBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
             _crop.Type = EnumExtension.GetDisplayName(ExpenseType.Bag);
-            _bags = await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy,_crop.Type, _connectionFactory);
+            _bags = await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy, _crop.Type, _connectionFactory);
 
             ViewBag.Crops = _crops;
             ViewBag.Bags = _bags;
@@ -127,18 +127,20 @@ namespace MAMS.Controllers
             var response = await _objSALEBOL.SaleCropAdd(sale, expenseList, _connectionFactory);
             var affectedRows = response.AffectedRows;
             //affectedRows = JsonConvert.SerializeObject(affectedRows);
-          
+
             return Json(new { success = "true", data = new { affectedRows, Error = "false" } });
         }
         [HttpPost]
-        public IActionResult DeleteSaleCrop(int saleCropId)
+        public async Task<IActionResult> DeleteSaleCrop(int saleCropId)
         {
             _sale = new Sale();
             _sale.UID = saleCropId;
-            _sale.ModifiedBy = Guid.Empty;
-            var affectedRows = _objSALEBOL.DeleteSaleCrop(_sale, _connectionFactory);
-            //return Ok(affectedRows);
-            return RedirectToAction("Index");
+            _sale.ModifiedBy = GetUserId();
+            _sale.ModifiedBy = GetUserId();
+            _sale.DeletedDate = DateTime.Now;
+            var affectedRows = await _objSALEBOL.DeleteSaleCrop(_sale, _connectionFactory);
+            return Ok(affectedRows);
+            //return RedirectToAction("Index");
 
 
         }
@@ -159,7 +161,7 @@ namespace MAMS.Controllers
 
 
             _cashHistory = await _objPurchaseBOL.GetCashHistory(_crop.BranchId, _crop.CreatedBy, _connectionFactory);
-         
+
 
             _crop.Type = EnumExtension.GetDisplayName(ExpenseType.Bag);
             _bags = await _objPurchaseBOL.GetBags(_crop.BranchId, _crop.CreatedBy, _crop.Type, _connectionFactory);
@@ -192,7 +194,7 @@ namespace MAMS.Controllers
 
                     if (item.UID == 0)
                     {
-                        item.Fk_Sale= model.UID;
+                        item.Fk_Sale = model.UID;
                         item.CreatedBy = Guid.Empty;
                         item.BranchId = Guid.Empty;
                         item.Type = EnumExtension.GetDisplayName(ExpenseType.Saled);
@@ -267,27 +269,27 @@ namespace MAMS.Controllers
             var _sale = new Sale
             {
                 FK_CustomerType = _purchase.CustomerType,
-                Fk_Customer=_purchase.Fk_CustomerId,
-                Fk_Crop=_purchase.Fk_Crop,
+                Fk_Customer = _purchase.Fk_CustomerId,
+                Fk_Crop = _purchase.Fk_Crop,
                 BagTotal = _purchase.BagTotal,
                 BagWeight = _purchase.BagWeight,
                 PriceInMaun = _purchase.PriceInMaun,
                 PriceInKg = _purchase.PriceInKg,
                 CreatedBy = _purchase.CreatedBy,
                 CropName = _purchase.CropName,
-                TotalCropWeight=_purchase.TotalCropWeight,
-               
-          
+                TotalCropWeight = _purchase.TotalCropWeight,
+
+
                 PurchaseExp = _purchase.TotalAmountwithExp,
-                PurchasePrice=_purchase.TotalCropPrice,
+                PurchasePrice = _purchase.TotalCropPrice,
                 WeightInMaun = _purchase.WeightInMaun,
-                WeightInkg= _purchase.WeightInkg,
-                FK_BagType=_purchase.FK_BagType,
-                TotalExp=_purchase.TotalExp,
+                WeightInkg = _purchase.WeightInkg,
+                FK_BagType = _purchase.FK_BagType,
+                TotalExp = _purchase.TotalExp,
                 TotalCropPrice = _purchase.TotalCropPrice,
-                BranchId =_purchase.BranchId,
-                UID= _purchase.UID,
-                
+                BranchId = _purchase.BranchId,
+                UID = _purchase.UID,
+
             };
 
             ViewBag.Crops = _crops;
@@ -298,17 +300,17 @@ namespace MAMS.Controllers
 
             return View(_sale);
 
-       
+
         }
 
         [HttpPut]
         public async Task<IActionResult> StockSaleAdd(Sale model, Expense[] expItems)
         {
-          
+
             model.CreatedBy = GetUserId();
             model.BranchId = GetBranchId();
 
-           List<Expense> expenseList = new List<Expense>();
+            List<Expense> expenseList = new List<Expense>();
             foreach (var item in expItems)
             {
                 item.CreatedBy = Guid.Empty;
@@ -319,29 +321,29 @@ namespace MAMS.Controllers
 
             try
             {
-                
+
                 string response = await _objSALEBOL.StockSaleAdd(model, expenseList, _connectionFactory);
                 response = JsonConvert.SerializeObject(response);
 
-            
-                if (response == "\"Success\"") 
+
+                if (response == "\"Success\"")
                 {
                     var _purchase = new Purchase
                     {
                         Fk_CustomerId = model.Fk_Customer,
-                        UID=model.UID,
-                        ModifiedBy=model.ModifiedBy
+                        UID = model.UID,
+                        ModifiedBy = model.ModifiedBy
                     };
 
-            
+
                     await _objPurchaseBOL.DeletePurchaseCrop(_purchase, _connectionFactory);
                 }
 
-                  return Json(new { success = true, data = new { response, Error = false } });
+                return Json(new { success = true, data = new { response, Error = false } });
             }
             catch (Exception ex)
             {
-                
+
                 Console.WriteLine($"Error: {ex.Message}");
                 return Json(new { success = false, data = new { response = ex.Message, Error = true } });
             }

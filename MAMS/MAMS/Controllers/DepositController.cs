@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MAMS.Controllers
 {
-    
+
     [IdentityUser]
     public class DepositController : BaseController
     {
@@ -45,7 +45,7 @@ namespace MAMS.Controllers
             _deposit.BranchId = GetBranchId();
             _deposit.CreatedBy = Guid.Empty;
 
-            
+
             List<Deposit> depositList = await _objCashBOL.GetAllDepositInfo(_deposit, _connectionFactory);
 
             return View(depositList);
@@ -63,7 +63,7 @@ namespace MAMS.Controllers
         {
             deposit.BranchId = GetBranchId();
             deposit.CreatedBy = GetUserId();
-           
+
             //if (deposit != null)
             //{
             //    affectedRows = await _objCashBOL.DepositAdd(deposit, _connectionFactory);
@@ -102,7 +102,7 @@ namespace MAMS.Controllers
             return View(_deposit);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateDeposit([FromForm]  Deposit model)
+        public async Task<IActionResult> UpdateDeposit([FromForm] Deposit model)
         {
             try
             {
@@ -130,11 +130,12 @@ namespace MAMS.Controllers
 
             _deposit = new Deposit();
             _deposit.UID = ID;
-            _deposit.ModifiedBy = Guid.Empty;
-            var affectedRows =await _objCashBOL.DeleteDeposit(_deposit, _connectionFactory);
+            _deposit.ModifiedBy = GetUserId();
+            _deposit.DeletedDate = DateTime.Now;
+            var affectedRows = await _objCashBOL.DeleteDeposit(_deposit, _connectionFactory);
 
-             return Ok(affectedRows);
-           // return RedirectToAction("Index");
+            return Ok(affectedRows);
+            // return RedirectToAction("Index");
         }
 
 
