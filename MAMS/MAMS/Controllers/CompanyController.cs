@@ -47,6 +47,7 @@ namespace MAMS.Controllers
         public async Task<IActionResult> CompanyAdd(Company company)
         {
             int affectedRows = 0;
+            company.CreatedBy = GetBranchId();
             if (company != null)
             {
                 affectedRows = await _objCompanyBOL.CompanyAdd(company, _connectionFactory);

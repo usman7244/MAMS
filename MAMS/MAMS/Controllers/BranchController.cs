@@ -45,6 +45,7 @@ namespace MAMS.Controllers
         public async Task<IActionResult> BranchAdd(Branch branch)
         {
             int affectedRows = 0;
+            branch.CreatedBy = GetUserId();
             if (branch != null)
             {
                  

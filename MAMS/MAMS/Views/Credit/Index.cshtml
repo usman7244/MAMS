@@ -4,7 +4,79 @@
 }
 
 <script src="~/js/ToolTip.js"></script>
+<style>
+    
 
+    .remove-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        line-height: 22px;
+        font-size: 14px;
+    }
+
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    /* Background Dark Overlay */
+    .loader-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Dark background with opacity */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Spinner Style */
+    .spinner {
+        width: 80px; /* Adjust size as needed */
+        height: 80px;
+        border: 8px solid rgba(255, 255, 255, 0.3); /* Light border */
+        border-top: 8px solid blue; /* Blue color for the spinner */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 10px; /* Space between spinner and text */
+    }
+
+    /* Spin Animation */
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Loader Text */
+    .loader-background p {
+        font-size: 1.2em; /* Adjust text size */
+        color: white; /* Text color */
+    }
+</style>
 <!-- #region  Customer List  -->
 <div id="divDetails" class="col-md-12 col-sm-12">
     <div class="card ">
@@ -17,6 +89,13 @@
         <div class="card-body">
             <a asp-action="CreditAdd" asp-controller="Credit" class="btn btn-success btn-circle" style="margin-left: 10px;  font-size: 11px"> <i class="fa fa-plus-circle" style="vertical-align: middle;"></i> Add Credit</a>
             <div class="table-responsive" style="height:600px">
+                <!-- Loader HTML -->
+                <div id="loader" style="display:none;">
+                    <div class="loader-background">
+                        <div class="spinner"></div>
+                        <p>Please wait...</p>
+                    </div>
+                </div>
                 <table class="table" id="tblDetailList">
                     <thead class=" text-primary">
                         <tr>
@@ -155,7 +234,16 @@
     });
 
 
+    document.getElementById('DepositForm').addEventListener('submit', function (event) {
+        // Show the loader
+        document.getElementById('loader').style.display = 'flex'; // Show loader
 
+        // You can add a timeout to ensure it waits before the form submission if needed
+        // Alternatively, if you need to do some validation or operations before submission,
+        // you can do that here.
+
+        // The form will submit normally after this event handler
+    });
 
 
 </script>

@@ -48,6 +48,7 @@ namespace DAL
         public async Task<int> CompanyAdd(Company company, ISqlConnectionFactory connectionFactory)
         {
             int affectedRows = 0;
+     
 
             try
             {

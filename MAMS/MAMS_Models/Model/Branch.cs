@@ -19,5 +19,6 @@ namespace MAMS_Models.Model
         public DateTimeOffset CreatedDate { get; set; }
         public Guid ModifiedBy { get; set; }
         public DateTimeOffset ModifiedDate { get; set; }
+        public string UserName { get; set; }
     }
 }
