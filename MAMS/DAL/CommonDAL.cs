@@ -234,7 +234,7 @@ namespace DAL
             {
                 using (var connection = connectionFactory.CreateConnection())
                 {
-                    (string FileId, string fileUrl) = await GoogleDriveServiceHelper.UploadFileAsync(document);
+                    (string FileId, string fileUrl) = await GoogleDriveServiceHelper.UploadFileAsync(document, connectionFactory);
                     string sqlQuery = @"
                                             INSERT INTO [dbo].[DocMgt.Documents]
                                             (
@@ -309,7 +309,28 @@ namespace DAL
             return result;
         }
 
+        public async Task<List<ConfigMgt>> GetConfigMgtInfo(ISqlConnectionFactory connectionFactory)
+        {
+            var configMgtList = new List<ConfigMgt>();
 
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+
+                string sqlQuery = "EXEC [dbo].[spGetConfigMgt]";
+
+                var configMgt = await connection.QueryAsync<ConfigMgt>(sqlQuery, new { });
+
+                configMgtList = configMgt.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                throw;
+            }
+
+            return configMgtList;
+        }
 
 
 

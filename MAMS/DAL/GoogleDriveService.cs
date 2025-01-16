@@ -1,4 +1,5 @@
 ﻿using Consul;
+using DAL.Sql;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
@@ -9,6 +10,7 @@ using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Apis.Util.Store;
 using MAMS_Models.Model;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -21,51 +23,24 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DAL;
+using Dapper;
 namespace DAL
 {
 
-    public static class GoogleDriveServiceHelper
+    public class GoogleDriveServiceHelper
     {
+         
         private static readonly string[] Scopes = { DriveService.Scope.DriveFile };
-        private const string ApplicationName = "MAMS";
-        private static readonly string ClientId = "1077577498265-ghmka0pqb1nhhfs6kucet4d1gp9r960a.apps.googleusercontent.com";
-        private static readonly string ClientSecret = "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";
-        private const string RefreshToken = "1//04H36xiXDDOfsCgYIARAAGAQSNwF-L9IrqKHEF6mlXvKDGDRpPXroTMlQPG5LRyNPFos40BeZjR17vs8pGZF3jYwv-JnSLRD5IrQ";
 
-        //public static async Task<DriveService> GetService()
-        //{
-        //    var tokenResponse = new TokenResponse
-        //    {
-        //        RefreshToken = RefreshToken
-        //    };
-
-        //    Google.Apis.Auth.OAuth2.UserCredential credentials = new UserCredential(
-        //        new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
-        //        {
-        //            ClientSecrets = new ClientSecrets
-        //            {
-        //                ClientId = ClientId,
-        //                ClientSecret = ClientSecret
-        //            },
-        //            Scopes = Scopes,
-        //            DataStore = new FileDataStore("token.json", true)
-        //        }),
-        //        "user",
-        //        tokenResponse);
-
-        //    //credentials.RefreshTokenMethod(CancellationToken.None).Wait();
-
-        //    credentials =   RefreshTokenMethodAsync();
-
-        //    return new DriveService(new BaseClientService.Initializer()
-        //    {
-        //        HttpClientInitializer = credentials,
-        //        ApplicationName = ApplicationName,
-        //    });
-        //}
-
+        private static string ApplicationName = string.Empty;
+        private static string ClientId = string.Empty;
+        private static string ClientSecret = string.Empty;
+        private static string RefreshToken = string.Empty;
+        private static int Id=0;
         public static async Task<DriveService> GetService()
         {
+
             var tokenResponse = new TokenResponse
             {
                 RefreshToken = RefreshToken
@@ -97,198 +72,130 @@ namespace DAL
                 ApplicationName = ApplicationName,
             });
         }
-
-
-
-
-
-
-
-
-        //Old practice
-        //private static async Task<UserCredential> RefreshTokenMethodAsync()
-        //{
-        //    try
-        //    {
-        //        string UserId = "9B115365-E54C-4380-80E7-F4FA9075AD8A";
-        //        // Initialize Google Authorization Code Flow
-        //        var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
-        //        {
-        //            ClientSecrets = new ClientSecrets
-        //            {
-        //                ClientId = "1077577498265-ghmka0pqb1nhhfs6kucet4d1gp9r960a.apps.googleusercontent.com",
-        //                ClientSecret = "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"  // Replace with your actual ClientSecret
-        //            },
-        //            Scopes = new[]
-        //            {
-        //        DriveService.Scope.Drive,
-        //        "https://www.googleapis.com/auth/userinfo.email",
-        //        "https://www.googleapis.com/auth/userinfo.profile"
-        //            },
-        //            DataStore = new FileDataStore("Drive.Api.Auth.Store", true)
-        //        });
-
-        //        // Create a token response from the refresh token
-        //        var tokenResponse = new TokenResponse
-        //        {
-        //            RefreshToken = RefreshToken  // Make sure you pass the refresh token in the request
-        //        };
-
-        //        // Initialize user credentials with the existing refresh token
-        //        var credentials = new UserCredential(flow, UserId, tokenResponse);
-
-        //        // Attempt to refresh the token
-        //        var success = await credentials.RefreshTokenAsync(CancellationToken.None);
-
-        //        if (success)
-        //        {
-        //            // Update token information after refresh
-        //            var newToken = new GoogleTokenEntity
-        //            {
-        //                UserId = UserId,
-        //                RefreshToken = credentials.Token.RefreshToken,
-        //                AccessToken = credentials.Token.AccessToken,
-        //                ExpiresInSeconds = credentials.Token.ExpiresInSeconds,
-        //                IdToken = credentials.Token.IdToken,
-        //                IssuedUtc = credentials.Token.IssuedUtc,
-        //                Scope = credentials.Token.Scope,
-        //                TokenType = credentials.Token.TokenType,
-        //                Drive = true
-        //            };
-
-
-        //            // await StoreToken(newToken,UserId, CancellationToken.None);
-
-        //            return credentials;
-        //        }
-        //        else
-        //        {
-        //            throw new Exception("Failed to refresh token.");
-        //        }
-        //    }
-        //    catch (TokenResponseException tokenEx) when (tokenEx.Error.Error == "invalid_grant")
-        //    {
-        //        // Handle the invalid_grant error
-        //        Console.WriteLine("Token has been expired or revoked. Re-authentication is required.");
-        //        // Logic to re-authenticate and obtain a new refresh token should go here
-
-        //        throw;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle other exceptions
-        //        Console.WriteLine($"An error occurred: {ex.Message}");
-        //        throw;
-        //    }
-        //}
-
-        private static UserCredential RefreshTokenMethodAsync()
+        public static async Task<DriveService> GetServiceAsync(List<ConfigMgt> configMgt, ISqlConnectionFactory connectionFactory)
         {
+            foreach (var item in configMgt)
+            {
+                  Id = item.Id;
+                ApplicationName = item.ApplicationName;
+                ClientId = item.ClientId;
+                ClientSecret = item.ClientSecret;
+                RefreshToken = item.RefreshToken;
+
+            }
+
+            var tokenResponse = new TokenResponse
+            {
+                RefreshToken = RefreshToken
+            };
+
+            var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+            {
+                ClientSecrets = new ClientSecrets
+                {
+                    ClientId = ClientId,
+                    ClientSecret = ClientSecret
+                },
+                Scopes = Scopes,
+                DataStore = new FileDataStore("token.json", true)
+            });
+
+            var credentials = new UserCredential(flow, "user", tokenResponse);
+            // Refresh the token if it has expired
             try
             {
-
-                var tokenResponse = new TokenResponse
+                if (credentials.Token.IsExpired(SystemClock.Default))
                 {
-                    RefreshToken = RefreshToken
-                };
+                    await credentials.RefreshTokenAsync(CancellationToken.None);
+                    var NewRefreshToken = credentials.Token.RefreshToken;
+                    await UpdateTokenInfo(connectionFactory, Id, ApplicationName, ClientId, ClientSecret, NewRefreshToken);
 
-                var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
-                {
-                    ClientSecrets = new ClientSecrets
-                    {
-                        ClientId = ClientId,
-                        ClientSecret = ClientSecret
-                    },
-                    Scopes = Scopes,
-                    DataStore = new FileDataStore("token.json", true)
-                });
 
-                var credentials = new UserCredential(flow, "user", tokenResponse);
-
-                // Attempt to refresh the token
-                credentials.RefreshTokenAsync(CancellationToken.None);
-
-                return credentials;
-            }
-            catch (AggregateException ex) when (ex.InnerException is TokenResponseException tokenEx && tokenEx.Error.Error == "invalid_grant")
-            {
-                // Handle the invalid_grant error
-                Console.WriteLine("Token has been expired or revoked. Re-authentication is required.");
-
-                // Logic to re-authenticate and obtain a new refresh token should go here
-                // For example, redirect the user to the Google authorization page
-
-                throw;
+                }
             }
             catch (Exception ex)
             {
-                // Handle other exceptions
-                Console.WriteLine($"An error occurred: {ex.Message}");
-                throw;
+
+                Console.WriteLine($"Error refreshing token: {ex.Message}");
             }
+
+            return new DriveService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credentials,
+                ApplicationName = ApplicationName,
+            });
         }
 
 
 
-        public static async Task<(string FileId, string FileUrl)> UploadFileAsync(Documents document)
+
+        public static async Task<(string FileId, string FileUrl)> UploadFileAsync(Documents document, ISqlConnectionFactory connectionFactory)
         {
-            // Await GetService to get the DriveService instance
-            var service = await GetService();
+            var helper = new GoogleDriveServiceHelper();
+            List<ConfigMgt> configMgts = await helper.GetTokenInfo(connectionFactory);
 
-            // Step 1: Search for existing folder with BranchId
-            var listRequest = service.Files.List();
-            listRequest.Q = $"mimeType = 'application/vnd.google-apps.folder' and name = '{document.BranchId}' and trashed = false";
-            listRequest.Fields = "files(id, name)";
-            var listResponse = await listRequest.ExecuteAsync();
+            try
+            {
+                var service = await GetServiceAsync(configMgts, connectionFactory);
 
-            string folderId;
-            if (listResponse.Files != null && listResponse.Files.Count > 0)
-            {
-                // Folder already exists
-                folderId = listResponse.Files.First().Id;
-            }
-            else
-            {
-                var folderMetadata = new Google.Apis.Drive.v3.Data.File()
+                // Step 1: Search for existing folder with BranchId
+                var listRequest = service.Files.List();
+                listRequest.Q = $"mimeType = 'application/vnd.google-apps.folder' and name = '{document.BranchId}' and trashed = false";
+                listRequest.Fields = "files(id, name)";
+                var listResponse = await listRequest.ExecuteAsync();
+
+                string folderId;
+                if (listResponse.Files != null && listResponse.Files.Count > 0)
                 {
-                    Name = document.BranchId.ToString(),
-                    MimeType = "application/vnd.google-apps.folder"
+                    folderId = listResponse.Files.First().Id;
+                }
+                else
+                {
+                    var folderMetadata = new Google.Apis.Drive.v3.Data.File()
+                    {
+                        Name = document.BranchId.ToString(),
+                        MimeType = "application/vnd.google-apps.folder"
+                    };
+                    var folderRequest = service.Files.Create(folderMetadata);
+                    folderRequest.Fields = "id";
+                    var folder = await folderRequest.ExecuteAsync();
+                    folderId = folder.Id;
+                }
+
+                // Step 2: Upload the file
+                var fileMetadata = new Google.Apis.Drive.v3.Data.File()
+                {
+                    Name = document.File.FileName,
+                    Parents = new List<string> { folderId }
                 };
-                var folderRequest = service.Files.Create(folderMetadata);
-                folderRequest.Fields = "id";
-                var folder = await folderRequest.ExecuteAsync();
-                folderId = folder.Id;
+
+                FilesResource.CreateMediaUpload request;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await document.File.CopyToAsync(memoryStream);
+                    request = service.Files.Create(fileMetadata, memoryStream, GetMimeType(document.File.FileName));
+                    request.Fields = "id, webViewLink";
+                    await request.UploadAsync();
+                }
+
+                var file = request.ResponseBody;
+
+                // Step 3: Set the file permissions to public
+                var permission = new Google.Apis.Drive.v3.Data.Permission()
+                {
+                    Role = "reader",
+                    Type = "anyone"
+                };
+                await service.Permissions.Create(permission, file.Id).ExecuteAsync();
+
+                return (file.Id, file.WebViewLink);
             }
-
-            // Step 2: Upload the file
-            var fileMetadata = new Google.Apis.Drive.v3.Data.File()
+            catch (Exception ex)
             {
-                Name = document.File.FileName,
-                Parents = new List<string> { folderId }
-            };
-
-            FilesResource.CreateMediaUpload request;
-            using (var memoryStream = new MemoryStream())
-            {
-                await document.File.CopyToAsync(memoryStream);
-                request = service.Files.Create(fileMetadata, memoryStream, GetMimeType(document.File.FileName));
-                request.Fields = "id, webViewLink"; // Request the webViewLink in addition to the file ID
-                await request.UploadAsync();
+                throw new InvalidOperationException("An error occurred during the file upload process.", ex);
             }
-
-            var file = request.ResponseBody;
-
-            // Step 3: Set the file permissions to public
-            var permission = new Google.Apis.Drive.v3.Data.Permission()
-            {
-                Role = "reader",
-                Type = "anyone"
-            };
-            await service.Permissions.Create(permission, file.Id).ExecuteAsync();
-
-            // Step 4: Return the file ID and URL
-            return (file.Id, file.WebViewLink);
         }
+
 
         private static string GetMimeType(string fileName)
         {
@@ -340,6 +247,61 @@ namespace DAL
                 throw new InvalidOperationException("Failed to retrieve file URL.", ex);
             }
         }
+        private async Task<List<ConfigMgt>> GetTokenInfo(ISqlConnectionFactory connectionFactory)
+        {
+            var configMgtList = new List<ConfigMgt>();
+
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+
+                string sqlQuery = "EXEC [dbo].[spGetConfigMgt]";
+
+                var configMgt = await connection.QueryAsync<ConfigMgt>(sqlQuery, new { });
+
+                configMgtList = configMgt.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                throw;
+            }
+
+            return configMgtList;
+        }
+        public static async Task UpdateTokenInfo(ISqlConnectionFactory connectionFactory, int id, string applicationName, string clientId, string clientSecret, string refreshToken)
+        {
+            try
+            {
+                await using var connection = connectionFactory.CreateConnection();
+
+                string sqlQuery = @"
+                             UPDATE [dbo].[ConfigMgt]
+                             SET 
+                                 ApplicationName = @ApplicationName,
+                                 ClientId = @ClientId,
+                                 ClientSecret = @ClientSecret,
+                                 RefreshToken = @RefreshToken
+                             WHERE
+                                 Id = @Id";
+
+                await connection.ExecuteAsync(sqlQuery, new
+                {
+                    ApplicationName = applicationName,
+                    ClientId = clientId,
+                    ClientSecret = clientSecret,
+                    RefreshToken = refreshToken,
+                    Id = id
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                throw;
+            }
+        }
+
+
 
 
 
